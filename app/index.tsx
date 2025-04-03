@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 
 import { HelloWave } from '@/components/HelloWave';
@@ -6,7 +7,12 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-export default function HomeScreen() {
+export default function OnboardingScreen() {
+  // Function to handle successful sign in (proceed to dashboard)
+  const handleSuccessfulAuth = () => {
+    router.replace('/dashboard');
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -17,8 +23,14 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Welcome to MyApp!</ThemedText>
         <HelloWave />
+      </ThemedView>
+      
+      <ThemedView style={styles.contentContainer}>
+        <ThemedText style={styles.description}>
+          A powerful app with amazing features that will help you be more productive and enjoy your day.
+        </ThemedText>
       </ThemedView>
       
       <ThemedView style={styles.authButtonsContainer}>
@@ -37,37 +49,13 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </ThemedView>
       
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+      {/* For development convenience, direct access to dashboard */}
+      <TouchableOpacity 
+        style={styles.skipButton} 
+        onPress={handleSuccessfulAuth}
+      >
+        <ThemedText style={styles.skipButtonText}>Skip to Dashboard</ThemedText>
+      </TouchableOpacity>
     </ParallaxScrollView>
   );
 }
@@ -77,10 +65,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    marginBottom: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  contentContainer: {
+    marginBottom: 30,
+  },
+  description: {
+    fontSize: 16,
+    lineHeight: 24,
   },
   reactLogo: {
     height: 178,
@@ -111,4 +103,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-});
+  skipButton: {
+    alignItems: 'center',
+    marginTop: 15,
+    padding: 10,
+  },
+  skipButtonText: {
+    textDecorationLine: 'underline',
+  }
+}); 
