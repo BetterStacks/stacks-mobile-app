@@ -3,6 +3,12 @@
 # dependencies
 node_modules/
 
+# Editor
+/.idea
+/.zed
+/.vscode
+/.cursor
+
 # Expo
 .expo/
 dist/
