@@ -1,25 +1,22 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { StyleSheet, View, Text } from 'react-native';
 
 export default function DashboardHomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Dashboard</ThemedText>
-      <ThemedText style={styles.subtitle}>Welcome to your dashboard!</ThemedText>
+    <View style={styles.container}>
+      <Text>Dashboard</Text>
+      <Text style={styles.subtitle}>Welcome to your dashboard!</Text>
       
-      <ThemedView style={styles.card}>
-        <ThemedText type="subtitle">Recent Activity</ThemedText>
-        <ThemedText>Your recent activity will appear here.</ThemedText>
-      </ThemedView>
+      <View style={styles.card}>
+        <Text>Recent Activity</Text>
+        <Text>Your recent activity will appear here.</Text>
+      </View>
       
-      <ThemedView style={styles.card}>
-        <ThemedText type="subtitle">Quick Actions</ThemedText>
-        <ThemedText>Quick action buttons will appear here.</ThemedText>
-      </ThemedView>
-    </ThemedView>
+      <View style={styles.card}>
+        <Text>Quick Actions</Text>
+        <Text>Quick action buttons will appear here.</Text>
+      </View>
+    </View>
   );
 }
 

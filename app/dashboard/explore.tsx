@@ -1,25 +1,22 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { StyleSheet, View, Text } from 'react-native';
 
 export default function ExploreScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Explore</ThemedText>
-      <ThemedText style={styles.subtitle}>Discover new content</ThemedText>
+    <View style={styles.container}>
+      <Text>Explore</Text>
+      <Text style={styles.subtitle}>Discover new content</Text>
       
-      <ThemedView style={styles.card}>
-        <ThemedText type="subtitle">Featured Content</ThemedText>
-        <ThemedText>Featured content will appear here.</ThemedText>
-      </ThemedView>
+      <View style={styles.card}>
+        <Text>Featured Content</Text>
+        <Text>Featured content will appear here.</Text>
+      </View>
       
-      <ThemedView style={styles.card}>
-        <ThemedText type="subtitle">Popular</ThemedText>
-        <ThemedText>Popular content will appear here.</ThemedText>
-      </ThemedView>
-    </ThemedView>
+      <View style={styles.card}>
+        <Text>Popular</Text>
+        <Text>Popular content will appear here.</Text>
+      </View>
+    </View>
   );
 }
 

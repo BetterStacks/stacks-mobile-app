@@ -1,11 +1,9 @@
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { router } from 'expo-router';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
 export default function OnboardingScreen() {
   // Function to handle successful sign in (proceed to dashboard)
@@ -22,39 +20,39 @@ export default function OnboardingScreen() {
           style={styles.reactLogo}
         />
       }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome to MyApp!</ThemedText>
+      <View style={styles.titleContainer}>
+        <Text>Welcome to MyApp!</Text>
         <HelloWave />
-      </ThemedView>
+      </View>
       
-      <ThemedView style={styles.contentContainer}>
-        <ThemedText style={styles.description}>
+      <View style={styles.contentContainer}>
+        <Text style={styles.description}>
           A powerful app with amazing features that will help you be more productive and enjoy your day.
-        </ThemedText>
-      </ThemedView>
+        </Text>
+      </View>
       
-      <ThemedView style={styles.authButtonsContainer}>
+      <View style={styles.authButtonsContainer}>
         <TouchableOpacity 
           style={styles.authButton} 
           onPress={() => router.push('/signup')}
         >
-          <ThemedText style={styles.authButtonText}>Sign Up</ThemedText>
+          <Text style={styles.authButtonText}>Sign Up</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity 
-          style={[styles.authButton, styles.signinButton]} 
+        <TouchableOpacity
+          style={[styles.authButton, styles.signinButton]}
           onPress={() => router.push('/signin')}
         >
-          <ThemedText style={styles.authButtonText}>Sign In</ThemedText>
+          <Text style={styles.authButtonText}>Sign In</Text>
         </TouchableOpacity>
-      </ThemedView>
+      </View>
       
       {/* For development convenience, direct access to dashboard */}
       <TouchableOpacity 
         style={styles.skipButton} 
         onPress={handleSuccessfulAuth}
       >
-        <ThemedText style={styles.skipButtonText}>Skip to Dashboard</ThemedText>
+        <Text style={styles.skipButtonText}>Skip to Dashboard</Text>
       </TouchableOpacity>
     </ParallaxScrollView>
   );

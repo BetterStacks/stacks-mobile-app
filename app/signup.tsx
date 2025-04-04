@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, TouchableOpacity, Text } from 'react-native';
 import { router } from 'expo-router';
-
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
@@ -17,10 +14,10 @@ export default function SignupScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
+    <View style={styles.container}>
+      <Text style={styles.title}>
         Create Account
-      </ThemedText>
+      </Text>
       
       <View style={styles.form}>
         <TextInput
@@ -49,14 +46,14 @@ export default function SignupScreen() {
         />
         
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
         
         <TouchableOpacity onPress={() => router.replace('/signin')}>
-          <ThemedText style={styles.link}>Already have an account? Sign In</ThemedText>
+          <Text style={styles.link}>Already have an account? Sign In</Text>
         </TouchableOpacity>
       </View>
-    </ThemedView>
+    </View>
   );
 }
 
