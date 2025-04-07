@@ -1,20 +1,21 @@
 // import { TBorderPositionMetrics, TPhoneWithNotchMetrics, TWithBorderRadiusMetrics } from "shared/utils/metrics/_models";
-import {
-    deviceInch,
-    isAndroid,
-    isIOS,
-    isTablet,
-    fontScale,
-    width,
-    height,
-    hasNotch,
-    isSmallDevice,
-} from "react-native-utils-scale";
-import DeviceInfo from "react-native-device-info";
+// import {
+//     deviceInch,
+//     isAndroid,
+//     isIOS,
+//     isTablet,
+//     fontScale,
+//     width,
+//     height,
+//     hasNotch,
+//     isSmallDevice,
+// } from "react-native-utils-scale";
+// import DeviceInfo from "react-native-device-info";
 import { Platform } from "react-native";
 import {scaleHeight, scaleWidth} from "@/components/design/scale";
 
-const hasAndroidNotch = hasNotch;
+// const hasAndroidNotch = hasNotch;
+const hasAndroidNotch = false;
 
 const iPhoneWithNotch = [
     "iPhone X",
@@ -34,8 +35,8 @@ const iPhoneWithNotch = [
     "iPhone 13 mini",
 ];
 
-const hasIphoneNotch =
-    Platform.OS === "ios" && iPhoneWithNotch.includes(DeviceInfo.getModel());
+// const hasIphoneNotch = Platform.OS === "ios" && iPhoneWithNotch.includes(DeviceInfo.getModel());
+const hasIphoneNotch = false
 
 const hasPhoneNotch = hasAndroidNotch || hasIphoneNotch;
 
@@ -70,20 +71,21 @@ const saltWithPasscode = (passcode: number) =>
 const shortId = () => Math.random().toString(36).slice(-8);
 
 const metrics = {
-    screenWidth: width,
-    screenHeight: height,
+    screenWidth: 340,
+    screenHeight: 720,
     withBorderRadius,
     shortId,
     salt,
     saltWithPasscode,
-    deviceInch,
-    isAndroid,
-    isIOS,
-    isTablet,
+    deviceInch: 5.5,
+    isAndroid: true,
+    isIOS: false,
+    isTablet: false,
     scaleWidth: scaleWidth,
     scaleHeight: scaleHeight,
-    fontScale,
-    isIphoneWithNotch: isIOS && !isSmallDevice,
+    fontScale: 1,
+    // isIphoneWithNotch: isIOS && !isSmallDevice,
+    isIphoneWithNotch: false,
     scale: (num: number) => num,
     hasPhoneNotch,
 };

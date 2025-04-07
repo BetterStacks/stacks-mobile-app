@@ -7,42 +7,46 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import {ApolloProvider} from "@apollo/client";
+import client from "@/lib/apollo/client";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+	const colorScheme = useColorScheme();
+	const [loaded] = useFonts({
+		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+	});
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+	useEffect(() => {
+		if (loaded) {
+			SplashScreen.hideAsync();
+		}
+	}, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+	if (!loaded) {
+		return null;
+	}
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
-        <Stack.Screen
-            name="signin"
-            options={{
-              title: 'Sign In',
-              headerShown: true // or false based on your needs
-            }}
-        />
-        <Stack.Screen name="dashboard" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+	return (
+		<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+			<ApolloProvider client={client}>
+				<Stack>
+					<Stack.Screen name="index" options={{ headerShown: false }} />
+					<Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
+					<Stack.Screen
+						name="signin"
+						options={{
+							title: 'Sign In',
+							headerShown: true // or false based on your needs
+						}}
+					/>
+					<Stack.Screen name="dashboard" options={{ headerShown: false }} />
+					<Stack.Screen name="+not-found" />
+				</Stack>
+				<StatusBar style="auto" />
+			</ApolloProvider>
+		</ThemeProvider>
+	);
 }

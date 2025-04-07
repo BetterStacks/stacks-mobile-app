@@ -14,7 +14,7 @@ import {EIconName} from "@/components/design/icons/_models";
 import {useAppleSignIn} from "@/hooks/useAppleSignIn";
 import {TNullable} from "@/hooks/_models";
 import { setUserToken } from "@/lib/apollo/store/handlers";
-import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
+// import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
 import uuid from "react-native-uuid";
 import { ReactNativeFile } from "apollo-upload-client";
 import {useFacebookSignIn} from "@/hooks/useFacebookSignIn";
@@ -109,9 +109,6 @@ const SignInScreen = () => {
     setIsPasswordSecured(prev => !prev);
   }, []);
 
-  const handleBackButton = useCallback(() => {
-    router.back();
-  }, []);
 
   const handleForgotButton = useCallback(() => {
     // TODO: implement forgot password
@@ -247,7 +244,7 @@ const SignInScreen = () => {
   );
 
   const signInWithApple = useAppleSignIn(onAppleSignIn);
-  const signInWithGoogle = useGoogleSignIn(onGoogleSignIn);
+  const signInWithGoogle = () => onGoogleSignIn('', '');
   const signInWithFacebook = useFacebookSignIn(onFacebookSignIn);
 
   const onAnonymSignUp = useCallback(() => {
@@ -285,7 +282,7 @@ const SignInScreen = () => {
 
           <View style={styles.socialsContainer}>
             <MainButton.Outline
-                onPress={signInWithGoogle}
+                onPress={() => {}}
             >
               <FastImage
                   style={styles.socialImage}
@@ -296,7 +293,7 @@ const SignInScreen = () => {
             </MainButton.Outline>
 
             <MainButton.Outline
-                onPress={signInWithApple}
+                onPress={() => {}}
             >
               <FastImage
                   style={styles.socialImage}
@@ -307,7 +304,7 @@ const SignInScreen = () => {
             </MainButton.Outline>
 
             <MainButton.Outline
-                onPress={signInWithFacebook}
+                onPress={() => {}}
             >
               <FastImage
                   style={styles.socialImage}
@@ -359,7 +356,7 @@ const SignInScreen = () => {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerSubtitle}>Don’t have an account?</Text>
+          <Text style={styles.footerSubtitle}>Don't have an account?</Text>
           <TouchableOpacity onPress={handleSignUp}>
             <Text style={styles.footerTitle}>Sign Up</Text>
           </TouchableOpacity>
