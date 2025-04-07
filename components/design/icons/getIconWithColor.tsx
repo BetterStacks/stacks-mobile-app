@@ -2,7 +2,7 @@ import {SvgProps} from "react-native-svg";
 import {StyleProp, ViewStyle} from "react-native";
 
 import ArrowIcon from "@/assets/svg/ArrowIcon.svg";
-import EyeOffIcon from "@/assets/svg/EyeOffIcon.svg";
+import EyeOffIcon from "@/svgs/EyeOffIcon";
 import EyeOnIcon from "@/assets/svg/EyeOnIcon.svg";
 import Line from "@/assets/svg/Line.svg";
 import ProfileIcon from "@/assets/svg/ProfileIcon.svg";

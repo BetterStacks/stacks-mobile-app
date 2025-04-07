@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, {forwardRef, ReactNode} from 'react';
 import { TextInput, TextInputProps, View } from 'react-native';
 import { StyleSheet } from "react-native";
 import {getFont} from "@/components/design/fonts/fonts";
@@ -8,7 +8,7 @@ import {getIconWithColor} from "@/components/design/icons/getIconWithColor";
 import {EIconName} from "@/components/design/icons/_models";
 
 interface Props extends TextInputProps {
-    iconName?: string;
+    iconName?: ReactNode;
     additionalInputStyles?: object;
     isIconNotTouchable?: boolean;
 }
