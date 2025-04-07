@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import { router } from "expo-router";
-import { ThemedText } from "@/components/ThemedText";
+import { Text as ThemedText } from "react-native";
 
 const { width } = Dimensions.get("window");
 
