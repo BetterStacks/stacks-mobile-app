@@ -16,5 +16,5 @@ export const SignUpSchema = Yup.object().shape({
     [Yup.ref("password"), null],
     "Passwords must match.",
   ),
-  fullName: Yup.string().min(1).required("Name is required."),
+  fullName: Yup.string().min(1).required("Name is required."), 
 });
