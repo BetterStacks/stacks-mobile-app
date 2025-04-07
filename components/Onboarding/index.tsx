@@ -3,8 +3,8 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 
 import { OnboardingSlides } from '@/components/OnboardingSlides';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Text as ThemedText } from 'react-native';
+import { Text as ThemedView } from 'react-native';
 
 export const Onboarding = () => {
   const handleSignUp = () => {

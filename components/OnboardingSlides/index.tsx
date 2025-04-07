@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, Dimensions, View, FlatList, TouchableOpacity } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Text as ThemedText } from 'react-native';
+import { Text as ThemedView } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -40,7 +40,7 @@ export const OnboardingSlides = () => {
     <View style={styles.slideContainer}>
       <Image source={item.image} style={styles.image} resizeMode="contain" />
       <ThemedView style={styles.textContainer}>
-        <ThemedText type="title" style={styles.title}>{item.title}</ThemedText>
+        <ThemedText style={styles.title}>{item.title}</ThemedText>
         <ThemedText style={styles.description}>{item.description}</ThemedText>
       </ThemedView>
     </View>
@@ -81,7 +81,7 @@ export const OnboardingSlides = () => {
       </View>
       
       <ThemedView style={styles.textContainer}>
-        <ThemedText type="title" style={styles.title}>
+        <ThemedText style={styles.title}>
           {slides[currentIndex].title}
         </ThemedText>
         <ThemedText style={styles.description}>
