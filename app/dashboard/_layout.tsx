@@ -39,6 +39,13 @@ export default function DashboardLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="all-links"
+        options={{
+          title: 'All Links',
+          href: null,
+        }}
+      />
     </Tabs>
   );
 } 
