@@ -51,3 +51,6 @@ app-example
 /android/local.properties
 /android/app/.cxx/
 /ios/stacksmobile/GoogleService-Info.plist
+
+google-services.json
+ios/stacksmobile/GoogleService-Info.plist
