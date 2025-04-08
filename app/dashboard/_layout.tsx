@@ -1,12 +1,11 @@
-import { Tabs } from 'expo-router';
+import {Tabs} from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import {HapticTab} from '@/components/HapticTab';
+import {IconSymbol} from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import {Colors as colors} from '@/components/design/colors'
+import {useColorScheme} from '@/hooks/useColorScheme';
 
 export default function DashboardLayout() {
   const colorScheme = useColorScheme();
@@ -14,31 +13,53 @@ export default function DashboardLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: colors.TextColor.LignMainColor,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            position: 'absolute',
-          },
-          default: {},
-        }),
+        tabBarLabelStyle: {
+          fontSize: 14
+        },
+        tabBarStyle: {
+          height: 85,
+          paddingTop: 15,
+        },
       }}>
-      <Tabs.Screen
+        <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol name="house.fill" color={color} />,
         }}
-      />
-      <Tabs.Screen
+        />
+        <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Collections',
+          tabBarIcon: ({ color }) => <IconSymbol name="folder.fill" color={color} />,
         }}
-      />
+        />
+        <Tabs.Screen
+            name="ai"
+            options={{
+                title: 'Stacks AI', // @ts-ignore
+                tabBarIcon: ({ color }) => <IconSymbol name="sparkles.fill" color={color} />,
+            }}
+        />
+        <Tabs.Screen
+            name="recall"
+            options={{
+                title: 'Recall', // @ts-ignore
+                tabBarIcon: ({ color }) => <IconSymbol name="aperture.fill" color={color} />,
+            }}
+        />
+        <Tabs.Screen
+            name="activity"
+            options={{
+                title: 'Activity', // @ts-ignore
+                tabBarIcon: ({ color }) => <IconSymbol name="notifications.fill" color={color} />,
+            }}
+        />
     </Tabs>
   );
 } 
