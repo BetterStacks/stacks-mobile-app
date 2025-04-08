@@ -1,53 +1,32 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { ApolloError, useMutation } from "@apollo/client";
+import React, {useCallback} from "react";
+import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
-import {
-  MUTATION_SIGNIN,
-  MUTATION_SIGNUP,
-  MUTATION_UPLOAD_PROFILE_IMAGE,
-} from "@/lib/api/graphql/mutations";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import { router } from "expo-router";
+import {MUTATION_SIGNIN, MUTATION_SIGNUP, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
-import { EIconName } from "@/components/design/icons/_models";
-import { useAppleSignIn } from "@/hooks/useAppleSignIn";
-import { TNullable } from "@/hooks/_models";
-import { setUserToken } from "@/lib/apollo/store/handlers";
-// import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
+import {EIconName} from "@/components/design/icons/_models";
+import {useAppleSignIn} from "@/hooks/useAppleSignIn";
+import {TNullable} from "@/hooks/_models";
+import {setUserToken} from "@/lib/apollo/store/handlers";
 import uuid from "react-native-uuid";
-import { ReactNativeFile } from "apollo-upload-client";
-import { useFacebookSignIn } from "@/hooks/useFacebookSignIn";
-import { Profile } from "react-native-fbsdk-next";
-import { createRandomPassword } from "@/utils/helpers/createRandomPassword";
-import { useFormik } from "formik";
-import { SignInSchema } from "@/lib/validations/auth";
+import {ReactNativeFile} from "apollo-upload-client";
+import {Profile} from "react-native-fbsdk-next";
+import {useFormik} from "formik";
+import {SignInSchema} from "@/lib/validations/auth";
 import Toast from "react-native-toast-message";
 import LogoIcon from "@/svgs/LogoIcon";
-import { Colors } from "@/components/design/colors";
-import { setToStorage } from "@/utils/storage/setToStorage";
-import { getValueFromStorage } from "@/utils/storage/getStorage";
-import { scaleHeight, scaleWidth } from "@/components/design/scale";
-import { getFont } from "@/components/design/fonts/fonts";
-import { EFontWeight } from "@/components/design/fonts/types";
-import { MainButton, mainButtonStyles } from "@/components/ui/button";
-import { EyeOff } from "lucide-react-native";
-import { Image } from "react-native";
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithCredential,
-  signInWithRedirect,
-} from "firebase/auth";
-import { auth } from "@/firebase/firebaseConfig";
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {Colors} from "@/components/design/colors";
+import {setToStorage} from "@/utils/storage/setToStorage";
+import {scaleHeight, scaleWidth} from "@/components/design/scale";
+import {getFont} from "@/components/design/fonts/fonts";
+import {EFontWeight} from "@/components/design/fonts/types";
+import {MainButton, mainButtonStyles} from "@/components/ui/button";
 import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
 import TokenCheck from "@/components/TokenCheck";
+import {router} from 'expo-router';
 
 const SignInScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -105,6 +84,7 @@ const SignInScreen = () => {
           include: ["QUERY_USER"],
         });
       }, 1500);
+      router.replace('/dashboard');
     },
   });
   const [uploadProfileImage] = useMutation(MUTATION_UPLOAD_PROFILE_IMAGE, {
