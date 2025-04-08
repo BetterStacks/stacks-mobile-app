@@ -71,6 +71,13 @@ export default function DashboardLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="all-links"
+        options={{
+          title: 'All Links',
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
