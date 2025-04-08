@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ExploreScreen() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Explore</Text>
       <Text style={styles.subtitle}>Discover new content</Text>
       
@@ -16,7 +17,7 @@ export default function ExploreScreen() {
         <Text>Popular</Text>
         <Text>Popular content will appear here.</Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
