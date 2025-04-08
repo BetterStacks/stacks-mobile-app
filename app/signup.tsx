@@ -1,27 +1,33 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
-
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import { router } from "expo-router";
+import TokenCheck from "@/components/TokenCheck";
 
 export default function SignupScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSignup = () => {
     // Dummy signup logic
-    alert('Signup successful!');
-    router.replace('/dashboard');
+    alert("Signup successful!");
+    router.replace("/dashboard");
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        Create Account
-      </ThemedText>
-      
+    <View style={styles.container}>
+
+      {/* CHECK FOR THE PRESENCE OF TOKEN */}
+      <TokenCheck />
+
+      <Text style={styles.title}>Create Account</Text>
+
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -31,7 +37,7 @@ export default function SignupScreen() {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-        
+
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -39,7 +45,7 @@ export default function SignupScreen() {
           onChangeText={setPassword}
           secureTextEntry
         />
-        
+
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
@@ -47,16 +53,16 @@ export default function SignupScreen() {
           onChangeText={setConfirmPassword}
           secureTextEntry
         />
-        
+
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity onPress={() => router.replace('/signin')}>
-          <ThemedText style={styles.link}>Already have an account? Sign In</ThemedText>
+
+        <TouchableOpacity onPress={() => router.replace("/signin")}>
+          <Text style={styles.link}>Already have an account? Sign In</Text>
         </TouchableOpacity>
       </View>
-    </ThemedView>
+    </View>
   );
 }
 
@@ -64,41 +70,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 28,
     marginBottom: 30,
-    textAlign: 'center',
+    textAlign: "center",
   },
   form: {
-    width: '100%',
+    width: "100%",
   },
   input: {
     height: 50,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 5,
     marginBottom: 15,
     paddingHorizontal: 15,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
   },
   button: {
-    backgroundColor: '#2196F3',
+    backgroundColor: "#2196F3",
     height: 50,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
   },
   link: {
     marginTop: 20,
-    textAlign: 'center',
-  }
-}); 
+    textAlign: "center",
+  },
+});
