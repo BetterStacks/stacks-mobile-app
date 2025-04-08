@@ -31,6 +31,8 @@ export const useGoogleSignIn = (
                 await GoogleSignin.hasPlayServices();
                 const userInfo = await GoogleSignin.signIn();
 
+                console.log(userInfo)
+
                 googleName =
                     userInfo.user.name ||
                     userInfo.user.familyName ||

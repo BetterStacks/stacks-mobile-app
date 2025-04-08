@@ -39,35 +39,211 @@ import {
   signInWithRedirect,
 } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
 
 const SignInScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const signIn = async () => {
-    console.log("Attempting sign in with credentials:", { email, password });
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log("Successfully signed in user:", user);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: SignInSchema,
+    validateOnMount: false,
+    onSubmit: formValues => {
+      signIn({
+        variables: {
+          provider: "email",
+          password: formValues.password,
+          email: formValues.email,
+        },
       })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error("Sign in error:", { errorCode, errorMessage });
-      });
+          .then(res => {
+            console.log(res.data.sign_in_user.token);
+            setToStorage("token", res.data.sign_in_user.token);
+            setUserToken(res.data.sign_in_user.token);
+          })
+          .catch((err: ApolloError) => {
+            if (err.message === "Password is incorrect") {
+              setFieldError("password", "Invalid password.");
+              return;
+            }
+            if (err.message === "User not found") {
+              setFieldError("email", "User not found.");
+              return;
+            }
+            Toast.show({
+              type: "error",
+              text1: "Error",
+              text2: err.message,
+            });
+          });
+    },
+  });
+
+  const {
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    setFieldError,
+    handleChange,
+    handleBlur,
+  } = formik;
+
+  // Apollo queries / mutations
+  const [signUp, { loading: signUpLoading }] = useMutation(MUTATION_SIGNUP);
+  const [signIn, { loading: signInLoading }] = useMutation(MUTATION_SIGNIN, {
+    onCompleted: () => {
+      setTimeout(async () => {
+        await client.refetchQueries({
+          include: ["QUERY_USER"],
+        });
+      }, 1500);
+    },
+  });
+  const [uploadProfileImage] = useMutation(MUTATION_UPLOAD_PROFILE_IMAGE, {
+    onCompleted: () => {
+      setTimeout(async () => {
+        await client.refetchQueries({
+          include: ["QUERY_USER"],
+        });
+      }, 1500);
+    },
+  });
+
+  const onGoogleSignIn = (googleToken: string, googlePic: string) => {
+    const appId = uuid.v4();
+
+    setToStorage("appId", String(appId));
+    console.log("googlePicture", googlePic);
+
+    signIn({
+      context: {
+        headers: {
+          Authorization: `Bearer ${googleToken}`,
+        },
+      },
+      variables: {
+        provider: "google_oauth2",
+        app_id: appId,
+      },
+    })
+        .then(res => {
+          setToStorage("token", res.data.sign_in_user.token);
+          setUserToken(res.data.sign_in_user.token);
+
+          console.log('GQLToken', res.data.sign_in_user.token);
+
+          console.log("picture", res.data.sign_in_user.user.profile_image_url);
+
+          if (
+              !res.data.sign_in_user.user.profile_image_url &&
+              googlePic.length > 0
+          ) {
+            uploadProfileImage({
+              variables: {
+                file: new ReactNativeFile({
+                  uri: googlePic,
+                  name: googlePic,
+                  type: "JPG",
+                }),
+              },
+            });
+          }
+        })
+        .catch(error => console.log("In signInScreen", error));
   };
 
-  const signInWithGoogle = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const credential = await signInWithRedirect(auth, provider);
-      console.log("Successfully signed in with Google:", credential);
-    } catch (error) {
-      console.error("Google sign in error:", error);
+  const onAppleSignIn = (
+      appleResponse: TNullable<{ token: string; name: string }>,
+  ) => {
+    if (appleResponse === null) {
+      return;
     }
+    const appleToken = appleResponse.token;
+
+    const appId = uuid.v4();
+
+    setToStorage("appId", String(appId));
+
+    signIn({
+      context: {
+        headers: {
+          Authorization: `Bearer ${appleToken}`,
+        },
+      },
+      variables: {
+        provider: "apple",
+        app_id: appId,
+      },
+    })
+        .then(res => {
+          setToStorage("token", res.data.sign_in_user.token);
+          setUserToken(res.data.sign_in_user.token);
+
+          console.log(
+              "Image in profile",
+              res.data.sign_in_user.user.profile_image_url,
+          );
+        })
+        .catch(error => {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "This email isn't registered, please sign up",
+          });
+          return console.log("In signInScreen", error);
+        });
   };
+
+  const onFacebookSignIn = useCallback(
+      (token: string, profile: Profile) => {
+        const appId = uuid.v4();
+
+        setToStorage("appId", String(appId));
+
+        signIn({
+          context: {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+          variables: {
+            provider: "facebook",
+            app_id: appId,
+          },
+        })
+            .then(res => {
+              setToStorage("token", res.data.sign_in_user.token);
+              setUserToken(res.data.sign_in_user.token);
+
+              if (
+                  !res.data.sign_in_user.user.profile_image_url &&
+                  profile.imageURL &&
+                  profile.imageURL.length > 0
+              ) {
+                uploadProfileImage({
+                  variables: {
+                    file: new ReactNativeFile({
+                      uri: profile.imageURL,
+                      name: profile.imageURL,
+                      type: "JPG",
+                    }),
+                  },
+                });
+              }
+            })
+            .catch(error => console.log("In signInScreen", error));
+      },
+      [signIn, uploadProfileImage],
+  );
+
+  const signInGoogle = useGoogleSignIn(onGoogleSignIn);
+  const signInWithApple = useAppleSignIn(onAppleSignIn);
 
   return (
     <View style={styles.container}>
@@ -77,7 +253,7 @@ const SignInScreen = () => {
         <Text style={styles.title}>Login to your account</Text>
 
         <View style={styles.socialsContainer}>
-          <MainButton.Outline onPress={signInWithGoogle}>
+          <MainButton.Outline onPress={signInGoogle}>
             <Image
               style={styles.socialImage}
               source={require("@/assets/png/socialGoogle.png")}
@@ -88,7 +264,7 @@ const SignInScreen = () => {
             </Text>
           </MainButton.Outline>
 
-          <MainButton.Outline onPress={() => {}}>
+          <MainButton.Outline onPress={signInWithApple}>
             <Image
               style={styles.socialImage}
               source={require("@/assets/png/socialApple.png")}
@@ -99,7 +275,7 @@ const SignInScreen = () => {
             </Text>
           </MainButton.Outline>
 
-          <MainButton.Outline onPress={() => {}}>
+          <MainButton.Outline onPress={signInGoogle}>
             <Image
               style={styles.socialImage}
               source={require("@/assets/png/socialFacebook.png")}
@@ -115,20 +291,22 @@ const SignInScreen = () => {
 
         <View style={styles.inputsContainer}>
           <CommonInput
+            onChangeText={handleChange("email")}
+            onBlur={handleBlur("email")}
+            value={values.email}
             placeholder="Email"
             keyboardType="email-address"
             placeholderTextColor={Colors.TextColor.InputPlaceholderColor}
-            value={email}
-            onChangeText={setEmail}
           />
 
           <CommonInput
             placeholder="Password"
+            onChangeText={handleChange("password")}
+            onBlur={handleBlur("password")}
+            value={values.password}
             iconName={EIconName.EyeOff}
             placeholderTextColor={Colors.TextColor.InputPlaceholderColor}
             secureTextEntry
-            value={password}
-            onChangeText={setPassword}
           />
 
           <TouchableOpacity style={styles.forgotTouchable}>
@@ -136,7 +314,7 @@ const SignInScreen = () => {
           </TouchableOpacity>
 
           {/* @ts-ignore */}
-          <MainButton.Primary onPress={signIn}>
+          <MainButton.Primary onPress={handleSubmit} loading={signInLoading || signUpLoading}>
             <Text style={mainButtonStyles.primary.buttonText}>Login</Text>
           </MainButton.Primary>
         </View>
