@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { ApolloError, useMutation } from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {
@@ -26,6 +26,7 @@ import Toast from "react-native-toast-message";
 import LogoIcon from "@/svgs/LogoIcon";
 import { Colors } from "@/components/design/colors";
 import { setToStorage } from "@/utils/storage/setToStorage";
+import { getValueFromStorage } from "@/utils/storage/getStorage";
 import { scaleHeight, scaleWidth } from "@/components/design/scale";
 import { getFont } from "@/components/design/fonts/fonts";
 import { EFontWeight } from "@/components/design/fonts/types";
@@ -41,6 +42,7 @@ import {
 import { auth } from "@/firebase/firebaseConfig";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
+import TokenCheck from "@/components/TokenCheck";
 
 const SignInScreen = () => {
   const [email, setEmail] = useState("");
@@ -247,6 +249,10 @@ const SignInScreen = () => {
 
   return (
     <View style={styles.container}>
+
+      {/* CHECK FOR THE PRESENCE OF TOKEN */}
+      <TokenCheck />
+
       <View style={styles.mainContainer}>
         <LogoIcon width={63} height={53} />
 

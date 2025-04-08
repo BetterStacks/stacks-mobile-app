@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { Text as ThemedText } from "react-native";
+import TokenCheck from "@/components/TokenCheck";
 
 const { width } = Dimensions.get("window");
 
@@ -146,6 +147,9 @@ export default function OnboardingScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+
+      {/* CHECK FOR THE PRESENCE OF TOKEN */}
+      <TokenCheck />
 
       <View style={styles.slidesContainer}>
         <ScrollView

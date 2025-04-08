@@ -7,6 +7,7 @@ import {
   Text,
 } from "react-native";
 import { router } from "expo-router";
+import TokenCheck from "@/components/TokenCheck";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -21,6 +22,10 @@ export default function SignupScreen() {
 
   return (
     <View style={styles.container}>
+
+      {/* CHECK FOR THE PRESENCE OF TOKEN */}
+      <TokenCheck />
+
       <Text style={styles.title}>Create Account</Text>
 
       <View style={styles.form}>
