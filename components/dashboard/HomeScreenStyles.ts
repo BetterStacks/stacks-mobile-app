@@ -1,4 +1,5 @@
-import { StyleSheet, Dimensions } from "react-native";
+import {Dimensions, StyleSheet} from "react-native";
+import {Colors as colors} from "@/components/design/colors";
 
 const { width } = Dimensions.get("window");
 
@@ -8,7 +9,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F8F9FA",
   },
   header: {
-    backgroundColor: "#4A6572",
+    backgroundColor: colors.TextColor.LignMainColor,
     paddingTop: 16,
     paddingHorizontal: 16,
     paddingBottom: 24,
@@ -232,7 +233,7 @@ export const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#4A6572",
+    backgroundColor: colors.TextColor.LignMainColor,
     justifyContent: "center",
     alignItems: "center",
     elevation: 4,

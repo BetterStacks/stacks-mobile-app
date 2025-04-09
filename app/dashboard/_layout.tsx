@@ -1,11 +1,11 @@
-import { Tabs } from "expo-router";
+import {Tabs} from "expo-router";
 import React from "react";
 
-import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
+import {HapticTab} from "@/components/HapticTab";
+import {IconSymbol} from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors as colors } from "@/components/design/colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import {Colors as colors} from "@/components/design/colors";
+import {useColorScheme} from "@/hooks/useColorScheme";
 
 export default function DashboardLayout() {
   const colorScheme = useColorScheme();
@@ -47,16 +47,16 @@ export default function DashboardLayout() {
       <Tabs.Screen
         name="ai"
         options={{
-          title: "Stacks AI", // @ts-ignore
+          title: "Stacks AI",
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="sparkles.fill" color={color} />
+            <IconSymbol name={"sparkles.fill"} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="recall"
         options={{
-          title: "Recall", // @ts-ignore
+          title: "Recall",
           tabBarIcon: ({ color }) => (
             <IconSymbol name="aperture.fill" color={color} />
           ),
@@ -65,7 +65,7 @@ export default function DashboardLayout() {
       <Tabs.Screen
         name="activity"
         options={{
-          title: "Activity", // @ts-ignore
+          title: "Activity",
           tabBarIcon: ({ color }) => (
             <IconSymbol name="notifications.fill" color={color} />
           ),

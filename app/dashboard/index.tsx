@@ -1,32 +1,28 @@
-import { CategoryItem } from "@/components/dashboard/CategoryItem";
-import { QuickActionCard } from "@/components/dashboard/QuickActionCard";
-import { WorkspaceSelector } from "@/components/dashboard/WorkspaceSelector";
-import { UserAvatar } from "@/components/ui/user-avatar";
-import {
-  QUERY_QUICK_LINKS,
-  QUERY_USER_REPOSITORIES,
-} from "@/lib/api/graphql/queries";
-import {
-  SELECTED_WORKSPACE_ID_KEY,
-  SELECTED_WORKSPACE_KEY,
-} from "@/lib/constants";
-import { useQuery, useReactiveVar } from "@apollo/client";
+import {CategoryItem} from "@/components/dashboard/CategoryItem";
+import {QuickActionCard} from "@/components/dashboard/QuickActionCard";
+import {WorkspaceSelector} from "@/components/dashboard/WorkspaceSelector";
+import {UserAvatar} from "@/components/ui/user-avatar";
+import {Colors as colors} from "@/components/design/colors";
+import {QUERY_QUICK_LINKS, QUERY_USER_REPOSITORIES,} from "@/lib/api/graphql/queries";
+import {SELECTED_WORKSPACE_ID_KEY, SELECTED_WORKSPACE_KEY,} from "@/lib/constants";
+import {useQuery, useReactiveVar} from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, {useEffect, useState} from "react";
+import {Text, TouchableOpacity, View} from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {SafeAreaView} from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { router } from "expo-router";
-import { useIsFocused } from "@react-navigation/native";
-import { sharedLinkTextVar } from "@/lib/apollo/store";
-import { styles } from "@/components/dashboard/HomeScreenStyles";
+import {router} from "expo-router";
+import {useIsFocused} from "@react-navigation/native";
+import {sharedLinkTextVar} from "@/lib/apollo/store";
+import {styles} from "@/components/dashboard/HomeScreenStyles";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
+import {StatusBar} from "expo-status-bar";
 
 export default function DashboardHomeScreen() {
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
@@ -285,7 +281,7 @@ export default function DashboardHomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <StatusBar backgroundColor="#4C7C93" style="light" /> */}
+       <StatusBar backgroundColor={colors.TextColor.LignMainColor} style="light" />
       <View style={styles.container}>
         <Animated.ScrollView
           onScroll={scrollHandler}
@@ -294,11 +290,11 @@ export default function DashboardHomeScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <Image
-              source={require("@/assets/png/HeaderTop.png")}
-              style={styles.headerBackground}
-              // resizeMode={Image.resizeMode.contain}
-            />
+            {/*<Image*/}
+            {/*  source={require("@/assets/png/HeaderTop.png")}*/}
+            {/*  style={styles.headerBackground}*/}
+            {/*  // resizeMode={Image.resizeMode.contain}*/}
+            {/*/>*/}
 
             <View style={styles.workspaceHeader}>
               <WorkspaceSelector

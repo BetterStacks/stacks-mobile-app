@@ -18,7 +18,7 @@ const MAPPING = {
 	'chevron.right': 'chevron-forward',
 } as Partial<
 	Record<
-		import('expo-symbols').SymbolViewProps['name'],
+		string,
 		React.ComponentProps<typeof IoniIcons>['name']
 	>
 >;
