@@ -19,15 +19,15 @@ export const StackItem: React.FC<Props> = ({
 
   return (
     <View style={styles.container}>
-      {!isCollection && (
+      {/* {!isCollection && (
         <View style={styles.icon}>
-          {getIconWithColor(EIconName[stackNameIcon as EIconName])}
+          {getIconWithColor(stackNameIcon as unknown as EIconName)}
         </View>
-      )}
+      )} */}
 
-      <Text numberOfLines={1} style={styles.text}>
+      {/* <Text numberOfLines={1} style={styles.text}>
         {prettyStackName}
-      </Text>
+      </Text> */}
     </View>
   );
 };
