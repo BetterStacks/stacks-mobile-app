@@ -63,7 +63,7 @@ import { Loader } from "@/components/Loader";
 import { CommonButton } from "@/components/CommonButton/CommonButton";
 import { selectStackName } from "@/lib/utils";
 import messaging from "@react-native-firebase/messaging";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, Stack } from "expo-router";
 
 export default function AllLinksScreen() {
   // Get params from Expo Router instead of React Navigation
@@ -548,7 +548,15 @@ export default function AllLinksScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+      <Stack.Screen 
+        options={{
+          title: selectedStack || "All Links",
+          headerTitleStyle: {
+            fontWeight: "bold"
+          }
+        }} 
+      />
       <Animated.View style={[styles.container, animViewStyle]}>
         <View style={styles.headerContainer}>
           <View style={styles.headerContent}>

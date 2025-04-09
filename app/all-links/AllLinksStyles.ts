@@ -86,7 +86,8 @@ export const styles = StyleSheet.create({
   },
   headerContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5E5",

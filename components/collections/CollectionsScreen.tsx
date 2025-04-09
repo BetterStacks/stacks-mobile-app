@@ -1,29 +1,41 @@
-import { styles } from "@/components/collections/CollectionsScreenStyle";
-import { EIconName } from "@/components/design/icons/_models";
-import { SmallButton } from "@/components/SmallButton/SmallButton";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  View,
   Text,
-  TextInput,
+  View,
   FlatList,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
+import { styles } from "./CollectionsScreenStyle";
+import SmallButton from "shared/components/SmallButton";
+import { EIconName } from "shared/utils/icons/_models";
+import { useQuery } from "@apollo/client";
+import { QUERY_COLLECTIONS } from "api/graphql/queries";
+import Loader from "shared/components/Loader";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useIsFocused,
+  useNavigation,
+  useFocusEffect,
+} from "@react-navigation/native";
+import {
+  ECollectionsStackScreens,
+  TCollectionsStackNavigationProp,
+} from "navigation/StackNavigators/CollectionsStacksNavigator/constants";
+import { Collection } from "types/Collection";
+import {
+  EAfterAuthScreens,
+  TAfterAuthStackNavigationProp,
+} from "navigation/AfterAuthNavigator/constants";
 import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SELECTED_WORKSPACE_ID_KEY } from "@/lib/constants";
-import { useQuery } from "@apollo/client";
-import { QUERY_COLLECTIONS } from "@/lib/api/graphql/queries";
-import { getEmojiFromCode } from "@/lib/utils";
-import { Collection } from "@/lib/types/Collection";
+import { SELECTED_WORKSPACE_ID_KEY } from "shared/constants/storage";
+import { Search } from "lucide-react-native";
+import { getEmojiFromCode } from "shared/helpers/utilities";
 
 interface Section {
   title: string;
@@ -38,7 +50,10 @@ interface CollectionItemProps {
   item: Collection;
 }
 
-export default function CollectionsScreen() {
+export const CollectionsScreen = () => {
+  const navigation = useNavigation<
+    TAfterAuthStackNavigationProp & TCollectionsStackNavigationProp
+  >();
   const [searchQuery, setSearchQuery] = useState("");
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
 
@@ -130,7 +145,9 @@ export default function CollectionsScreen() {
   }, [workspaceId, workspaceCollections, otherCollections]);
 
   const renderCollectionItem = ({ item: collection }: CollectionItemProps) => (
-    <TouchableOpacity style={styles.collectionItem} onPress={() => {}}>
+    <TouchableOpacity
+      style={styles.collectionItem}
+      onPress={() => handleCollectionPress(collection)}>
       <View style={styles.collectionContent}>
         <View style={styles.emojiContainer}>
           <Text style={styles.collectionEmoji} allowFontScaling={false}>
@@ -164,71 +181,61 @@ export default function CollectionsScreen() {
   );
 
   const onAddCollectionPress = useCallback(() => {
-    // navigation.navigate(EAfterAuthScreens.CreateCollectionScreen);
-  }, []);
+    navigation.navigate(EAfterAuthScreens.CreateCollectionScreen);
+  }, [navigation]);
 
-  // const handleCollectionPress = useCallback(
-  //   (collection: Collection) => {
-  //     navigation.navigate(ECollectionsStackScreens.ParticularCollectionScreen, {
-  //       collectionId: collection.id,
-  //       title: collection.title,
-  //     });
-  //   },
-  //   [navigation],
-  // );
+  const handleCollectionPress = useCallback(
+    (collection: Collection) => {
+      navigation.navigate(ECollectionsStackScreens.ParticularCollectionScreen, {
+        collectionId: collection.id,
+        title: collection.title,
+      });
+    },
+    [navigation],
+  );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Animated.View style={[animViewStyle]}>
-        <View style={styles.header}>
-          <View style={styles.headerInfo}>
-            <Text style={styles.title}>Collections</Text>
-            <Text style={styles.text}>Browse your collections</Text>
-          </View>
-
-          <View style={styles.addButton}>
-            {/* <SmallButton
-              onPress={onAddCollectionPress}
-              iconName={EIconName.WhitePlusIcon}
-              additionalStyles={styles.addButton}
-            /> */}
-          </View>
+    <Animated.View style={[styles.container, animViewStyle]}>
+      <View style={styles.header}>
+        <View style={styles.headerInfo}>
+          <Text style={styles.title}>Collections</Text>
+          <Text style={styles.text}>Browse your collections</Text>
         </View>
 
-        <View style={styles.searchContainer}>
-          <View style={styles.searchWrapper}>
-            <AntDesign
-              name="search1"
-              size={16}
-              color="#666"
-              style={styles.searchIcon}
-            />
-            <TextInput
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholder="Search collections..."
-              placeholderTextColor="#666"
-              style={styles.searchInput}
-            />
-          </View>
-        </View>
-
-        {workspaceLoading || allLoading ? (
-          // <Loader />
-          <View>
-            <Text>Loading...</Text>
-          </View>
-        ) : (
-          <FlatList<Section>
-            data={renderSections()}
-            renderItem={renderSection}
-            keyExtractor={(section) => section.title}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContentContainer}
-            extraData={workspaceId}
+        <View style={styles.addButton}>
+          <SmallButton
+            onPress={onAddCollectionPress}
+            iconName={EIconName.WhitePlusIcon}
+            additionalStyles={styles.addButton}
           />
-        )}
-      </Animated.View>
-    </SafeAreaView>
+        </View>
+      </View>
+
+      <View style={styles.searchContainer}>
+        <View style={styles.searchWrapper}>
+          <Search size={16} color="#666" style={styles.searchIcon} />
+          <TextInput
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Search collections..."
+            placeholderTextColor="#666"
+            style={styles.searchInput}
+          />
+        </View>
+      </View>
+
+      {workspaceLoading || allLoading ? (
+        <Loader />
+      ) : (
+        <FlatList<Section>
+          data={renderSections()}
+          renderItem={renderSection}
+          keyExtractor={section => section.title}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContentContainer}
+          extraData={workspaceId}
+        />
+      )}
+    </Animated.View>
   );
-}
+};
