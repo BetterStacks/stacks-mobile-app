@@ -1,4 +1,4 @@
-import { styles } from "@/app/dashboard/HomeScreenStyles";
+import { styles } from "@/components/dashboard/HomeScreenStyles";
 import { Text, TouchableOpacity } from "react-native";
 
 export const CategoryItem = ({

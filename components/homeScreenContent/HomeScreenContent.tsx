@@ -1,4 +1,4 @@
-import { styles as HomeScreenStyles } from "@/app/dashboard/HomeScreenStyles";
+import { styles as HomeScreenStyles } from "@/components/dashboard/HomeScreenStyles";
 import { View, Text, TouchableOpacity } from "react-native";
 import { styles } from "./HomeContentStyles";
 import { getIconWithColor } from "../design/icons/getIconWithColor";

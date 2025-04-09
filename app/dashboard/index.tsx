@@ -25,7 +25,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
 import { sharedLinkTextVar } from "@/lib/apollo/store";
-import { styles } from "@/app/dashboard/HomeScreenStyles";
+import { styles } from "@/components/dashboard/HomeScreenStyles";
+import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 
 export default function DashboardHomeScreen() {
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
@@ -140,8 +141,8 @@ export default function DashboardHomeScreen() {
       pathname: "/all-links",
       params: {
         withAnnotations: "false",
-        withNotes: "false"
-      }
+        withNotes: "false",
+      },
     });
   };
 
@@ -367,11 +368,12 @@ export default function DashboardHomeScreen() {
           </TouchableOpacity>
         </Animated.View>
       </View>
-
-      {/* <BottomDrawer
-        isVisible={isBottomDrawerVisible}
-        onClose={handleCloseBottomSheet}
-      /> */}
+      <View>
+        <BottomDrawer
+          isVisible={isBottomDrawerVisible}
+          onClose={handleCloseBottomSheet}
+        />
+      </View>
     </SafeAreaView>
   );
 }

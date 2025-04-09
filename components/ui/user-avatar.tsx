@@ -1,4 +1,4 @@
-import { styles } from "@/app/dashboard/HomeScreenStyles";
+import { styles } from "@/components/dashboard/HomeScreenStyles";
 import { QUERY_USER } from "@/lib/api/graphql/queries";
 import { Image, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";

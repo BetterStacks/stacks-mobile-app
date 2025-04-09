@@ -1,4 +1,4 @@
-import { styles } from "@/app/dashboard/HomeScreenStyles";
+import { styles } from "@/components/dashboard/HomeScreenStyles";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export const QuickActionCard = ({
