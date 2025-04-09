@@ -1,4 +1,4 @@
-import { styles } from "@/app/dashboard/HomeScreenStyles";
+import { styles } from "@/components/dashboard/HomeScreenStyles";
 import { useQuery } from "@apollo/client";
 import { useMemo, useState } from "react";
 import { Modal, Text, TouchableOpacity, View } from "react-native";

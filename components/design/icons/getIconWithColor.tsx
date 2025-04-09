@@ -1,8 +1,7 @@
-import {SvgProps} from "react-native-svg";
-import {StyleProp, ViewStyle} from "react-native";
+import { SvgProps } from "react-native-svg";
+import { StyleProp, ViewStyle } from "react-native";
 
 import ArrowIcon from "@/assets/svg/ArrowIcon.svg";
-import EyeOffIcon from "@/svgs/EyeOffIcon";
 import EyeOnIcon from "@/assets/svg/EyeOnIcon.svg";
 import Line from "@/assets/svg/Line.svg";
 import ProfileIcon from "@/assets/svg/ProfileIcon.svg";
@@ -74,98 +73,99 @@ import Hourglass from "@/assets/svg/Hourglass.svg";
 import Logout from "@/assets/svg/Logout.svg";
 import PlacesSelectorIcon from "@/assets/svg/PlacesSelectorIcon.svg";
 
-import HomeLucideIcon from "@/assets/svg/lucide/home.svg"
-import CollectionsLucideIcon from "@/assets/svg/lucide/collection.svg"
-import AiLucideIcon from "@/assets/svg/lucide/ai.svg"
-import RecallLucideIcon from "@/assets/svg/lucide/recall.svg"
-import InboxLucideIcon from "@/assets/svg/lucide/inbox.svg"
-import {EIconName} from "@/components/design/icons/_models";
+import HomeLucideIcon from "@/assets/svg/lucide/home.svg";
+import CollectionsLucideIcon from "@/assets/svg/lucide/collection.svg";
+import AiLucideIcon from "@/assets/svg/lucide/ai.svg";
+import RecallLucideIcon from "@/assets/svg/lucide/recall.svg";
+import InboxLucideIcon from "@/assets/svg/lucide/inbox.svg";
+import { EIconName } from "@/components/design/icons/_models";
+// import { EyeOffIcon } from "/@assets/svg/EyeOffIcon.svg";
 
 const IconsMap: Record<EIconName | string, typeof ArrowIcon> = {
-    [EIconName.Arrow]: ArrowIcon,
-    [EIconName.EyeOff]: EyeOffIcon,
-    [EIconName.Line]: Line,
-    [EIconName.EyeOn]: EyeOnIcon,
-    // [EIconName.Home]: HomeIcon,
-    [EIconName.Inbox]: InboxIcon,
-    // [EIconName.Collections]: CollectionsIcon,
-    [EIconName.Profile]: ProfileIcon,
-    [EIconName.HomeActive]: HomeActive,
-    [EIconName.CollectionsActive]: CollectionsActive,
-    [EIconName.InboxActive]: InboxActive,
-    [EIconName.Search]: SearchIcon,
-    [EIconName.PlusIcon]: PlusIcon,
-    [EIconName.ClockIcon]: ClockIcon,
-    [EIconName.AllLinksIcon]: AllLinksIcon,
-    [EIconName.ArticlesIcon]: ArticlesIcon,
-    [EIconName.PlacesIcon]: PlacesIcon,
-    [EIconName.ProductsIcon]: ProductsIcon,
-    [EIconName.JobsIcon]: JobsIcon,
-    [EIconName.DocumentsIcon]: DocumentsIcon,
-    [EIconName.BooksIcon]: BooksIcon,
-    [EIconName.MediaIcon]: MediaIcon,
-    [EIconName.ProfilesIcon]: ProfilesIcon,
-    [EIconName.StocksIcon]: StocksIcon,
-    [EIconName.OthersIcon]: OthersIcon,
-    [EIconName.GridType]: GridType,
-    [EIconName.ListType]: ListType,
-    [EIconName.Filters]: Filters,
-    [EIconName.LinkChainIcon]: LinkChainIcon,
-    [EIconName.Details]: Details,
-    [EIconName.OpenLink]: OpenLink,
+  [EIconName.Arrow]: ArrowIcon,
+  // [EIconName.EyeOff]: EyeOffIcon,
+  [EIconName.Line]: Line,
+  [EIconName.EyeOn]: EyeOnIcon,
+  // [EIconName.Home]: HomeIcon,
+  [EIconName.Inbox]: InboxIcon,
+  // [EIconName.Collections]: CollectionsIcon,
+  [EIconName.Profile]: ProfileIcon,
+  [EIconName.HomeActive]: HomeActive,
+  [EIconName.CollectionsActive]: CollectionsActive,
+  [EIconName.InboxActive]: InboxActive,
+  [EIconName.Search]: SearchIcon,
+  [EIconName.PlusIcon]: PlusIcon,
+  [EIconName.ClockIcon]: ClockIcon,
+  [EIconName.AllLinksIcon]: AllLinksIcon,
+  [EIconName.ArticlesIcon]: ArticlesIcon,
+  [EIconName.PlacesIcon]: PlacesIcon,
+  [EIconName.ProductsIcon]: ProductsIcon,
+  [EIconName.JobsIcon]: JobsIcon,
+  [EIconName.DocumentsIcon]: DocumentsIcon,
+  [EIconName.BooksIcon]: BooksIcon,
+  [EIconName.MediaIcon]: MediaIcon,
+  [EIconName.ProfilesIcon]: ProfilesIcon,
+  [EIconName.StocksIcon]: StocksIcon,
+  [EIconName.OthersIcon]: OthersIcon,
+  [EIconName.GridType]: GridType,
+  [EIconName.ListType]: ListType,
+  [EIconName.Filters]: Filters,
+  [EIconName.LinkChainIcon]: LinkChainIcon,
+  [EIconName.Details]: Details,
+  [EIconName.OpenLink]: OpenLink,
 
-    [EIconName.RemindCardIcon]: RemindCardIcon,
-    [EIconName.RepositoryCardIcon]: RepositoryCardIcon,
-    [EIconName.EditCardIcon]: EditCardIcon,
-    [EIconName.CollectionsCardIcon]: CollectionsCardIcon,
-    [EIconName.DeleteCardIcon]: DeleteCardIcon,
-    [EIconName.SmallDivider]: SmallDivider,
-    [EIconName.CloseModal]: CloseModal,
-    [EIconName.SavedLinkIcon]: SavedLinkIcon,
-    [EIconName.AfterSaveClockIcon]: AfterSaveClockIcon,
-    [EIconName.AfterSaveShareIcon]: AfterSaveShareIcon,
-    [EIconName.SearchIconInput]: SearchIconInput,
-    [EIconName.InboxPeople]: InboxPeople,
-    [EIconName.RepoInput]: RepoInput,
-    [EIconName.WhitePlusIcon]: WhitePlusIcon,
-    [EIconName.SuccessIcon]: SuccessIcon,
+  [EIconName.RemindCardIcon]: RemindCardIcon,
+  [EIconName.RepositoryCardIcon]: RepositoryCardIcon,
+  [EIconName.EditCardIcon]: EditCardIcon,
+  [EIconName.CollectionsCardIcon]: CollectionsCardIcon,
+  [EIconName.DeleteCardIcon]: DeleteCardIcon,
+  [EIconName.SmallDivider]: SmallDivider,
+  [EIconName.CloseModal]: CloseModal,
+  [EIconName.SavedLinkIcon]: SavedLinkIcon,
+  [EIconName.AfterSaveClockIcon]: AfterSaveClockIcon,
+  [EIconName.AfterSaveShareIcon]: AfterSaveShareIcon,
+  [EIconName.SearchIconInput]: SearchIconInput,
+  [EIconName.InboxPeople]: InboxPeople,
+  [EIconName.RepoInput]: RepoInput,
+  [EIconName.WhitePlusIcon]: WhitePlusIcon,
+  [EIconName.SuccessIcon]: SuccessIcon,
 
-    [EIconName.GreenStar]: GreenStar,
-    [EIconName.GreyCircle]: GreyCircle,
-    [EIconName.PinkStar]: PinkStar,
-    [EIconName.VioletStar]: VioletStar,
-    [EIconName.WhiteCircle]: WhiteCircle,
-    [EIconName.WhiteStar]: WhiteStar,
+  [EIconName.GreenStar]: GreenStar,
+  [EIconName.GreyCircle]: GreyCircle,
+  [EIconName.PinkStar]: PinkStar,
+  [EIconName.VioletStar]: VioletStar,
+  [EIconName.WhiteCircle]: WhiteCircle,
+  [EIconName.WhiteStar]: WhiteStar,
 
-    [EIconName.SocialSettings]: SocialSettings,
-    [EIconName.AccountSettings]: AccountSettings,
-    [EIconName.RepositoriesSettings]: RepositoriesSettings,
-    [EIconName.SettingsSettings]: SettingsSettings,
-    [EIconName.PasswordSettings]: PasswordSettings,
-    [EIconName.DangerSettings]: DangerSettings,
-    [EIconName.DangerSettingsButton]: DangerSettingsButton,
-    [EIconName.FaqSettings]: FaqSettings,
-    [EIconName.RateSettings]: RateSettings,
-    [EIconName.ShevronSettings]: ShevronSettings,
-    [EIconName.EditPhotoIcon]: EditPhotoIcon,
-    [EIconName.WarningIcon]: WarningIcon,
-    [EIconName.SearchFaqIcon]: SearchFaqIcon,
-    [EIconName.ArrowRepositories]: ArrowRepositories,
-    [EIconName.AddMemberIcon]: AddMemberIcon,
-    [EIconName.TrashIcon]: TrashIcon,
-    [EIconName.ChevronLessMore]: ChevronLessMore,
-    [EIconName.Hourglass]: Hourglass,
-    [EIconName.Logout]: Logout,
-    [EIconName.PlacesSelectorIcon]: PlacesSelectorIcon,
-    [EIconName.Browser]: Browser,
-    [EIconName.ShareIcon]: ShareIcon,
+  [EIconName.SocialSettings]: SocialSettings,
+  [EIconName.AccountSettings]: AccountSettings,
+  [EIconName.RepositoriesSettings]: RepositoriesSettings,
+  [EIconName.SettingsSettings]: SettingsSettings,
+  [EIconName.PasswordSettings]: PasswordSettings,
+  [EIconName.DangerSettings]: DangerSettings,
+  [EIconName.DangerSettingsButton]: DangerSettingsButton,
+  [EIconName.FaqSettings]: FaqSettings,
+  [EIconName.RateSettings]: RateSettings,
+  [EIconName.ShevronSettings]: ShevronSettings,
+  [EIconName.EditPhotoIcon]: EditPhotoIcon,
+  [EIconName.WarningIcon]: WarningIcon,
+  [EIconName.SearchFaqIcon]: SearchFaqIcon,
+  [EIconName.ArrowRepositories]: ArrowRepositories,
+  [EIconName.AddMemberIcon]: AddMemberIcon,
+  [EIconName.TrashIcon]: TrashIcon,
+  [EIconName.ChevronLessMore]: ChevronLessMore,
+  [EIconName.Hourglass]: Hourglass,
+  [EIconName.Logout]: Logout,
+  [EIconName.PlacesSelectorIcon]: PlacesSelectorIcon,
+  [EIconName.Browser]: Browser,
+  [EIconName.ShareIcon]: ShareIcon,
 
-    // Lucide icons
-    [EIconName.Home]: HomeLucideIcon,
-    [EIconName.Collections]: CollectionsLucideIcon,
-    [EIconName.AiLucideIcon]: AiLucideIcon,
-    [EIconName.RecallLucideIcon]: RecallLucideIcon,
-    [EIconName.InboxLucideIcon]: InboxLucideIcon,
+  // Lucide icons
+  [EIconName.Home]: HomeLucideIcon,
+  [EIconName.Collections]: CollectionsLucideIcon,
+  [EIconName.AiLucideIcon]: AiLucideIcon,
+  [EIconName.RecallLucideIcon]: RecallLucideIcon,
+  [EIconName.InboxLucideIcon]: InboxLucideIcon,
 };
 
 export const getIconWithColor = (

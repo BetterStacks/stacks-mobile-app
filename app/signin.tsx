@@ -1,30 +1,34 @@
-import React, {useCallback} from "react";
-import {ApolloError, useMutation} from "@apollo/client";
+import React, { useCallback } from "react";
+import { ApolloError, useMutation } from "@apollo/client";
 import client from "@/lib/apollo/client";
-import {MUTATION_SIGNIN, MUTATION_SIGNUP, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+  MUTATION_SIGNIN,
+  MUTATION_SIGNUP,
+  MUTATION_UPLOAD_PROFILE_IMAGE,
+} from "@/lib/api/graphql/mutations";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
-import {EIconName} from "@/components/design/icons/_models";
-import {useAppleSignIn} from "@/hooks/useAppleSignIn";
-import {TNullable} from "@/hooks/_models";
-import {setUserToken} from "@/lib/apollo/store/handlers";
+import { EIconName } from "@/components/design/icons/_models";
+import { useAppleSignIn } from "@/hooks/useAppleSignIn";
+import { TNullable } from "@/hooks/_models";
+import { setUserToken } from "@/lib/apollo/store/handlers";
 import uuid from "react-native-uuid";
-import {ReactNativeFile} from "apollo-upload-client";
-import {Profile} from "react-native-fbsdk-next";
-import {useFormik} from "formik";
-import {SignInSchema} from "@/lib/validations/auth";
+import { ReactNativeFile } from "apollo-upload-client";
+import { Profile } from "react-native-fbsdk-next";
+import { useFormik } from "formik";
+import { SignInSchema } from "@/lib/validations/auth";
 import Toast from "react-native-toast-message";
 import LogoIcon from "@/svgs/LogoIcon";
-import {Colors} from "@/components/design/colors";
-import {setToStorage} from "@/utils/storage/setToStorage";
-import {scaleHeight, scaleWidth} from "@/components/design/scale";
-import {getFont} from "@/components/design/fonts/fonts";
-import {EFontWeight} from "@/components/design/fonts/types";
-import {MainButton, mainButtonStyles} from "@/components/ui/button";
-import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
+import { Colors } from "@/components/design/colors";
+import { setToStorage } from "@/utils/storage/setToStorage";
+import { scaleHeight, scaleWidth } from "@/components/design/scale";
+import { getFont } from "@/components/design/fonts/fonts";
+import { EFontWeight } from "@/components/design/fonts/types";
+import { MainButton, mainButtonStyles } from "@/components/ui/button";
+import { useGoogleSignIn } from "@/hooks/useGoogleSignIn";
 import TokenCheck from "@/components/TokenCheck";
-import {router} from 'expo-router';
+import { router } from "expo-router";
 
 const SignInScreen = () => {
   const formik = useFormik({
@@ -34,7 +38,7 @@ const SignInScreen = () => {
     },
     validationSchema: SignInSchema,
     validateOnMount: false,
-    onSubmit: formValues => {
+    onSubmit: (formValues) => {
       signIn({
         variables: {
           provider: "email",
@@ -42,26 +46,26 @@ const SignInScreen = () => {
           email: formValues.email,
         },
       })
-          .then(res => {
-            console.log(res.data.sign_in_user.token);
-            setToStorage("token", res.data.sign_in_user.token);
-            setUserToken(res.data.sign_in_user.token);
-          })
-          .catch((err: ApolloError) => {
-            if (err.message === "Password is incorrect") {
-              setFieldError("password", "Invalid password.");
-              return;
-            }
-            if (err.message === "User not found") {
-              setFieldError("email", "User not found.");
-              return;
-            }
-            Toast.show({
-              type: "error",
-              text1: "Error",
-              text2: err.message,
-            });
+        .then((res) => {
+          console.log(res.data.sign_in_user.token);
+          setToStorage("token", res.data.sign_in_user.token);
+          setUserToken(res.data.sign_in_user.token);
+        })
+        .catch((err: ApolloError) => {
+          if (err.message === "Password is incorrect") {
+            setFieldError("password", "Invalid password.");
+            return;
+          }
+          if (err.message === "User not found") {
+            setFieldError("email", "User not found.");
+            return;
+          }
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: err.message,
           });
+        });
     },
   });
 
@@ -84,7 +88,7 @@ const SignInScreen = () => {
           include: ["QUERY_USER"],
         });
       }, 1500);
-      router.replace('/dashboard');
+      router.replace("/dashboard");
     },
   });
   const [uploadProfileImage] = useMutation(MUTATION_UPLOAD_PROFILE_IMAGE, {
@@ -114,34 +118,34 @@ const SignInScreen = () => {
         app_id: appId,
       },
     })
-        .then(res => {
-          setToStorage("token", res.data.sign_in_user.token);
-          setUserToken(res.data.sign_in_user.token);
+      .then((res) => {
+        setToStorage("token", res.data.sign_in_user.token);
+        setUserToken(res.data.sign_in_user.token);
 
-          console.log('GQLToken', res.data.sign_in_user.token);
+        console.log("GQLToken", res.data.sign_in_user.token);
 
-          console.log("picture", res.data.sign_in_user.user.profile_image_url);
+        console.log("picture", res.data.sign_in_user.user.profile_image_url);
 
-          if (
-              !res.data.sign_in_user.user.profile_image_url &&
-              googlePic.length > 0
-          ) {
-            uploadProfileImage({
-              variables: {
-                file: new ReactNativeFile({
-                  uri: googlePic,
-                  name: googlePic,
-                  type: "JPG",
-                }),
-              },
-            });
-          }
-        })
-        .catch(error => console.log("In signInScreen", error));
+        if (
+          !res.data.sign_in_user.user.profile_image_url &&
+          googlePic.length > 0
+        ) {
+          uploadProfileImage({
+            variables: {
+              file: new ReactNativeFile({
+                uri: googlePic,
+                name: googlePic,
+                type: "JPG",
+              }),
+            },
+          });
+        }
+      })
+      .catch((error) => console.log("In signInScreen", error));
   };
 
   const onAppleSignIn = (
-      appleResponse: TNullable<{ token: string; name: string }>,
+    appleResponse: TNullable<{ token: string; name: string }>,
   ) => {
     if (appleResponse === null) {
       return;
@@ -163,65 +167,65 @@ const SignInScreen = () => {
         app_id: appId,
       },
     })
-        .then(res => {
-          setToStorage("token", res.data.sign_in_user.token);
-          setUserToken(res.data.sign_in_user.token);
+      .then((res) => {
+        setToStorage("token", res.data.sign_in_user.token);
+        setUserToken(res.data.sign_in_user.token);
 
-          console.log(
-              "Image in profile",
-              res.data.sign_in_user.user.profile_image_url,
-          );
-        })
-        .catch(error => {
-          Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: "This email isn't registered, please sign up",
-          });
-          return console.log("In signInScreen", error);
+        console.log(
+          "Image in profile",
+          res.data.sign_in_user.user.profile_image_url,
+        );
+      })
+      .catch((error) => {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "This email isn't registered, please sign up",
         });
+        return console.log("In signInScreen", error);
+      });
   };
 
   const onFacebookSignIn = useCallback(
-      (token: string, profile: Profile) => {
-        const appId = uuid.v4();
+    (token: string, profile: Profile) => {
+      const appId = uuid.v4();
 
-        setToStorage("appId", String(appId));
+      setToStorage("appId", String(appId));
 
-        signIn({
-          context: {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+      signIn({
+        context: {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-          variables: {
-            provider: "facebook",
-            app_id: appId,
-          },
+        },
+        variables: {
+          provider: "facebook",
+          app_id: appId,
+        },
+      })
+        .then((res) => {
+          setToStorage("token", res.data.sign_in_user.token);
+          setUserToken(res.data.sign_in_user.token);
+
+          if (
+            !res.data.sign_in_user.user.profile_image_url &&
+            profile.imageURL &&
+            profile.imageURL.length > 0
+          ) {
+            uploadProfileImage({
+              variables: {
+                file: new ReactNativeFile({
+                  uri: profile.imageURL,
+                  name: profile.imageURL,
+                  type: "JPG",
+                }),
+              },
+            });
+          }
         })
-            .then(res => {
-              setToStorage("token", res.data.sign_in_user.token);
-              setUserToken(res.data.sign_in_user.token);
-
-              if (
-                  !res.data.sign_in_user.user.profile_image_url &&
-                  profile.imageURL &&
-                  profile.imageURL.length > 0
-              ) {
-                uploadProfileImage({
-                  variables: {
-                    file: new ReactNativeFile({
-                      uri: profile.imageURL,
-                      name: profile.imageURL,
-                      type: "JPG",
-                    }),
-                  },
-                });
-              }
-            })
-            .catch(error => console.log("In signInScreen", error));
-      },
-      [signIn, uploadProfileImage],
+        .catch((error) => console.log("In signInScreen", error));
+    },
+    [signIn, uploadProfileImage],
   );
 
   const signInGoogle = useGoogleSignIn(onGoogleSignIn);
@@ -229,7 +233,6 @@ const SignInScreen = () => {
 
   return (
     <View style={styles.container}>
-
       {/* CHECK FOR THE PRESENCE OF TOKEN */}
       <TokenCheck />
 
@@ -290,7 +293,6 @@ const SignInScreen = () => {
             onChangeText={handleChange("password")}
             onBlur={handleBlur("password")}
             value={values.password}
-            iconName={EIconName.EyeOff}
             placeholderTextColor={Colors.TextColor.InputPlaceholderColor}
             secureTextEntry
           />
@@ -300,7 +302,10 @@ const SignInScreen = () => {
           </TouchableOpacity>
 
           {/* @ts-ignore */}
-          <MainButton.Primary onPress={handleSubmit} loading={signInLoading || signUpLoading}>
+          <MainButton.Primary
+            onPress={handleSubmit}
+            loading={signInLoading || signUpLoading}
+          >
             <Text style={mainButtonStyles.primary.buttonText}>Login</Text>
           </MainButton.Primary>
         </View>
