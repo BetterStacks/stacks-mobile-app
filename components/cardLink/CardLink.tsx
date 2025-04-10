@@ -22,6 +22,7 @@ import { styles } from "./CardLinkStyles";
 import { getIconWithColor } from "../design/icons/getIconWithColor";
 import { EIconName } from "../design/icons/_models";
 import { StacksList } from "./StacksList/StacksList";
+import React from "react";
 
 // import BottomDrawer from "../BottomDrawer/BottomDrawer";
 // import EditLinkView from "../BottomDrawer/EditLinkView";
@@ -174,7 +175,7 @@ export const CardLink: React.FC<Props> = ({
           <View>
             {!link.title && !link.description ? (
               <View style={styles.iconPlaceholder}>
-                {getIconWithColor(EIconName.Hourglass)}
+                {/* {getIconWithColor(EIconName.Hourglass)} */}
               </View>
             ) : (
               <>
@@ -193,12 +194,12 @@ export const CardLink: React.FC<Props> = ({
                   </Text>
                 </View>
 
-                <View style={styles.bottomBarButtons}>
+                {/* <View style={styles.bottomBarButtons}>
                   <StacksList
                     stacks={link.stacks}
                     collections={link.collections}
                   />
-                </View>
+                </View> */}
 
                 {link.notes ? (
                   <Text numberOfLines={2} style={styles.linkDescription}>
@@ -249,7 +250,7 @@ export const CardLink: React.FC<Props> = ({
       {/* {isDetailsOpenned && (
         <CardDetails onOpenPressed={onOpenPressed} link={link} />
       )} */}
-      <Modal
+      {/* {      <Modal
         visible={readerVisible}
         animationType="slide"
         onRequestClose={handleReaderClose}
@@ -269,15 +270,15 @@ export const CardLink: React.FC<Props> = ({
               style={styles.editButton}
               onPress={handleEditPress}
             >
-              {/* <SquarePen
+              <SquarePen
                 size={16}
                 color={Colors.tailwindColors.neutral["700"]}
-              /> */}
+              />
               <Text style={styles.editButtonText}>Edit</Text>
             </TouchableOpacity>
           </View>
 
-          {/* <WebView
+          <WebView
             ref={webViewRef}
             source={{ uri: targetUrl }}
             style={styles.reader}
@@ -292,9 +293,9 @@ export const CardLink: React.FC<Props> = ({
                 color={Colors.tailwindColors.neutral["500"]}
               />
             )}
-          /> */}
+          />
 
-          {/* <TouchableOpacity
+          <TouchableOpacity
             style={styles.ttsButton}
             onPress={toggleSpeech}
             disabled={!ttsReady}>
@@ -303,9 +304,9 @@ export const CardLink: React.FC<Props> = ({
             ) : (
               <Play size={24} color={Colors.tailwindColors.neutral["700"]} />
             )}
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
-      </Modal>
+      </Modal>} */}
       {/* <BottomDrawer
         isVisible={isEditModalVisible}
         onClose={() => setIsEditModalVisible(false)}

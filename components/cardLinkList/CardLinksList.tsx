@@ -28,6 +28,7 @@ import { EIconName } from "../design/icons/_models";
 import metrics from "../design/metrics";
 import { CardLink } from "../cardLink/CardLink";
 import PdfReader from "../cardLink/PdfReader";
+import React from "react";
 
 type Props = {
   links: Link[];

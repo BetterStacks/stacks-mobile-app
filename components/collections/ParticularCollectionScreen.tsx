@@ -1,4 +1,4 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, ActivityIndicator, StyleSheet } from "react-native";
 import { styles } from "./ParticularCollectionScreenStyles";
 import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
@@ -8,6 +8,7 @@ import { CommonButton } from "../CommonButton/CommonButton";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
+import { Colors } from "@/components/design/colors";
 
 export const ParticularCollectionScreen = () => {
   const params = useLocalSearchParams<{ collectionId: string, id: string }>();
@@ -24,19 +25,13 @@ export const ParticularCollectionScreen = () => {
   );
 
   useEffect(() => {
-    if (collectionsLinksData && collectionsLinksData.stack) {
-      // Auto-open the drawer when the collection is empty
-      if (collectionsLinksData.stack.links.length === 0) {
-        // This will allow the component to fully mount before showing the drawer
-        const timer = setTimeout(() => {
-          setIsBottomDrawerVisible(true);
-        }, 500);
-        return () => clearTimeout(timer);
-      }
+    if (collectionsLinksData) {
+      // We can log or do other side effects here if needed
     }
   }, [collectionsLinksData]);
 
   const onButtonPress = useCallback(() => {
+    // Only open the drawer when the button is clicked
     setIsBottomDrawerVisible(true);
   }, []);
 
@@ -47,9 +42,8 @@ export const ParticularCollectionScreen = () => {
   return (
     <View style={styles.container}>
       {loading ? (
-        // <Loader />
-        <View>
-          <Text>Loading...</Text>
+        <View style={localStyles.loaderContainer}>
+          <ActivityIndicator size="large" color={Colors.TextColor.LignMainColor} />
         </View>
       ) : collectionsLinksData && collectionsLinksData.stack ? (
         <>
@@ -101,10 +95,18 @@ export const ParticularCollectionScreen = () => {
           />
         </>
       ) : (
-        <View>
+        <View style={localStyles.loaderContainer}>
           <Text>No collection data available</Text>
         </View>
       )}
     </View>
   );
 };
+
+const localStyles = StyleSheet.create({
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

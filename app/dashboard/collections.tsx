@@ -9,6 +9,7 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import Animated, {
   interpolate,
@@ -26,6 +27,7 @@ import { QUERY_COLLECTIONS } from "@/lib/api/graphql/queries";
 import { getEmojiFromCode } from "@/lib/utils";
 import { Collection } from "@/lib/types/Collection";
 import { router } from "expo-router";
+import { Colors } from "@/components/design/colors";
 
 interface Section {
   title: string;
@@ -197,6 +199,12 @@ export default function CollectionsScreen() {
   const localStyles = StyleSheet.create({
     addButtonWrapper: {
       padding: 8,
+    },
+    loaderContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 50,
     }
   });
 
@@ -238,9 +246,8 @@ export default function CollectionsScreen() {
         </View>
 
         {workspaceLoading || allLoading ? (
-          // <Loader />
-          <View>
-            <Text>Loading...</Text>
+          <View style={localStyles.loaderContainer}>
+            <ActivityIndicator size="large" color={Colors.TextColor.LignMainColor} />
           </View>
         ) : (
           <FlatList<Section>
