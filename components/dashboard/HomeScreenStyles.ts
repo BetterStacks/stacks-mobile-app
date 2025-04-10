@@ -9,7 +9,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F8F9FA",
   },
   header: {
-    backgroundColor: colors.TextColor.LignMainColor,
     paddingTop: 16,
     paddingHorizontal: 16,
     paddingBottom: 24,
@@ -17,14 +16,12 @@ export const styles = StyleSheet.create({
     overflow: "hidden",
     height: 140,
   },
-  headerBackground: {
-    position: "absolute",
-    top: -80,
+  headerGradient: {
+    position: 'absolute',
     left: 0,
-    width: width,
-    height: 300,
-    zIndex: 0,
-    transform: [{ scale: 1.2 }],
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   workspaceHeader: {
     flexDirection: "row",

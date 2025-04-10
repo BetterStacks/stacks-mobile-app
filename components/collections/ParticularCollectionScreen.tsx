@@ -1,21 +1,14 @@
 import { Image, Text, View } from "react-native";
 import { styles } from "./ParticularCollectionScreenStyles";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useCallback, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { QUERY_COLLECTION_LINKS } from "@/lib/api/graphql/queries";
-import { useCallback, useEffect } from "react";
 import { CardLinksList } from "../cardLinkList/CardLinksList";
 import { CommonButton } from "../CommonButton/CommonButton";
+import { useLocalSearchParams } from "expo-router";
 
 export const ParticularCollectionScreen = () => {
-  // const navigation = useNavigation<TAfterAuthStackNavigationProp>();
-  // const { params } =
-  //   useRoute<
-  //     RouteProp<
-  //       TECollectionsStackParams,
-  //       ECollectionsStackScreens.ParticularCollectionScreen
-  //     >
-  //   >();
+  const params = useLocalSearchParams<{ collectionId: string }>();
 
   const { data: collectionsLinksData, loading } = useQuery(
     QUERY_COLLECTION_LINKS,
@@ -31,11 +24,6 @@ export const ParticularCollectionScreen = () => {
       // console.log(collectionsLinksData.stack.links.length);
     }
   }, [collectionsLinksData]);
-
-  // const onButtonPress = useCallback(() => {
-  //   navigation.navigate(EAfterAuthScreens.HomeStackNavigator);
-  //   setIsNewLinkModalShown(true);
-  // }, [navigation]);
 
   const onButtonPress = useCallback(() => {
     console.log("Button pressed");
@@ -68,16 +56,16 @@ export const ParticularCollectionScreen = () => {
           {collectionsLinksData.stack.links.length < 1 && (
             <View style={styles.emptyContent}>
               <Image
-                source={require("assets/png/HomeScreenImage.png")}
+                source={require("@/assets/png/HomeScreenImage.png")}
                 style={styles.image}
               />
 
               <Text style={styles.noLinksTitle}>
-                You haven’t got recently saved items
+                You haven't got recently saved items
               </Text>
 
               <Text style={styles.noLinksText}>
-                You haven’t got recently saved items{" "}
+                You haven't got recently saved items{" "}
               </Text>
 
               <View style={styles.buttonContainer}>

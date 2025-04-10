@@ -23,6 +23,7 @@ import {sharedLinkTextVar} from "@/lib/apollo/store";
 import {styles} from "@/components/dashboard/HomeScreenStyles";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 import {StatusBar} from "expo-status-bar";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function DashboardHomeScreen() {
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
@@ -281,7 +282,7 @@ export default function DashboardHomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-       <StatusBar backgroundColor={colors.TextColor.LignMainColor} style="light" />
+       {isFocused && <StatusBar backgroundColor={colors.TextColor.LignMainColor} style="light" />}
       <View style={styles.container}>
         <Animated.ScrollView
           onScroll={scrollHandler}
@@ -290,11 +291,17 @@ export default function DashboardHomeScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
-            {/*<Image*/}
+                  {/*<Image*/}
             {/*  source={require("@/assets/png/HeaderTop.png")}*/}
             {/*  style={styles.headerBackground}*/}
             {/*  // resizeMode={Image.resizeMode.contain}*/}
             {/*/>*/}
+            <LinearGradient
+              colors={[colors.TextColor.LignMainColor, '#074855']} // Main color to a darker shade
+              style={styles.headerGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+            />
 
             <View style={styles.workspaceHeader}>
               <WorkspaceSelector

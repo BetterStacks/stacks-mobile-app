@@ -18,6 +18,7 @@ import {
   setSuccessModalMessage,
 } from "@/lib/apollo/store/handlers";
 import client from "@/lib/apollo/client";
+import { CollectionSelector } from "../CollectionSelector";
 
 // import { FolderPlus, ChevronRight, X } from "lucide-react-native";
 

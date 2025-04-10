@@ -24,6 +24,7 @@ import { useQuery } from "@apollo/client";
 import { QUERY_COLLECTIONS } from "@/lib/api/graphql/queries";
 import { getEmojiFromCode } from "@/lib/utils";
 import { Collection } from "@/lib/types/Collection";
+import { router } from "expo-router";
 
 interface Section {
   title: string;
@@ -130,7 +131,10 @@ export default function CollectionsScreen() {
   }, [workspaceId, workspaceCollections, otherCollections]);
 
   const renderCollectionItem = ({ item: collection }: CollectionItemProps) => (
-    <TouchableOpacity style={styles.collectionItem} onPress={() => {}}>
+    <TouchableOpacity 
+      style={styles.collectionItem} 
+      onPress={() => handleCollectionPress(collection)}
+    >
       <View style={styles.collectionContent}>
         <View style={styles.emojiContainer}>
           <Text style={styles.collectionEmoji} allowFontScaling={false}>
@@ -167,15 +171,19 @@ export default function CollectionsScreen() {
     // navigation.navigate(EAfterAuthScreens.CreateCollectionScreen);
   }, []);
 
-  // const handleCollectionPress = useCallback(
-  //   (collection: Collection) => {
-  //     navigation.navigate(ECollectionsStackScreens.ParticularCollectionScreen, {
-  //       collectionId: collection.id,
-  //       title: collection.title,
-  //     });
-  //   },
-  //   [navigation],
-  // );
+  const handleCollectionPress = useCallback(
+    (collection: Collection) => {
+      router.push({
+        pathname: "/dashboard/collection",
+        params: {
+          collectionId: collection.id,
+          title: collection.title,
+          emoji: collection.emoji,
+        },
+      });
+    },
+    [],
+  );
 
   return (
     <SafeAreaView style={styles.container}>

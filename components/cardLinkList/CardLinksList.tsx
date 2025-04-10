@@ -32,13 +32,13 @@ import PdfReader from "../cardLink/PdfReader";
 type Props = {
   links: Link[];
   style?: StyleProp<ViewStyle>;
-  onEndReached: () => void;
-  isLoadMoreAvailable: boolean;
-  currentPage: number;
+  onEndReached?: () => void;
+  isLoadMoreAvailable?: boolean;
+  currentPage?: number;
   onRefresh?: () => void;
   isRefreshing?: boolean;
-  header: ReactElement<any, string | JSXElementConstructor<any>>;
-  showList: boolean;
+  header?: ReactElement<any, string | JSXElementConstructor<any>>;
+  showList?: boolean;
 };
 
 type FooterProps = {
