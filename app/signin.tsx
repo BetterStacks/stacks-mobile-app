@@ -1,34 +1,29 @@
-import React, { useCallback } from "react";
-import { ApolloError, useMutation } from "@apollo/client";
+import React, {useCallback} from "react";
+import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
-import {
-  MUTATION_SIGNIN,
-  MUTATION_SIGNUP,
-  MUTATION_UPLOAD_PROFILE_IMAGE,
-} from "@/lib/api/graphql/mutations";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {MUTATION_SIGNIN, MUTATION_SIGNUP, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
-import { EIconName } from "@/components/design/icons/_models";
-import { useAppleSignIn } from "@/hooks/useAppleSignIn";
-import { TNullable } from "@/hooks/_models";
-import { setUserToken } from "@/lib/apollo/store/handlers";
+import {useAppleSignIn} from "@/hooks/useAppleSignIn";
+import {TNullable} from "@/hooks/_models";
+import {setUserToken} from "@/lib/apollo/store/handlers";
 import uuid from "react-native-uuid";
-import { ReactNativeFile } from "apollo-upload-client";
-import { Profile } from "react-native-fbsdk-next";
-import { useFormik } from "formik";
-import { SignInSchema } from "@/lib/validations/auth";
+import {ReactNativeFile} from "apollo-upload-client";
+import {Profile} from "react-native-fbsdk-next";
+import {useFormik} from "formik";
+import {SignInSchema} from "@/lib/validations/auth";
 import Toast from "react-native-toast-message";
 import LogoIcon from "@/svgs/LogoIcon";
-import { Colors } from "@/components/design/colors";
-import { setToStorage } from "@/utils/storage/setToStorage";
-import { scaleHeight, scaleWidth } from "@/components/design/scale";
-import { getFont } from "@/components/design/fonts/fonts";
-import { EFontWeight } from "@/components/design/fonts/types";
-import { MainButton, mainButtonStyles } from "@/components/ui/button";
-import { useGoogleSignIn } from "@/hooks/useGoogleSignIn";
+import {Colors} from "@/components/design/colors";
+import {setToStorage} from "@/utils/storage/setToStorage";
+import {scaleHeight, scaleWidth} from "@/components/design/scale";
+import {getFont} from "@/components/design/fonts/fonts";
+import {EFontWeight} from "@/components/design/fonts/types";
+import {MainButton, mainButtonStyles} from "@/components/ui/button";
+import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
 import TokenCheck from "@/components/TokenCheck";
-import { router } from "expo-router";
+import {router} from "expo-router";
 
 const SignInScreen = () => {
   const formik = useFormik({
@@ -301,8 +296,7 @@ const SignInScreen = () => {
             <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          {/* @ts-ignore */}
-          <MainButton.Primary
+          <MainButton.Primary // @ts-ignore
             onPress={handleSubmit}
             loading={signInLoading || signUpLoading}
           >

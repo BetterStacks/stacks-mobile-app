@@ -1,11 +1,8 @@
 import React, {forwardRef, ReactNode} from 'react';
-import { TextInput, TextInputProps, View } from 'react-native';
-import { StyleSheet } from "react-native";
+import {StyleSheet, TextInput, TextInputProps, View} from 'react-native';
 import {getFont} from "@/components/design/fonts/fonts";
 import {EFontWeight} from "@/components/design/fonts/types";
 import {scaleHeight, scaleWidth} from "@/components/design/scale";
-import {getIconWithColor} from "@/components/design/icons/getIconWithColor";
-import {EIconName} from "@/components/design/icons/_models";
 
 interface Props extends TextInputProps {
     iconName?: ReactNode;
@@ -23,7 +20,7 @@ const CommonInput = forwardRef<TextInput, Props>(({
         <View style={styles.container}>
             {iconName && (
                 <View style={styles.iconContainer}>
-                    {getIconWithColor(iconName as EIconName)}
+                    {iconName}
                 </View>
             )}
             <TextInput

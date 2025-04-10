@@ -45,11 +45,11 @@ export default function DashboardLayout() {
         }}
       />
       <Tabs.Screen
-        name="ai"
+        name="search"
         options={{
-          title: "Stacks AI",
+          title: "Search",
           tabBarIcon: ({ color }) => (
-            <IconSymbol name={"sparkles.fill"} color={color} />
+            <IconSymbol name={"search.fill"} color={color} />
           ),
         }}
       />

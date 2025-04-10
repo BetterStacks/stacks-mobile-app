@@ -23,7 +23,7 @@ import {sharedLinkTextVar} from "@/lib/apollo/store";
 import {styles} from "@/components/dashboard/HomeScreenStyles";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 import {StatusBar} from "expo-status-bar";
-import { LinearGradient } from 'expo-linear-gradient';
+import {LinearGradient} from 'expo-linear-gradient';
 
 export default function DashboardHomeScreen() {
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
@@ -256,7 +256,7 @@ export default function DashboardHomeScreen() {
   ];
 
   const handleSearchPress = () => {
-    // router.push("/search");
+    router.push("/dashboard/search");
     // navigation.navigate(EHomeScreens.SearchScreen, undefined);
   };
 
