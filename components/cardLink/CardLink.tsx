@@ -23,9 +23,10 @@ import { getIconWithColor } from "../design/icons/getIconWithColor";
 import { EIconName } from "../design/icons/_models";
 import { StacksList } from "./StacksList/StacksList";
 import React from "react";
+import Entypo from '@expo/vector-icons/Entypo';
 
-// import BottomDrawer from "../BottomDrawer/BottomDrawer";
-// import EditLinkView from "../BottomDrawer/EditLinkView";
+import BottomDrawer from "../BottomDrawer/BottomDrawer";
+import EditLinkView from "../BottomDrawer/EditLinkView";
 
 function getFileExtension(url: string) {
   // Get the last part of the URL after the last dot
@@ -72,23 +73,22 @@ export const CardLink: React.FC<Props> = ({
   }, []);
   const targetUrl = link.target_url;
 
-  // const onOpenPressed = useCallback(() => {
-  //   const extension = getFileExtension(targetUrl);
-  //   if (fileTypes.includes(extension)) {
-  //     setPdfViewerVisible(targetUrl);
-  //     return;
-  //   }
-  //   if (videoTypes.includes(extension)) {
-  //     setVideoPlayerUri(targetUrl);
-  //     return;
-  //   }
-  //   if (imgTypes.includes(extension)) {
-  //     setImageUri(targetUrl);
-  //     return;
-  //   }
-  //   Linking.openURL(targetUrl);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [targetUrl]);
+  const handleOpenLink = useCallback(() => {
+    const extension = getFileExtension(targetUrl);
+    if (fileTypes.includes(extension)) {
+      setPdfViewerVisible(targetUrl);
+      return;
+    }
+    if (videoTypes.includes(extension)) {
+      setVideoPlayerUri(targetUrl);
+      return;
+    }
+    if (imgTypes.includes(extension)) {
+      setImageUri(targetUrl);
+      return;
+    }
+    Linking.openURL(targetUrl);
+  }, [targetUrl, setPdfViewerVisible, setVideoPlayerUri, setImageUri]);
 
   const handleReaderPress = useCallback((e: any) => {
     e.stopPropagation();
@@ -152,9 +152,38 @@ export const CardLink: React.FC<Props> = ({
     setIsEditModalVisible(true);
   };
 
+  const handleLongPress = useCallback(() => {
+    setIsEditModalVisible(true);
+  }, []);
+
+  const handleCloseEditModal = useCallback(() => {
+    setIsEditModalVisible(false);
+  }, []);
+
+  const handleEditSuccess = useCallback(
+    (message: { title: string; description: string }) => {
+      setIsEditModalVisible(false);
+    },
+    [],
+  );
+
+  // Minimal, clean menu button style
+  const menuButtonStyle = {
+    position: 'absolute' as const,
+    top: 8,
+    right: 8, 
+    padding: 4,
+    zIndex: 10,
+  };
+
   return (
     <Animated.View style={[styles.container, rStyle]}>
-      <TouchableOpacity style={styles.contentContainer} onPress={toggleDetails}>
+      <TouchableOpacity 
+        style={styles.contentContainer} 
+        onPress={handleOpenLink}
+        onLongPress={handleLongPress}
+        delayLongPress={500}
+      >
         <View style={styles.imageContainer}>
           {link.image_url ? (
             <Image
@@ -179,9 +208,18 @@ export const CardLink: React.FC<Props> = ({
               </View>
             ) : (
               <>
-                <Text numberOfLines={2} style={styles.linkTitle}>
-                  {link.title}
-                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text numberOfLines={2} style={[styles.linkTitle, { flex: 1, marginRight: 10 }]}>
+                    {link.title}
+                  </Text>
+                  <TouchableOpacity 
+                    onPress={handleLongPress}
+                    hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                    style={{ alignSelf: 'flex-start', marginTop: 3 }}
+                  >
+                    <Entypo name="dots-three-vertical" size={16} color="#888" />
+                  </TouchableOpacity>
+                </View>
 
                 <View style={styles.urlBox}>
                   {/* <LinkIcon
@@ -307,17 +345,20 @@ export const CardLink: React.FC<Props> = ({
           </TouchableOpacity>
         </View>
       </Modal>} */}
-      {/* <BottomDrawer
-        isVisible={isEditModalVisible}
-        onClose={() => setIsEditModalVisible(false)}
-        customContent={
-          <EditLinkView
-            link={link}
-            onBack={() => setIsEditModalVisible(false)}
-            onClose={() => setIsEditModalVisible(false)}
-          />
-        }
-      /> */}
+      <View>
+        <BottomDrawer
+          isVisible={isEditModalVisible}
+          onClose={handleCloseEditModal}
+          customContent={
+            <EditLinkView
+              link={link}
+              onBack={handleCloseEditModal}
+              onClose={handleCloseEditModal}
+              onSuccess={handleEditSuccess}
+            />
+          }
+        />
+      </View>
     </Animated.View>
   );
 };

@@ -6,23 +6,24 @@ import {
   StyleSheet,
   TextInput,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { useMutation, useQuery } from "@apollo/client";
-import { MUTATION_UPDATE_LINK } from "api/graphql/mutations";
-import { QUERY_COLLECTIONS } from "api/graphql/queries";
-import { CollectionSelector } from "shared/components/CollectionSelector/CollectionSelector";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SELECTED_WORKSPACE_ID_KEY } from "shared/constants/storage";
-import Colors from "shared/design/colors";
-import { Link } from "types/Link";
-import { Tag, Brain, MessageSquare } from "lucide-react-native";
+
+import AntDesign from "@expo/vector-icons/AntDesign";
 import FastImage from "react-native-fast-image";
-import { parseAnnotationSelectedText } from "shared/utils/annotations";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { getFont } from "shared/design/fonts/fonts";
-import { EFontWeight } from "shared/design/fonts/types";
-import { scaleHeight, scaleWidth } from "shared/utils/design/scale";
-import { LinkContext } from "screens/StacksAIScreen/types";
+import { Link } from "@/lib/types/Link";
+import { NavigationProp } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SELECTED_WORKSPACE_ID_KEY } from "@/lib/constants";
+import { QUERY_COLLECTIONS } from "@/lib/api/graphql/queries";
+import { MUTATION_UPDATE_LINK } from "@/lib/api/graphql/mutations";
+import { parseAnnotationSelectedText } from "@/lib/utils";
+import { CollectionSelector } from "../CollectionSelector";
+import { Colors } from "../design/colors";
+import { scaleHeight, scaleWidth } from "../design/scale";
+import { getFont } from "../design/fonts/fonts";
+import { EFontWeight } from "../design/fonts/types";
 
 type Props = {
   onBack: () => void;
@@ -31,19 +32,19 @@ type Props = {
   onSuccess?: (message: { title: string; description: string }) => void;
 };
 
-type RootStackParamList = {
-  StacksAIScreen: {
-    initialContext?: LinkContext[];
-    clearChat?: boolean;
-  };
-};
+// type RootStackParamList = {
+//   StacksAIScreen: {
+//     initialContext?: LinkContext[];
+//     clearChat?: boolean;
+//   };
+// };
 
-type NavigationProps = NavigationProp<RootStackParamList>;
+// type NavigationProps = NavigationProp<RootStackParamList>;
 
 const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
-  const navigation = useNavigation<NavigationProps>();
+  // const navigation = useNavigation<NavigationProps>();
   const [selectedCollections, setSelectedCollections] = useState<string[]>(
-    link.collections?.map(c => c.id) || [],
+    link.collections?.map((c) => c.id) || [],
   );
   const [notes, setNotes] = useState(link.notes || "");
 
@@ -51,10 +52,10 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
   const [repositoryId, setRepositoryId] = useState<string | null>(null);
 
   const hasChanges = useMemo(() => {
-    const originalCollections = link.collections?.map(c => c.id) || [];
+    const originalCollections = link.collections?.map((c) => c.id) || [];
     const collectionsChanged =
       selectedCollections.length !== originalCollections.length ||
-      !selectedCollections.every(id => originalCollections.includes(id));
+      !selectedCollections.every((id) => originalCollections.includes(id));
 
     return notes !== link.notes || collectionsChanged;
   }, [notes, selectedCollections, link]);
@@ -111,15 +112,15 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
   };
 
   const handleCollectionSelect = (collectionId: string) => {
-    setSelectedCollections(prev =>
+    setSelectedCollections((prev) =>
       prev.includes(collectionId)
-        ? prev.filter(id => id !== collectionId)
+        ? prev.filter((id) => id !== collectionId)
         : [...prev, collectionId],
     );
   };
 
   const handleRemoveCollection = (collectionId: string) => {
-    setSelectedCollections(prev => prev.filter(id => id !== collectionId));
+    setSelectedCollections((prev) => prev.filter((id) => id !== collectionId));
   };
 
   const { annotations, comments } = useMemo(() => {
@@ -144,19 +145,19 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
     );
   }, [link]);
 
-  const handleAIChatPress = useCallback(() => {
-    navigation.navigate("StacksAIScreen", {
-      initialContext: [
-        {
-          title: link.title,
-          description: link.description || "",
-          link_content: link.link_content || "",
-        },
-      ],
-      clearChat: true,
-    });
-    onClose();
-  }, [link, navigation, onClose]);
+  // const handleAIChatPress = useCallback(() => {
+  //   navigation.navigate("StacksAIScreen", {
+  //     initialContext: [
+  //       {
+  //         title: link.title,
+  //         description: link.description || "",
+  //         link_content: link.link_content || "",
+  //       },
+  //     ],
+  //     clearChat: true,
+  //   });
+  //   onClose();
+  // }, [link, navigation, onClose]);
 
   return (
     <View style={styles.container}>
@@ -164,7 +165,7 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
 
       <View style={styles.linkPreview}>
         {link.image_url && (
-          <FastImage
+          <Image
             source={{ uri: link.image_url }}
             style={styles.linkImage}
             resizeMode="cover"
@@ -175,10 +176,7 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
             {link.title}
           </Text>
           <View style={styles.urlBox}>
-            <FastImage
-              source={{ uri: link.favicon_url }}
-              style={styles.favicon}
-            />
+            <Image source={{ uri: link.favicon_url }} style={styles.favicon} />
             <Text style={styles.url} numberOfLines={1}>
               {link.target_url}
             </Text>
@@ -213,7 +211,11 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
           <View style={styles.tagsWrapper}>
             {link.tags.map((tag, index) => (
               <View key={index} style={styles.tag}>
-                <Tag size={14} color={Colors.tailwindColors.neutral["500"]} />
+                <AntDesign
+                  name="tags"
+                  size={14}
+                  color={Colors.tailwindColors.neutral["500"]}
+                />
                 <Text style={styles.tagText}>{tag}</Text>
               </View>
             ))}
@@ -269,23 +271,27 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
         </>
       )}
 
+      {/* AI Chat section has been disabled
       <View style={styles.aiSection}>
         <TouchableOpacity
           style={styles.aiButton}
           onPress={handleAIChatPress}
-          activeOpacity={0.8}>
-          <Brain size={16} color={Colors.TextColor.MainColor} />
+          activeOpacity={0.8}
+        >
+          <AntDesign name="rocket1" size={16} color={Colors.TextColor.MainColor} />
           <Text style={styles.aiButtonText}>Chat with AI</Text>
-          <MessageSquare size={14} color={Colors.TextColor.MainColor} />
+          <AntDesign name="message1" size={14} color={Colors.TextColor.MainColor} />
         </TouchableOpacity>
       </View>
+      */}
 
       {hasChanges && (
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[styles.saveButton, loading && styles.saveButtonDisabled]}
             onPress={handleSave}
-            disabled={loading}>
+            disabled={loading}
+          >
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
@@ -295,7 +301,8 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
           <TouchableOpacity
             style={styles.cancelButton}
             onPress={onBack}
-            disabled={loading}>
+            disabled={loading}
+          >
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
