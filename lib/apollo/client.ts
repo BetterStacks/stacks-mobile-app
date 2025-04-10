@@ -1,8 +1,7 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import { onError } from "@apollo/client/link/error";
-import { apolloDevToolsInit } from "react-native-apollo-devtools-client";
-import { setUserToken } from "./store/handlers";
+import {ApolloClient, InMemoryCache} from "@apollo/client";
+import {setContext} from "@apollo/client/link/context";
+import {onError} from "@apollo/client/link/error";
+import {setUserToken} from "./store/handlers";
 import {getValueFromStorage} from "@/utils/storage/getStorage";
 import {createUploadLink} from "apollo-upload-client";
 
@@ -40,8 +39,5 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-if (__DEV__) {
-  apolloDevToolsInit(client);
-}
 
 export default client;

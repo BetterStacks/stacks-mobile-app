@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "stacks-mobile",
+    "name": "Stacks",
     "slug": "stacks-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./assets/helpers/icon.png",
+    "scheme": "betterstacks",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -15,7 +15,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/helpers/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.betterstacks",
@@ -28,23 +28,28 @@
     },
     "plugins": [
       "expo-router",
+      "expo-share-intent",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/helpers/splashScreen.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
       ],
-      ["expo-build-properties", {
-        "ios": {
-          "useFrameworks": "static"
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
-      }],
+      ],
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      "react-native-video"
     ],
     "experiments": {
       "typedRoutes": true
