@@ -8,69 +8,75 @@ import {Colors as colors} from "@/components/design/colors";
 import {useColorScheme} from "@/hooks/useColorScheme";
 
 export default function DashboardLayout() {
-  const colorScheme = useColorScheme();
+	const colorScheme = useColorScheme();
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: colors.TextColor.LignMainColor,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarLabelStyle: {
-          fontSize: 14,
-        },
-        tabBarStyle: {
-          height: 85,
-          paddingTop: 15,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="house.fill" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="collections"
-        options={{
-          title: "Collections",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="folder.fill" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="search"
-        options={{
-          title: "Search",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name={"search.fill"} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="recall"
-        options={{
-          title: "Recall",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="aperture.fill" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="activity"
-        options={{
-          title: "Activity",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="notifications.fill" color={color} />
-          ),
-        }}
-      />
-    </Tabs>
-  );
+	return (
+		<Tabs
+			screenOptions={{
+				tabBarActiveTintColor: colors.TextColor.LignMainColor,
+				headerShown: false,
+				tabBarButton: HapticTab,
+				tabBarBackground: TabBarBackground,
+				tabBarLabelStyle: {
+					fontSize: 14,
+				},
+				tabBarStyle: {
+					height: 85,
+					paddingTop: 15,
+				},
+			}}
+		>
+			<Tabs.Screen
+				name="index"
+				options={{
+					title: "Home",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol name="house.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="collections"
+				options={{
+					title: "Collections",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol name="folder.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="search"
+				options={{
+					title: "Search",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol name={"search.fill"} color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="recall"
+				options={{
+					title: "Recall",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol name="aperture.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="activity"
+				options={{
+					title: "Activity",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol name="notifications.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="collection"
+				options={{
+					href: null
+				}}
+			/>
+		</Tabs>
+	);
 }
