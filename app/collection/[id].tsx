@@ -1,7 +1,6 @@
 import React from 'react';
-import { Stack, router } from 'expo-router';
+import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { ParticularCollectionScreen } from '@/components/collections/ParticularCollectionScreen';
-import { useLocalSearchParams } from 'expo-router';
 import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { getEmojiFromCode } from '@/lib/utils';
@@ -22,7 +21,13 @@ export default function CollectionScreen() {
                   {getEmojiFromCode(emoji)}
                 </Text>
               )}
-              <Text style={styles.title}>{title || 'Collection'}</Text>
+              <Text 
+                style={styles.title}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {title || 'Collection'}
+              </Text>
             </View>
           ),
           headerLeft: () => (
@@ -52,5 +57,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
+    maxWidth: 220,
   },
 }); 

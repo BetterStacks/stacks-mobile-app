@@ -8,6 +8,7 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import Animated, {
   interpolate,
@@ -54,7 +55,7 @@ export default function CollectionsScreen() {
     }, []),
   );
 
-  const { data: workspaceCollections, loading: workspaceLoading } = useQuery(
+  const { data: workspaceCollections, loading: workspaceLoading, refetch: refetchWorkspaceCollections } = useQuery(
     QUERY_COLLECTIONS,
     {
       variables: {
@@ -66,7 +67,7 @@ export default function CollectionsScreen() {
     },
   );
 
-  const { data: allCollections, loading: allLoading } = useQuery(
+  const { data: allCollections, loading: allLoading, refetch: refetchAllCollections } = useQuery(
     QUERY_COLLECTIONS,
     {
       variables: {
@@ -76,6 +77,13 @@ export default function CollectionsScreen() {
       fetchPolicy: "network-only",
       nextFetchPolicy: "cache-first",
     },
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchWorkspaceCollections();
+      refetchAllCollections();
+    }, [refetchWorkspaceCollections, refetchAllCollections])
   );
 
   const otherCollections = useMemo(() => {
@@ -168,14 +176,15 @@ export default function CollectionsScreen() {
   );
 
   const onAddCollectionPress = useCallback(() => {
-    // navigation.navigate(EAfterAuthScreens.CreateCollectionScreen);
+    router.push('/collection/create');
   }, []);
 
   const handleCollectionPress = useCallback(
     (collection: Collection) => {
       router.push({
-        pathname: "/dashboard/collection",
+        pathname: "/collection/[id]",
         params: {
+          id: collection.id,
           collectionId: collection.id,
           title: collection.title,
           emoji: collection.emoji,
@@ -184,6 +193,12 @@ export default function CollectionsScreen() {
     },
     [],
   );
+
+  const localStyles = StyleSheet.create({
+    addButtonWrapper: {
+      padding: 8,
+    }
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -195,11 +210,12 @@ export default function CollectionsScreen() {
           </View>
 
           <View style={styles.addButton}>
-            {/* <SmallButton
+            <TouchableOpacity
               onPress={onAddCollectionPress}
-              iconName={EIconName.WhitePlusIcon}
-              additionalStyles={styles.addButton}
-            /> */}
+              style={[styles.addButton, localStyles.addButtonWrapper]}
+            >
+              <AntDesign name="plus" size={24} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
 
