@@ -19,6 +19,7 @@ import {
 } from "@/lib/apollo/store/handlers";
 import client from "@/lib/apollo/client";
 import { CollectionSelector } from "../CollectionSelector";
+import { Toast } from "toastify-react-native";
 
 // import { FolderPlus, ChevronRight, X } from "lucide-react-native";
 
@@ -75,6 +76,9 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
               : "Your link has been saved",
         };
 
+        // Show toast notification
+        Toast.success("Link saved successfully!");
+
         if (onSuccess) {
           onSuccess(successMessage);
         } else {
@@ -99,10 +103,12 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
         }, 5000);
       } catch (error) {
         console.error("Error handling success:", error);
+        Toast.error("Failed to save link");
       }
     },
     onError: (error) => {
       console.error("Error adding link:", error);
+      Toast.error("Failed to save link");
     },
   });
 

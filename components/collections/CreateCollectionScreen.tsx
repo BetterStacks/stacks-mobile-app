@@ -16,6 +16,7 @@ import client from "@/lib/apollo/client";
 import { Colors } from "@/components/design/colors";
 import { router } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import { Toast } from "toastify-react-native";
 
 export const CreateCollectionScreen = () => {
   const [title, setTitle] = useState("");
@@ -33,6 +34,9 @@ export const CreateCollectionScreen = () => {
         .then((response) => {
           // Get the new collection ID from the response
           const newCollectionId = response.data.add_new_collection;
+          
+          // Show success toast
+          Toast.success(`Collection "${title}" created successfully!`);
 
           // Immediately refetch the collections data
           client.refetchQueries({
@@ -54,6 +58,7 @@ export const CreateCollectionScreen = () => {
         })
         .catch((error) => {
           console.error("Failed to create collection:", error);
+          Toast.error("Failed to create collection");
         });
     }
   }, [title, createNewCollection]);
