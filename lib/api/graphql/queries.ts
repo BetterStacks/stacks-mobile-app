@@ -431,8 +431,11 @@ export const QUERY_USER = gql`
     user {
       id
       email
+      description
       name
       profile_image_url
+      username
+      job_title
       provider
       phone
       companion_share_link

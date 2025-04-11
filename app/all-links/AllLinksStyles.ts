@@ -108,4 +108,10 @@ export const styles = StyleSheet.create({
     color: "#1C4A5A",
     flex: 1,
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: scaleHeight(400), // Ensure enough height for vertical centering
+  },
 });

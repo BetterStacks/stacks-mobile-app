@@ -26,12 +26,15 @@ type Props = {
   onBack: () => void;
   onClose: () => void;
   onSuccess?: (message: { title: string; description: string }) => void;
+  selectedCollectionId?: string;
 };
 
-const AddLinkView = ({ onBack, onClose, onSuccess }: Props) => {
+const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props) => {
   // const navigation = useNavigation<TCollectionsStackNavigationProp>();
   const [url, setUrl] = useState("");
-  const [selectedCollections, setSelectedCollections] = useState<string[]>([]);
+  const [selectedCollections, setSelectedCollections] = useState<string[]>(
+    selectedCollectionId ? [selectedCollectionId] : []
+  );
   const [isCollectionsExpanded, setIsCollectionsExpanded] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const [repositoryId, setRepositoryId] = useState<string | null>(null);

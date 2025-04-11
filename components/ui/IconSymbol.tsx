@@ -14,6 +14,7 @@ const MAPPING = {
 	'search.fill': 'search',
 	'aperture.fill': 'aperture',
 	'notifications.fill': 'notifications',
+	'person.fill': 'person',
 	'chevron.left.forwardslash.chevron.right': 'code',
 	'chevron.right': 'chevron-forward',
 } as Partial<

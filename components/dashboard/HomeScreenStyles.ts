@@ -242,4 +242,9 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
+  loaderStyle: {
+    height: 30,
+    flex: 0,
+    alignSelf: 'center',
+  },
 });

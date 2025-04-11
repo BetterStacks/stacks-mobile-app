@@ -640,7 +640,11 @@ export default function AllLinksScreen() {
           />
         )}
 
-        {isAnyLoading && selectedStack !== "Places" && <Loader />}
+        {isAnyLoading && selectedStack !== "Places" && (
+          <View style={styles.loaderContainer}>
+            <Loader />
+          </View>
+        )}
 
         {/* {selectedStack === "Places" && <PlacesMap />} */}
 

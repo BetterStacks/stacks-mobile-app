@@ -1,147 +1,169 @@
-import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
-import { styles } from "./CreateCollectionScreenStyles";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ActivityIndicator,
+} from "react-native";
 import { useMutation } from "@apollo/client";
-import FastImage from "react-native-fast-image";
-import { ReactNativeFile } from "apollo-upload-client";
 import {
   MUTATION_ADD_NEW_COLLECTION,
-  MUTATION_UPLOAD_COLLECTION_COVER_IMAGE,
 } from "@/lib/api/graphql/mutations";
-import { setIsSuccessModalVisible } from "@/lib/apollo/store/handlers";
 import client from "@/lib/apollo/client";
-import CommonInput from "../CommonInput";
-import { CommonButton } from "../CommonButton/CommonButton";
+import { Colors } from "@/components/design/colors";
+import { router } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
 
 export const CreateCollectionScreen = () => {
-  const [collection, setCollectionName] = useState("");
-  const [collectionImage, setCollectionImage] = useState();
-  const [isImageUploading, setIsImageUploading] = useState(false);
+  const [title, setTitle] = useState("");
   const [createNewCollection, { loading }] = useMutation(
     MUTATION_ADD_NEW_COLLECTION,
   );
-  const [uploadImage, { loading: imageUploading }] = useMutation(
-    MUTATION_UPLOAD_COLLECTION_COVER_IMAGE,
-  );
 
   const handleCreateCollection = useCallback(() => {
-    if (collection) {
+    if (title.trim()) {
       createNewCollection({
         variables: {
-          collection,
+          collection: title,
         },
       })
-        .then((data) => {
-          const newCollectionId = data.data.add_new_collection;
+        .then((response) => {
+          // Get the new collection ID from the response
+          const newCollectionId = response.data.add_new_collection;
 
-          if (collectionImage) {
-            uploadImage({
-              variables: {
-                file: new ReactNativeFile({
-                  uri: collectionImage.path,
-                  name: collectionImage.filename,
-                  type: collectionImage.mime,
-                }),
-                collection: newCollectionId,
-              },
+          // Immediately refetch the collections data
+          client.refetchQueries({
+            include: ["QUERY_COLLECTIONS", "QUERY_COLLECTION_LINKS"],
+          });
+
+          // Navigate to the newly created collection and replace the history
+          setTimeout(() => {
+            router.replace({
+              pathname: "/collection/[id]",
+              params: {
+                id: newCollectionId,
+                collectionId: newCollectionId,
+                title: title,
+                emoji: "📁", // Default emoji, can be updated later
+              }
             });
-          }
+          }, 500);
         })
-        .finally(() => {
-          setIsSuccessModalVisible(true);
-          setTimeout(async () => {
-            await client.refetchQueries({
-              include: [
-                "QUERY_LINKS",
-                "QUERY_STACKS",
-                "QUERY_DOMAIN_LINKS",
-                "QUERY_DOMAIN_LINKS_BY_STACKID",
-                "QUERY_STACK_LINKS",
-                "QUERY_COLLECTION_LINKS",
-                "QUERY_COLLECTIONS",
-              ],
-            });
-          }, 1500);
+        .catch((error) => {
+          console.error("Failed to create collection:", error);
         });
     }
-  }, [collection, collectionImage, createNewCollection, uploadImage]);
+  }, [title, createNewCollection]);
 
-  const onChangeText = useCallback((text: string) => {
-    setCollectionName(text);
-  }, []);
-
-  // const onSelectImage = useCallback(() => {
-  //   setIsImageUploading(true);
-  //   ImagePicker.openPicker({
-  //     width: 300,
-  //     height: 400,
-  //     cropping: true,
-  //     includeBase64: true,
-  //   })
-  //     .then((image) => {
-  //       setCollectionImage(image);
-  //     })
-  //     .finally(() => {
-  //       setIsImageUploading(false);
-  //     });
-  // }, []);
-  //
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <View>
-          <Text style={styles.title}>Name your new collection</Text>
-
-          <CommonInput
-            value={collection}
-            onChangeText={onChangeText}
-            placeholder="Collection name"
-            additionalInputStyles={styles.input}
-          />
-
-          <Text style={[styles.title, styles.secondTitle]}>Image</Text>
-
-          <Text style={styles.text}>
-            You can share the link with your team member or enter your companion
-            connect code.
-          </Text>
-
-          {collectionImage && (
-            <View style={styles.newImageContainer}>
-              <Text style={[styles.text, styles.newImageText]}>
-                Uploaded image:
-              </Text>
-              <FastImage
-                style={styles.newImageStyle}
-                source={{
-                  uri: collectionImage.path,
-                }}
-              />
-            </View>
-          )}
-
-          {/* <TouchableOpacity style={styles.filePicker} onPress={onSelectImage}>
-            {isImageUploading ? (
-              <ActivityIndicator />
-            ) : (
-              <>
-                <Text style={styles.filePickerTitle}>Browse image</Text>
-                <Text style={styles.filePickerSubtitle}>Max 5mb each</Text>
-              </>
-            )}
-          </TouchableOpacity> */}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.mainContent}>
+        <View style={styles.inputWrapper}>
+          <Text style={styles.label}>Collection Name</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={title}
+              onChangeText={setTitle}
+              placeholder="Enter collection name"
+              placeholderTextColor="#999"
+              style={styles.input}
+              autoFocus={true}
+            />
+          </View>
         </View>
 
-        <CommonButton
-          text="Create"
-          disabled={loading || imageUploading ? true : false}
+        <TouchableOpacity
+          style={[styles.createButton, !title.trim() && styles.buttonDisabled]}
           onPress={handleCreateCollection}
-          additionalButtonStyles={[
-            styles.button,
-            (loading || imageUploading) && styles.buttonLoading,
-          ]}
-        />
+          disabled={!title.trim() || loading}
+        >
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator color="white" size="small" />
+              <Text style={styles.buttonText}>Creating...</Text>
+            </View>
+          ) : (
+            <>
+              <AntDesign name="plus" size={20} color="white" />
+              <Text style={styles.buttonText}>Create Collection</Text>
+            </>
+          )}
+        </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.OtherColor.UsualWhite,
+    padding: 20,
+  },
+  mainContent: {
+    alignItems: 'center',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: Colors.TextColor.MainColor,
+    marginBottom: 40,
+    marginTop: 20,
+    alignSelf: 'flex-start',
+  },
+  inputWrapper: {
+    width: '100%',
+    marginBottom: 30,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.TextColor.MainColor,
+    marginBottom: 10,
+  },
+  inputContainer: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  input: {
+    padding: 16,
+    fontSize: 16,
+    color: Colors.TextColor.MainColor,
+    height: 56,
+  },
+  createButton: {
+    backgroundColor: Colors.TextColor.LignMainColor,
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 20,
+    height: 56,
+  },
+  buttonDisabled: {
+    backgroundColor: '#BBBBBB',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

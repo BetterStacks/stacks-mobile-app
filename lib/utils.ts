@@ -32,3 +32,13 @@ export const selectStackName = (stack: string) => {
       return "link";
   }
 };
+
+export const parseAnnotationSelectedText = (selectedText: string) => {
+  try {
+    const decodedSelectedText = decodeURIComponent(selectedText);
+    const selectedTextObject = JSON.parse(decodedSelectedText);
+    return selectedTextObject.string;
+  } catch (error) {
+    return selectedText;
+  }
+};
