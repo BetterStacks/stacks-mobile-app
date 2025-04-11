@@ -24,6 +24,7 @@ import {styles} from "@/components/dashboard/HomeScreenStyles";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 import {StatusBar} from "expo-status-bar";
 import {LinearGradient} from 'expo-linear-gradient';
+import { Toast } from "toastify-react-native";
 
 export default function DashboardHomeScreen() {
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
@@ -144,25 +145,33 @@ export default function DashboardHomeScreen() {
   };
 
   const handleNotesPress = () => {
-    // router.push("/notes");
-    // navigation.navigate(EHomeScreens.AllLinksScreen, {
-    //   withNotes: true,
-    //   title: "Notes",
-    // });
+    router.push({
+      pathname: "/all-links",
+      params: {
+        withNotes: "true",
+        title: "Notes"
+      }
+    });
   };
 
   const handleHighlightsPress = () => {
-    // navigation.navigate(EHomeScreens.AllLinksScreen, {
-    //   withAnnotations: true,
-    //   title: "Highlights",
-    // });
+    router.push({
+      pathname: "/all-links",
+      params: {
+        withAnnotations: "true",
+        title: "Highlights"
+      }
+    });
   };
 
   const handleCommentsPress = () => {
-    // navigation.navigate(EHomeScreens.AllLinksScreen, {
-    //   withAnnotations: true,
-    //   title: "Comments",
-    // });
+    router.push({
+      pathname: "/all-links",
+      params: {
+        withAnnotations: "true",
+        title: "Comments"
+      }
+    });
   };
 
   // Define quick actions data
@@ -197,6 +206,9 @@ export default function DashboardHomeScreen() {
       emoji: "⏰",
       title: "Reminder",
       count: 1,
+      onPress: () => {
+        Toast.success("Reminders coming soon!");
+      },
     },
     {
       emoji: "💬",
@@ -208,6 +220,7 @@ export default function DashboardHomeScreen() {
 
   const handleLinksPress = () => {
     // navigation.navigate(EHomeScreens.AllLinksScreen, {});
+    router.push("/all-links");
   };
 
   const handleMediaPress = () => {
@@ -215,6 +228,13 @@ export default function DashboardHomeScreen() {
     //   title: "Media",
     //   selectedFilter: "media",
     // });
+    router.push({
+      pathname: "/all-links",
+      params: {
+        title: "Media",
+        selectedFilter: "media"
+      }
+    });
   };
 
   const handlePlacesPress = () => {
@@ -222,6 +242,13 @@ export default function DashboardHomeScreen() {
     //   title: "Places",
     //   selectedFilter: "places",
     // });
+    router.push({
+      pathname: "/all-links",
+      params: {
+        title: "Places",
+        selectedFilter: "places"
+      }
+    });
   };
 
   const categories = [
@@ -235,11 +262,11 @@ export default function DashboardHomeScreen() {
       title: "Media",
       onPress: handleMediaPress,
     },
-    {
-      emoji: "📍",
-      title: "Places",
-      onPress: handlePlacesPress,
-    },
+    // {
+    //   emoji: "📍",
+    //   title: "Places",
+    //   onPress: handlePlacesPress,
+    // },
     {
       emoji: "📝",
       title: "Notes",

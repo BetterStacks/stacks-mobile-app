@@ -66,11 +66,11 @@ import messaging from "@react-native-firebase/messaging";
 import { useLocalSearchParams, Stack } from "expo-router";
 
 export default function AllLinksScreen() {
-  // Get params from Expo Router instead of React Navigation
   const params = useLocalSearchParams();
   const withAnnotations = params.withAnnotations === "true";
   const withNotes = params.withNotes === "true";
   const selectedFilter = params.selectedFilter as string | undefined;
+  const screenTitle = typeof params.title === 'string' ? params.title : undefined;
 
   const defaultStack = "All links";
   const defaultDomain = "All";
@@ -285,7 +285,6 @@ export default function AllLinksScreen() {
             }),
           )
         ) {
-          console.log("YESESESE");
 
           return prev;
         }
@@ -551,7 +550,7 @@ export default function AllLinksScreen() {
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <Stack.Screen
         options={{
-          title: selectedStack || "All Links",
+          title: screenTitle || selectedStack || "All Links",
           headerTitleStyle: {
             fontWeight: "bold"
           }
