@@ -1,33 +1,18 @@
-import { styles } from "@/components/collections/CollectionsScreenStyle";
-import { EIconName } from "@/components/design/icons/_models";
-import { SmallButton } from "@/components/SmallButton/SmallButton";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {styles} from "@/components/collections/CollectionsScreenStyle";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View,} from "react-native";
+import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
+import {SafeAreaView} from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SELECTED_WORKSPACE_ID_KEY } from "@/lib/constants";
-import { useQuery } from "@apollo/client";
-import { QUERY_COLLECTIONS } from "@/lib/api/graphql/queries";
-import { getEmojiFromCode } from "@/lib/utils";
-import { Collection } from "@/lib/types/Collection";
-import { router } from "expo-router";
-import { Colors } from "@/components/design/colors";
+import {SELECTED_WORKSPACE_ID_KEY} from "@/lib/constants";
+import {useQuery} from "@apollo/client";
+import {QUERY_COLLECTIONS} from "@/lib/api/graphql/queries";
+import {getEmojiFromCode} from "@/lib/utils";
+import {Collection} from "@/lib/types/Collection";
+import {router} from "expo-router";
+import {Colors} from "@/components/design/colors";
 
 interface Section {
   title: string;
@@ -185,7 +170,6 @@ export default function CollectionsScreen() {
   const handleCollectionPress = useCallback(
     (collection: Collection) => {
       router.push({
-        pathname: "/collection/[id]",
         pathname: "/dashboard/collection",
         params: {
           id: collection.id,
