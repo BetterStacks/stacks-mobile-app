@@ -256,8 +256,7 @@ export default function DashboardHomeScreen() {
   ];
 
   const handleSearchPress = () => {
-    // router.push("/search");
-    // navigation.navigate(EHomeScreens.SearchScreen, undefined);
+    router.push("/dashboard/search");
   };
 
   const sharedLinkText = useReactiveVar(sharedLinkTextVar);
