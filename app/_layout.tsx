@@ -3,7 +3,7 @@ import {useFonts} from 'expo-font';
 import {Stack} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import 'react-native-reanimated';
 
 import {useColorScheme} from '@/hooks/useColorScheme';
@@ -11,6 +11,8 @@ import {ApolloProvider} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {useShareIntent} from "expo-share-intent";
 import ToastManager from "toastify-react-native";
+import {AddNewLinkModal} from "@/components/AddNewLinkModal";
+import {View} from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -21,6 +23,8 @@ export default function RootLayout() {
 	const [loaded] = useFonts({
 		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
 	});
+	const [shareModalVisible, setShareModalVisible] = useState(false);
+	const [link, setLink] = useState('');
 
 	useEffect(() => {
 		if (loaded) {
@@ -28,12 +32,18 @@ export default function RootLayout() {
 		}
 	}, [loaded]);
 
+	useEffect(() => {
+		console.log('hasShareIntent', hasShareIntent);
+		console.log('shareIntent', shareIntent);
+		
+		if (hasShareIntent && shareIntent?.type === 'weburl') {
+			setLink(shareIntent.webUrl!);
+			setShareModalVisible(true);
+		}
+	}, [hasShareIntent, shareIntent]);
+
 	if (!loaded) {
 		return null;
-	}
-
-	if (hasShareIntent) {
-		console.log('Received share intent:', shareIntent);
 	}
 
 	return (
@@ -53,6 +63,15 @@ export default function RootLayout() {
 					<Stack.Screen name="+not-found" />
 				</Stack>
 				<StatusBar style="auto" />
+
+				<View>
+					<AddNewLinkModal
+						isNewLinkModalShown={shareModalVisible}
+						setIsNewLinkModalShown={setShareModalVisible}
+						link={link}
+						setLink={setLink}
+					/>
+				</View>
 				<ToastManager />
 			</ApolloProvider>
 		</ThemeProvider>
