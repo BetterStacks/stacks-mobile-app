@@ -36,9 +36,6 @@ const createCustomUploadLink = () => {
     if (hasUpload) {
       return new Observable(observer => {
         try {
-          console.log("Upload operation:", operation.operationName);
-          console.log("Original variables:", JSON.stringify(variables, null, 2));
-          
           // Create FormData instance
           const formData = new FormData();
           
@@ -57,7 +54,6 @@ const createCustomUploadLink = () => {
             variables: variablesCopy
           };
           
-          console.log("Operations:", JSON.stringify(operations, null, 2));
           formData.append('operations', JSON.stringify(operations));
           
           // Create the map for files
@@ -67,13 +63,10 @@ const createCustomUploadLink = () => {
               fileMap[i.toString()] = [`variables.files.${i}`];
             });
             
-            console.log("Map:", JSON.stringify(fileMap, null, 2));
             formData.append('map', JSON.stringify(fileMap));
             
             // Append each file with the correct format for React Native
-            files.forEach((file: FileObject, i: number) => {
-              console.log(`Adding file ${i} to FormData:`, file.name, file.type);
-              
+            files.forEach((file: FileObject, i: number) => {              
               // Create a file object that React Native fetch API can process correctly
               const fileObject = {
                 uri: file.uri,
@@ -90,8 +83,6 @@ const createCustomUploadLink = () => {
           // Get the auth token from context headers
           const token = context.headers?.["X-Authorization"] || "";
           
-          console.log("Sending upload request to server with token:", token ? "token exists" : "no token");
-          
           // Send the request with the proper headers
           fetch("https://api.betterstacks.com/graphql", {
             method: 'POST',
@@ -102,12 +93,8 @@ const createCustomUploadLink = () => {
             body: formData,
           })
             .then(response => {
-              console.log("Upload response status:", response.status);
-              console.log("Response headers:", JSON.stringify(Object.fromEntries([...response.headers.entries()]), null, 2));
-              
               // Get the response text for debugging, since we might have a 500 error
               return response.text().then(text => {
-                console.log("Raw response:", text);
                 try {
                   // Try to parse it as JSON if possible
                   return { ok: response.ok, status: response.status, data: JSON.parse(text) };
@@ -119,14 +106,11 @@ const createCustomUploadLink = () => {
             })
             .then(result => {
               if (!result.ok) {
-                throw new Error(`Network response was not ok: ${result.status}, ${result.text || JSON.stringify(result.data)}`);
+                throw new Error(`Network response was not ok: ${result.status}`);
               }
               
               // If we have data, process it
               if (result.data) {
-                if (result.data.errors) {
-                  console.error("GraphQL Errors:", JSON.stringify(result.data.errors, null, 2));
-                }
                 observer.next(result.data);
                 observer.complete();
               } else {
@@ -134,11 +118,9 @@ const createCustomUploadLink = () => {
               }
             })
             .catch(error => {
-              console.error("Upload error:", error);
               observer.error(error);
             });
         } catch (err) {
-          console.error("Error in custom upload link:", err);
           observer.error(err);
         }
       });

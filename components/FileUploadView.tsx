@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { useMutation } from "@apollo/client";
 import * as DocumentPicker from "expo-document-picker";
@@ -12,11 +13,13 @@ import { Upload, File, X } from "lucide-react-native";
 import * as FileSystem from "expo-file-system";
 import { MUTATION_UPLOAD_USER_FILES } from "@/lib/api/graphql/mutations";
 import client from "@/lib/apollo/client";
+import { Toast } from "toastify-react-native";
 
 type FileObject = {
   uri: string;
   name: string;
   type: string;
+  size?: number;
 };
 
 type Props = {
@@ -25,13 +28,31 @@ type Props = {
   onSuccess?: (message: { title: string; description: string }) => void;
 };
 
+const FILE_SIZE_LIMIT = 20 * 1024 * 1024; // 20MB limit
+
 const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
   const [files, setFiles] = useState<FileObject[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isCompressing, setIsCompressing] = useState<boolean>(false);
+
+  // Clean up any temporary files when component unmounts
+  useEffect(() => {
+    return () => {
+      // Reset any state
+      setUploadProgress(0);
+      setIsCompressing(false);
+    };
+  }, []);
 
   const [uploadFiles, { loading, error }] = useMutation(MUTATION_UPLOAD_USER_FILES, {
     onCompleted: (data) => {
-      console.log("Upload completed successfully:", data);
+      // First close the modal
       onClose();
+      
+      // Show success toast directly
+      Toast.success(`${files.length} file${files.length !== 1 ? 's' : ''} uploaded successfully`);
+      
+      // Also notify parent component if needed
       if (onSuccess) {
         onSuccess({
           title: "Files uploaded successfully!",
@@ -41,6 +62,7 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
         });
       }
 
+      // Refetch queries to update the UI
       setTimeout(() => {
         client.refetchQueries({
           include: [
@@ -51,11 +73,13 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
             "QUERY_STACK_LINKS",
           ],
         });
-      }, 1000);
+      }, 500);
     },
     onError: (error) => {
-      console.error("Error uploading files:", error);
-      console.error("Error details:", error.message, error.graphQLErrors, error.networkError);
+      // Show failure toast directly
+      Toast.error("Failed to upload files");
+      
+      // Also notify parent component if needed
       if (onSuccess) {
         onSuccess({
           title: "Upload Failed",
@@ -67,6 +91,39 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
       hasUpload: true, // Flag for Apollo client to handle file uploads
     },
   });
+
+  // Optimize file size if needed
+  const optimizeFile = async (file: FileObject): Promise<FileObject> => {
+    // If it's not an image, or on iOS (which generally handles this better), or small enough, return as is
+    if (!file.type.startsWith('image/') || Platform.OS === 'ios' || (file.size && file.size < FILE_SIZE_LIMIT)) {
+      return file;
+    }
+
+    try {
+      setIsCompressing(true);
+      // Get a temp file path
+      const tempUri = `${FileSystem.cacheDirectory}${Date.now()}_compressed.jpg`;
+      
+      // Compress the image
+      const compressResult = await FileSystem.downloadAsync(
+        file.uri,
+        tempUri
+      );
+
+      setIsCompressing(false);
+      
+      // Return the compressed file
+      return {
+        uri: compressResult.uri,
+        name: file.name,
+        type: 'image/jpeg',
+      };
+    } catch (error) {
+      setIsCompressing(false);
+      // If compression fails, return original file
+      return file;
+    }
+  };
 
   const handleFilePick = async () => {
     try {
@@ -80,18 +137,28 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
         return;
       }
 
+      // Get file details including size
       const filesArr = result.assets.map((asset) => {
-        console.log("Selected file:", asset.name, asset.uri, asset.mimeType);
         return {
           uri: asset.uri,
           name: asset.name || "file",
           type: asset.mimeType || "application/octet-stream",
+          size: asset.size || 0,
         };
       });
 
-      setFiles(filesArr);
+      // Check for oversized files
+      const oversizedFiles = filesArr.filter(file => file.size && file.size > 50 * 1024 * 1024);
+      if (oversizedFiles.length > 0) {
+        Toast.warn("Some files exceed the 50MB limit and were removed");
+        // Filter out oversized files
+        const validFiles = filesArr.filter(file => !file.size || file.size <= 50 * 1024 * 1024);
+        setFiles(validFiles);
+      } else {
+        setFiles(filesArr);
+      }
     } catch (err) {
-      console.error("Error picking files:", err);
+      // Silent error handling for document picker cancellations
     }
   };
 
@@ -103,17 +170,47 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
     if (files.length === 0) return;
 
     try {
-      console.log("Starting upload with files:", files);
+      setUploadProgress(0);
       
-      // Send file objects directly 
+      // Optimize files if needed
+      setIsCompressing(true);
+      const optimizedFiles = await Promise.all(
+        files.map(async (file, index) => {
+          const optimized = await optimizeFile(file);
+          // Update progress as we process each file
+          setUploadProgress(Math.floor(((index + 1) / files.length) * 50)); // First 50% for optimization
+          return optimized;
+        })
+      );
+      setIsCompressing(false);
+      
+      // Set progress to 50% before starting the actual upload
+      setUploadProgress(50);
+      
+      // Start upload with optimized files
       await uploadFiles({
         variables: {
-          files: files,
+          files: optimizedFiles,
         },
       });
+      
+      // Upload complete
+      setUploadProgress(100);
     } catch (error) {
-      console.error("Error in handleUpload:", error);
+      // Error is handled in the onError callback of the mutation
+      setUploadProgress(0);
     }
+  };
+
+  // Show appropriate loading status text
+  const getStatusText = () => {
+    if (isCompressing) {
+      return "Preparing files...";
+    }
+    if (loading) {
+      return "Uploading...";
+    }
+    return null;
   };
 
   return (
@@ -123,7 +220,7 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
       <TouchableOpacity
         style={styles.uploadArea}
         onPress={handleFilePick}
-        disabled={loading}
+        disabled={loading || isCompressing}
       >
         <View style={styles.uploadIconContainer}>
           <Upload size={24} color="#1C4A5A" />
@@ -149,6 +246,7 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
                 onPress={() => removeFile(index)}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 style={styles.removeButton}
+                disabled={loading || isCompressing}
               >
                 <X size={16} color="#666666" />
               </TouchableOpacity>
@@ -157,16 +255,30 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
         </View>
       )}
 
+      {(loading || isCompressing) && (
+        <View style={styles.progressContainer}>
+          <View style={styles.progressBarContainer}>
+            <View 
+              style={[
+                styles.progressBar, 
+                { width: `${uploadProgress}%` }
+              ]} 
+            />
+          </View>
+          <Text style={styles.statusText}>{getStatusText()}</Text>
+        </View>
+      )}
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[
             styles.uploadButton,
-            (!files.length || loading) && styles.uploadButtonDisabled,
+            (!files.length || loading || isCompressing) && styles.uploadButtonDisabled,
           ]}
           onPress={handleUpload}
-          disabled={!files.length || loading}
+          disabled={!files.length || loading || isCompressing}
         >
-          {loading ? (
+          {loading || isCompressing ? (
             <ActivityIndicator color="white" />
           ) : (
             <Text style={styles.uploadButtonText}>Save</Text>
@@ -176,7 +288,7 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
         <TouchableOpacity
           style={styles.cancelButton}
           onPress={onBack}
-          disabled={loading}
+          disabled={loading || isCompressing}
         >
           <Text style={styles.cancelButtonText}>Cancel</Text>
         </TouchableOpacity>
@@ -285,6 +397,26 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: "#1C4A5A",
     fontSize: 16,
+  },
+  progressContainer: {
+    marginBottom: 16,
+  },
+  progressBarContainer: {
+    height: 8,
+    backgroundColor: "#E5E5E5",
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: "#1C4A5A",
+    borderRadius: 4,
+  },
+  statusText: {
+    color: "#666666",
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 

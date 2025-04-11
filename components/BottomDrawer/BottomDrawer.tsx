@@ -82,11 +82,11 @@ const BottomDrawer = ({
       title: "New Collection",
       onPress: handleNewCollection,
     },
-    // {
-    //   icon: <File size={24} color="#000000" />,
-    //   title: "New File",
-    //   onPress: handleNewFile,
-    // },
+    {
+      icon: <File size={24} color="#000000" />,
+      title: "New File",
+      onPress: handleNewFile,
+    },
   ];
 
   return (
