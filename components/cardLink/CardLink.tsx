@@ -171,15 +171,15 @@ export const CardLink: React.FC<Props> = ({
   const menuButtonStyle = {
     position: 'absolute' as const,
     top: 8,
-    right: 8, 
+    right: 8,
     padding: 4,
     zIndex: 10,
   };
 
   return (
     <Animated.View style={[styles.container, rStyle]}>
-      <TouchableOpacity 
-        style={styles.contentContainer} 
+      <TouchableOpacity
+        style={styles.contentContainer}
         onPress={handleOpenLink}
         onLongPress={handleLongPress}
         delayLongPress={500}
@@ -212,7 +212,7 @@ export const CardLink: React.FC<Props> = ({
                   <Text numberOfLines={2} style={[styles.linkTitle, { flex: 1, marginRight: 10 }]}>
                     {link.title}
                   </Text>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     onPress={handleLongPress}
                     hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                     style={{ alignSelf: 'flex-start', marginTop: 3 }}

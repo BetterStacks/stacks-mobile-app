@@ -179,12 +179,14 @@ export default function CollectionsScreen() {
 
   const onAddCollectionPress = useCallback(() => {
     router.push('/collection/create');
+    // navigation.navigate(EAfterAuthScreens.CreateCollectionScreen);
   }, []);
 
   const handleCollectionPress = useCallback(
     (collection: Collection) => {
       router.push({
         pathname: "/collection/[id]",
+        pathname: "/dashboard/collection",
         params: {
           id: collection.id,
           collectionId: collection.id,

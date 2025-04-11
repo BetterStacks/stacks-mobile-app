@@ -8,8 +8,8 @@ type Props = {
   size?: "small" | "large";
 };
 
-export const Loader: React.FC<Props> = ({ 
-  loaderStyles, 
+export const Loader: React.FC<Props> = ({
+  loaderStyles,
   color = Colors.TextColor.LignMainColor,
   size = "large"
 }) => (

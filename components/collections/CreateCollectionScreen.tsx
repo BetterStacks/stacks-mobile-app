@@ -33,12 +33,12 @@ export const CreateCollectionScreen = () => {
         .then((response) => {
           // Get the new collection ID from the response
           const newCollectionId = response.data.add_new_collection;
-          
+
           // Immediately refetch the collections data
           client.refetchQueries({
             include: ["QUERY_COLLECTIONS", "QUERY_COLLECTION_LINKS"],
           });
-          
+
           // Navigate to the newly created collection and replace the history
           setTimeout(() => {
             router.replace({
@@ -74,8 +74,8 @@ export const CreateCollectionScreen = () => {
             />
           </View>
         </View>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={[styles.createButton, !title.trim() && styles.buttonDisabled]}
           onPress={handleCreateCollection}
           disabled={!title.trim() || loading}

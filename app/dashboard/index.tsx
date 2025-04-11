@@ -281,95 +281,18 @@ export default function DashboardHomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-       {isFocused && <StatusBar backgroundColor={colors.TextColor.LignMainColor} style="light" />}
-      <View style={styles.container}>
-        <Animated.ScrollView
-          onScroll={scrollHandler}
-          scrollEventThrottle={16}
-          style={styles.scrollView}
-        >
-          {/* Header */}
-          <View style={styles.header}>
-                  {/*<Image*/}
-            {/*  source={require("@/assets/png/HeaderTop.png")}*/}
-            {/*  style={styles.headerBackground}*/}
-            {/*  // resizeMode={Image.resizeMode.contain}*/}
-            {/*/>*/}
-            <LinearGradient
-              colors={[colors.TextColor.LignMainColor, '#074855']} // Main color to a darker shade
-              style={styles.headerGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-            />
-
-            <View style={styles.workspaceHeader}>
-              <WorkspaceSelector
-                selectedWorkspace={selectedWorkspace}
-                onSelect={handleWorkspaceChange}
-              />
-              <UserAvatar />
-            </View>
-
-            {/* Search Bar */}
-            <View style={styles.searchContainer}>
-              <TouchableOpacity
-                style={styles.searchBar}
-                onPress={handleSearchPress}
-              >
-                <View style={styles.searchIconContainer}>
-                  <AntDesign name="search1" size={20} color="#FFFFFF" />
-                </View>
-                <Text style={styles.searchPlaceholder}>
-                  Search links, notes, highlights...
-                </Text>
-              </TouchableOpacity>
-              {/* <TouchableOpacity style={styles.filterButton}>
-                <View style={styles.filterIconContainer}>
-                  <SlidersHorizontal size={20} color="#FFFFFF" />
-                </View>
-              </TouchableOpacity> */}
-            </View>
-          </View>
-
-          {/* Quick Actions Section */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Quick Actions</Text>
-            <View style={styles.quickActionsGrid}>
-              {quickActions.map((action, index) => (
-                <QuickActionCard
-                  key={index}
-                  emoji={action.emoji}
-                  title={action.title}
-                  count={action.count}
-                  onPress={action.onPress}
-                />
-              ))}
-            </View>
-          </View>
-
-          {/* Categories Section */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Categories</Text>
-            <View style={styles.categoriesContainer}>
-              {categories.map((category, index) => (
-                <CategoryItem
-                  key={index}
-                  emoji={category.emoji}
-                  title={category.title}
-                  isLast={index === categories.length - 1}
-                  onPress={category.onPress}
-                />
-              ))}
-            </View>
-          </View>
-        </Animated.ScrollView>
-
-        <Animated.View style={[styles.fab, fabStyle]}>
-          <TouchableOpacity style={styles.fabButton} onPress={handleFABPress}>
-            <AntDesign name="plus" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-        </Animated.View>
+    <View style={styles.container}>
+      <Text>Dashboard</Text>
+      <Text style={styles.subtitle}>Welcome to your dashboard!</Text>
+      
+      <View style={styles.card}>
+        <Text>Recent Activity</Text>
+        <Text>Your recent activity will appear here.</Text>
+      </View>
+      
+      <View style={styles.card}>
+        <Text>Quick Actions</Text>
+        <Text>Quick action buttons will appear here.</Text>
       </View>
       <View>
         <BottomDrawer

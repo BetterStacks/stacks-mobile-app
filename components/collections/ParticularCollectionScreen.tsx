@@ -88,8 +88,8 @@ export const ParticularCollectionScreen = () => {
             </View>
           )}
 
-          <BottomDrawer 
-            isVisible={isBottomDrawerVisible} 
+          <BottomDrawer
+            isVisible={isBottomDrawerVisible}
             onClose={handleCloseBottomDrawer}
             selectedCollectionId={collectionId}
           />
