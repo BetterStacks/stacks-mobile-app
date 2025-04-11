@@ -15,7 +15,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/png/stacks-logo-light.png",
+        "foregroundImage": "./assets/png/stacks-android-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.betterstacks",
