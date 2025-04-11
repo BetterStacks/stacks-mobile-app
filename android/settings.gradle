@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'stacks-mobile'
+rootProject.name = 'Stacks'
 
 dependencyResolutionManagement {
   versionCatalogs {
