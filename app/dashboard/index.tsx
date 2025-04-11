@@ -177,7 +177,9 @@ export default function DashboardHomeScreen() {
       emoji: "📌",
       title: "Quick Links",
       count: quickLinksData?.quick_links?.length || 0,
-      onPress: () => {},
+      onPress: () => {
+        router.push("/quick-links");
+      },
     },
     {
       emoji: "📑",
