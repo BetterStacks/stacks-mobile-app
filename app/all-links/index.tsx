@@ -549,13 +549,13 @@ export default function AllLinksScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <Stack.Screen 
+      <Stack.Screen
         options={{
           title: selectedStack || "All Links",
           headerTitleStyle: {
             fontWeight: "bold"
           }
-        }} 
+        }}
       />
       <Animated.View style={[styles.container, animViewStyle]}>
         <View style={styles.headerContainer}>

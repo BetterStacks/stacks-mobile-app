@@ -10,6 +10,7 @@ import {useColorScheme} from '@/hooks/useColorScheme';
 import {ApolloProvider} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {useShareIntent} from "expo-share-intent";
+import ToastManager from "toastify-react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -52,6 +53,7 @@ export default function RootLayout() {
 					<Stack.Screen name="+not-found" />
 				</Stack>
 				<StatusBar style="auto" />
+				<ToastManager />
 			</ApolloProvider>
 		</ThemeProvider>
 	);
