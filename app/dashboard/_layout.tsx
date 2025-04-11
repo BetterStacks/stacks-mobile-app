@@ -63,11 +63,11 @@ export default function DashboardLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="activity"
+				name="profile"
 				options={{
-					title: "Activity",
+					title: "Profile",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol name="notifications.fill" color={color} />
+						<IconSymbol name="person.fill" color={color} />
 					),
 				}}
 			/>

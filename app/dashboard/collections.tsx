@@ -1,30 +1,18 @@
-import { styles } from "@/components/collections/CollectionsScreenStyle";
-import { EIconName } from "@/components/design/icons/_models";
-import { SmallButton } from "@/components/SmallButton/SmallButton";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {styles} from "@/components/collections/CollectionsScreenStyle";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View,} from "react-native";
+import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
+import {SafeAreaView} from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SELECTED_WORKSPACE_ID_KEY } from "@/lib/constants";
-import { useQuery } from "@apollo/client";
-import { QUERY_COLLECTIONS } from "@/lib/api/graphql/queries";
-import { getEmojiFromCode } from "@/lib/utils";
-import { Collection } from "@/lib/types/Collection";
-import { router } from "expo-router";
+import {SELECTED_WORKSPACE_ID_KEY} from "@/lib/constants";
+import {useQuery} from "@apollo/client";
+import {QUERY_COLLECTIONS} from "@/lib/api/graphql/queries";
+import {getEmojiFromCode} from "@/lib/utils";
+import {Collection} from "@/lib/types/Collection";
+import {router} from "expo-router";
+import {Colors} from "@/components/design/colors";
 
 interface Section {
   title: string;
@@ -54,7 +42,7 @@ export default function CollectionsScreen() {
     }, []),
   );
 
-  const { data: workspaceCollections, loading: workspaceLoading } = useQuery(
+  const { data: workspaceCollections, loading: workspaceLoading, refetch: refetchWorkspaceCollections } = useQuery(
     QUERY_COLLECTIONS,
     {
       variables: {
@@ -66,7 +54,7 @@ export default function CollectionsScreen() {
     },
   );
 
-  const { data: allCollections, loading: allLoading } = useQuery(
+  const { data: allCollections, loading: allLoading, refetch: refetchAllCollections } = useQuery(
     QUERY_COLLECTIONS,
     {
       variables: {
@@ -76,6 +64,13 @@ export default function CollectionsScreen() {
       fetchPolicy: "network-only",
       nextFetchPolicy: "cache-first",
     },
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchWorkspaceCollections();
+      refetchAllCollections();
+    }, [refetchWorkspaceCollections, refetchAllCollections])
   );
 
   const otherCollections = useMemo(() => {
@@ -168,6 +163,7 @@ export default function CollectionsScreen() {
   );
 
   const onAddCollectionPress = useCallback(() => {
+    router.push('/collection/create');
     // navigation.navigate(EAfterAuthScreens.CreateCollectionScreen);
   }, []);
 
@@ -176,6 +172,7 @@ export default function CollectionsScreen() {
       router.push({
         pathname: "/dashboard/collection",
         params: {
+          id: collection.id,
           collectionId: collection.id,
           title: collection.title,
           emoji: collection.emoji,
@@ -184,6 +181,18 @@ export default function CollectionsScreen() {
     },
     [],
   );
+
+  const localStyles = StyleSheet.create({
+    addButtonWrapper: {
+      padding: 8,
+    },
+    loaderContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 50,
+    }
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -195,11 +204,12 @@ export default function CollectionsScreen() {
           </View>
 
           <View style={styles.addButton}>
-            {/* <SmallButton
+            <TouchableOpacity
               onPress={onAddCollectionPress}
-              iconName={EIconName.WhitePlusIcon}
-              additionalStyles={styles.addButton}
-            /> */}
+              style={[styles.addButton, localStyles.addButtonWrapper]}
+            >
+              <AntDesign name="plus" size={24} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -222,9 +232,8 @@ export default function CollectionsScreen() {
         </View>
 
         {workspaceLoading || allLoading ? (
-          // <Loader />
-          <View>
-            <Text>Loading...</Text>
+          <View style={localStyles.loaderContainer}>
+            <ActivityIndicator size="large" color={Colors.TextColor.LignMainColor} />
           </View>
         ) : (
           <FlatList<Section>

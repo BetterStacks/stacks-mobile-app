@@ -70,35 +70,35 @@ export default function DashboardHomeScreen() {
           setSelectedWorkspace(stored);
           if (stored !== "All Workspaces") {
             const selectedRepo = repositoriesData?.user?.repositories.find(
-              (repo: any) => repo.name === stored,
+                (repo: any) => repo.name === stored,
             );
             if (selectedRepo) {
               await AsyncStorage.setItem(
-                SELECTED_WORKSPACE_ID_KEY,
-                selectedRepo.id,
+                  SELECTED_WORKSPACE_ID_KEY,
+                  selectedRepo.id,
               );
             }
           }
         } else if (repositoriesData?.user?.repositories) {
           const personalRepo = repositoriesData.user.repositories.find(
-            (repo: any) => repo.repository_type === "personal",
+              (repo: any) => repo.repository_type === "personal",
           );
 
           if (personalRepo) {
             setSelectedWorkspace(personalRepo.name);
             await AsyncStorage.setItem(
-              SELECTED_WORKSPACE_KEY,
-              personalRepo.name,
+                SELECTED_WORKSPACE_KEY,
+                personalRepo.name,
             );
             await AsyncStorage.setItem(
-              SELECTED_WORKSPACE_ID_KEY,
-              personalRepo.id,
+                SELECTED_WORKSPACE_ID_KEY,
+                personalRepo.id,
             );
           } else {
             setSelectedWorkspace("All Workspaces");
             await AsyncStorage.setItem(
-              SELECTED_WORKSPACE_KEY,
-              "All Workspaces",
+                SELECTED_WORKSPACE_KEY,
+                "All Workspaces",
             );
             await AsyncStorage.setItem(SELECTED_WORKSPACE_ID_KEY, "");
           }
@@ -119,7 +119,7 @@ export default function DashboardHomeScreen() {
         await AsyncStorage.setItem(SELECTED_WORKSPACE_ID_KEY, "");
       } else {
         const selectedRepo = repositoriesData?.user?.repositories.find(
-          (repo: any) => repo.name === workspace,
+            (repo: any) => repo.name === workspace,
         );
         if (selectedRepo) {
           const repoId = selectedRepo.id.toString();
@@ -177,7 +177,9 @@ export default function DashboardHomeScreen() {
       emoji: "📌",
       title: "Quick Links",
       count: quickLinksData?.quick_links?.length || 0,
-      onPress: () => {},
+      onPress: () => {
+        router.push("/quick-links");
+      },
     },
     {
       emoji: "📑",
@@ -257,7 +259,6 @@ export default function DashboardHomeScreen() {
 
   const handleSearchPress = () => {
     router.push("/dashboard/search");
-    // navigation.navigate(EHomeScreens.SearchScreen, undefined);
   };
 
   const sharedLinkText = useReactiveVar(sharedLinkTextVar);
@@ -281,102 +282,102 @@ export default function DashboardHomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-       {isFocused && <StatusBar backgroundColor={colors.TextColor.LignMainColor} style="light" />}
-      <View style={styles.container}>
-        <Animated.ScrollView
-          onScroll={scrollHandler}
-          scrollEventThrottle={16}
-          style={styles.scrollView}
-        >
-          {/* Header */}
-          <View style={styles.header}>
-                  {/*<Image*/}
-            {/*  source={require("@/assets/png/HeaderTop.png")}*/}
-            {/*  style={styles.headerBackground}*/}
-            {/*  // resizeMode={Image.resizeMode.contain}*/}
-            {/*/>*/}
-            <LinearGradient
-              colors={[colors.TextColor.LignMainColor, '#074855']} // Main color to a darker shade
-              style={styles.headerGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-            />
-
-            <View style={styles.workspaceHeader}>
-              <WorkspaceSelector
-                selectedWorkspace={selectedWorkspace}
-                onSelect={handleWorkspaceChange}
+      <SafeAreaView style={styles.container}>
+        {isFocused && <StatusBar backgroundColor={colors.TextColor.LignMainColor} style="light" />}
+        <View style={styles.container}>
+          <Animated.ScrollView
+              onScroll={scrollHandler}
+              scrollEventThrottle={16}
+              style={styles.scrollView}
+          >
+            {/* Header */}
+            <View style={styles.header}>
+              {/*<Image*/}
+              {/*  source={require("@/assets/png/HeaderTop.png")}*/}
+              {/*  style={styles.headerBackground}*/}
+              {/*  // resizeMode={Image.resizeMode.contain}*/}
+              {/*/>*/}
+              <LinearGradient
+                  colors={[colors.TextColor.LignMainColor, '#074855']} // Main color to a darker shade
+                  style={styles.headerGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
               />
-              <UserAvatar />
-            </View>
 
-            {/* Search Bar */}
-            <View style={styles.searchContainer}>
-              <TouchableOpacity
-                style={styles.searchBar}
-                onPress={handleSearchPress}
-              >
-                <View style={styles.searchIconContainer}>
-                  <AntDesign name="search1" size={20} color="#FFFFFF" />
-                </View>
-                <Text style={styles.searchPlaceholder}>
-                  Search links, notes, highlights...
-                </Text>
-              </TouchableOpacity>
-              {/* <TouchableOpacity style={styles.filterButton}>
+              <View style={styles.workspaceHeader}>
+                <WorkspaceSelector
+                    selectedWorkspace={selectedWorkspace}
+                    onSelect={handleWorkspaceChange}
+                />
+                <UserAvatar />
+              </View>
+
+              {/* Search Bar */}
+              <View style={styles.searchContainer}>
+                <TouchableOpacity
+                    style={styles.searchBar}
+                    onPress={handleSearchPress}
+                >
+                  <View style={styles.searchIconContainer}>
+                    <AntDesign name="search1" size={20} color="#FFFFFF" />
+                  </View>
+                  <Text style={styles.searchPlaceholder}>
+                    Search links, notes, highlights...
+                  </Text>
+                </TouchableOpacity>
+                {/* <TouchableOpacity style={styles.filterButton}>
                 <View style={styles.filterIconContainer}>
                   <SlidersHorizontal size={20} color="#FFFFFF" />
                 </View>
               </TouchableOpacity> */}
+              </View>
             </View>
-          </View>
 
-          {/* Quick Actions Section */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Quick Actions</Text>
-            <View style={styles.quickActionsGrid}>
-              {quickActions.map((action, index) => (
-                <QuickActionCard
-                  key={index}
-                  emoji={action.emoji}
-                  title={action.title}
-                  count={action.count}
-                  onPress={action.onPress}
-                />
-              ))}
+            {/* Quick Actions Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Quick Actions</Text>
+              <View style={styles.quickActionsGrid}>
+                {quickActions.map((action, index) => (
+                    <QuickActionCard
+                        key={index}
+                        emoji={action.emoji}
+                        title={action.title}
+                        count={action.count}
+                        onPress={action.onPress}
+                    />
+                ))}
+              </View>
             </View>
-          </View>
 
-          {/* Categories Section */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Categories</Text>
-            <View style={styles.categoriesContainer}>
-              {categories.map((category, index) => (
-                <CategoryItem
-                  key={index}
-                  emoji={category.emoji}
-                  title={category.title}
-                  isLast={index === categories.length - 1}
-                  onPress={category.onPress}
-                />
-              ))}
+            {/* Categories Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Categories</Text>
+              <View style={styles.categoriesContainer}>
+                {categories.map((category, index) => (
+                    <CategoryItem
+                        key={index}
+                        emoji={category.emoji}
+                        title={category.title}
+                        isLast={index === categories.length - 1}
+                        onPress={category.onPress}
+                    />
+                ))}
+              </View>
             </View>
-          </View>
-        </Animated.ScrollView>
+          </Animated.ScrollView>
 
-        <Animated.View style={[styles.fab, fabStyle]}>
-          <TouchableOpacity style={styles.fabButton} onPress={handleFABPress}>
-            <AntDesign name="plus" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
-      <View>
-        <BottomDrawer
-          isVisible={isBottomDrawerVisible}
-          onClose={handleCloseBottomSheet}
-        />
-      </View>
-    </SafeAreaView>
+          <Animated.View style={[styles.fab, fabStyle]}>
+            <TouchableOpacity style={styles.fabButton} onPress={handleFABPress}>
+              <AntDesign name="plus" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+        <View>
+          <BottomDrawer
+              isVisible={isBottomDrawerVisible}
+              onClose={handleCloseBottomSheet}
+          />
+        </View>
+      </SafeAreaView>
   );
 }

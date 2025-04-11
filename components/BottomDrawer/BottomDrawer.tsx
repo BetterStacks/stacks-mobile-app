@@ -8,14 +8,16 @@ import {
   setIsSuccessModalVisible,
   setSuccessModalMessage,
 } from "@/lib/apollo/store/handlers";
+import { router } from "expo-router";
 
 type Props = {
   isVisible: boolean;
   onClose: () => void;
   customContent?: React.ReactNode;
+  selectedCollectionId?: string;
 };
 
-const BottomDrawer = ({ isVisible, onClose, customContent }: Props) => {
+const BottomDrawer = ({ isVisible, onClose, customContent, selectedCollectionId }: Props) => {
   // const navigation = useNavigation<TAfterAuthStackNavigationProp>();
   const [isAddLinkView, setIsAddLinkView] = useState(false);
   const [isFileUploadView, setIsFileUploadView] = useState(false);
@@ -26,6 +28,12 @@ const BottomDrawer = ({ isVisible, onClose, customContent }: Props) => {
       setIsFileUploadView(false);
     }
   }, [isVisible]);
+
+  useEffect(() => {
+    if (isVisible && selectedCollectionId) {
+      setIsAddLinkView(true);
+    }
+  }, [isVisible, selectedCollectionId]);
 
   const handleSuccess = useCallback(
     (message: { title: string; description: string }) => {
@@ -47,14 +55,10 @@ const BottomDrawer = ({ isVisible, onClose, customContent }: Props) => {
     setIsFileUploadView(true);
   };
 
-  // const handleNewCollection = useCallback(() => {
-  //   onClose();
-  //   navigation.navigate(EAfterAuthScreens.CreateCollectionScreen);
-  // }, [navigation, onClose]);
-
   const handleNewCollection = useCallback(() => {
-    console.log("new collection");
-  }, []);
+    onClose();
+    router.push('/collection/create');
+  }, [onClose]);
 
   const handleBack = () => {
     setIsAddLinkView(false);
@@ -116,6 +120,7 @@ const BottomDrawer = ({ isVisible, onClose, customContent }: Props) => {
             onBack={handleBack}
             onClose={onClose}
             onSuccess={handleSuccess}
+            selectedCollectionId={selectedCollectionId}
           />
         ) : (
           // <FileUploadView

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>574408922411-d1pukptbg1f9d7i6f9lkhcnvo1jbnctj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.574408922411-d1pukptbg1f9d7i6f9lkhcnvo1jbnctj</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>574408922411-3jo85d8524h2rqdg74arlfu5t9n2b6i0.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDzrynuIteaOd6LUf_v-yWu0RLI6sNFJrg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>574408922411</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.betterstacks</string>
+	<key>PROJECT_ID</key>
+	<string>stacks-259313</string>
+	<key>STORAGE_BUCKET</key>
+	<string>stacks-259313.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:574408922411:ios:e89c29d0e237066946216e</string>
+	<key>DATABASE_URL</key>
+	<string>https://stacks-259313.firebaseio.com</string>
+</dict>
+</plist>

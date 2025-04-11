@@ -19,6 +19,7 @@ import {
 } from "@/lib/apollo/store/handlers";
 import client from "@/lib/apollo/client";
 import { CollectionSelector } from "../CollectionSelector";
+import { Toast } from "toastify-react-native";
 
 // import { FolderPlus, ChevronRight, X } from "lucide-react-native";
 
@@ -26,12 +27,15 @@ type Props = {
   onBack: () => void;
   onClose: () => void;
   onSuccess?: (message: { title: string; description: string }) => void;
+  selectedCollectionId?: string;
 };
 
-const AddLinkView = ({ onBack, onClose, onSuccess }: Props) => {
+const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props) => {
   // const navigation = useNavigation<TCollectionsStackNavigationProp>();
   const [url, setUrl] = useState("");
-  const [selectedCollections, setSelectedCollections] = useState<string[]>([]);
+  const [selectedCollections, setSelectedCollections] = useState<string[]>(
+    selectedCollectionId ? [selectedCollectionId] : []
+  );
   const [isCollectionsExpanded, setIsCollectionsExpanded] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const [repositoryId, setRepositoryId] = useState<string | null>(null);
@@ -72,6 +76,9 @@ const AddLinkView = ({ onBack, onClose, onSuccess }: Props) => {
               : "Your link has been saved",
         };
 
+        // Show toast notification
+        Toast.success("Link saved successfully!");
+
         if (onSuccess) {
           onSuccess(successMessage);
         } else {
@@ -96,10 +103,12 @@ const AddLinkView = ({ onBack, onClose, onSuccess }: Props) => {
         }, 5000);
       } catch (error) {
         console.error("Error handling success:", error);
+        Toast.error("Failed to save link");
       }
     },
     onError: (error) => {
       console.error("Error adding link:", error);
+      Toast.error("Failed to save link");
     },
   });
 

@@ -1,11 +1,5 @@
-import { Link } from "@/lib/types/Link";
-import {
-  JSXElementConstructor,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import {Link} from "@/lib/types/Link";
+import React, {JSXElementConstructor, ReactElement, useCallback, useEffect, useState,} from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -20,14 +14,12 @@ import {
   ViewToken,
 } from "react-native";
 import FastImage from "react-native-fast-image";
-import { useSharedValue } from "react-native-reanimated";
-import Video from "react-native-video";
-import { styles } from "./CardLinksListStyles";
-import { getIconWithColor } from "../design/icons/getIconWithColor";
-import { EIconName } from "../design/icons/_models";
+import {useSharedValue} from "react-native-reanimated";
+import {styles} from "./CardLinksListStyles";
+import {getIconWithColor} from "../design/icons/getIconWithColor";
+import {EIconName} from "../design/icons/_models";
 import metrics from "../design/metrics";
-import { CardLink } from "../cardLink/CardLink";
-import PdfReader from "../cardLink/PdfReader";
+import {CardLink} from "../cardLink/CardLink";
 
 type Props = {
   links: Link[];
@@ -82,7 +74,7 @@ export const CardLinksList: React.FC<Props> = ({
 
   useEffect(() => {
     setTimeout(() => {
-      setIsLoading(isLoadMoreAvailable);
+      setIsLoading(isLoadMoreAvailable!);
     }, 500);
   }, [isLoadMoreAvailable]);
 
@@ -112,7 +104,7 @@ export const CardLinksList: React.FC<Props> = ({
           showList ? (
             <ListFooter
               isLoadMoreAvailable={isLoading}
-              currentPage={currentPage}
+              currentPage={currentPage!}
             />
           ) : null
         }
@@ -195,7 +187,7 @@ export const BottomSheetList: React.FC<Props> = ({
 
   useEffect(() => {
     setTimeout(() => {
-      setIsLoading(isLoadMoreAvailable);
+      setIsLoading(isLoadMoreAvailable!);
     }, 500);
   }, [isLoadMoreAvailable]);
 
@@ -216,7 +208,7 @@ export const BottomSheetList: React.FC<Props> = ({
       onViewableItemsChanged={onViewableItemsChanged}
       onEndReached={onEndReached}
       ListFooterComponent={
-        <ListFooter isLoadMoreAvailable={isLoading} currentPage={currentPage} />
+        <ListFooter isLoadMoreAvailable={isLoading} currentPage={currentPage!} />
       }
       renderItem={({ item }) => (
         <CardLink link={item} key={item.id} viewableItems={viewableItems} />
