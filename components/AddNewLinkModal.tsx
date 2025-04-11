@@ -4,7 +4,6 @@ import {useMutation} from "@apollo/client";
 import {useCallback, useEffect, useState} from "react";
 import {MUTATION_ADD_LINK} from "@/lib/api/graphql/mutations";
 import client from "@/lib/apollo/client";
-import {Toast} from "toastify-react-native";
 import {setSharedLinkText} from "@/lib/apollo/store/handlers";
 import CommonInput from "@/components/CommonInput";
 import {Colors} from "@/components/design/colors";
@@ -45,7 +44,7 @@ export const AddNewLinkModal = ({isNewLinkModalShown, setIsNewLinkModalShown, li
 				}, 5000);
 			},
 			onError: errors => {
-				Toast.error(errors.message)
+				// Toast.error(errors.message)
 			},
 		},
 	);
