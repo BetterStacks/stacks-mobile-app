@@ -13,7 +13,6 @@ import {ReactNativeFile} from "apollo-upload-client";
 import {Profile} from "react-native-fbsdk-next";
 import {useFormik} from "formik";
 import {SignInSchema} from "@/lib/validations/auth";
-import Toast from "react-native-toast-message";
 import LogoIcon from "@/svgs/LogoIcon";
 import {Colors} from "@/components/design/colors";
 import {setToStorage} from "@/utils/storage/setToStorage";
@@ -24,6 +23,7 @@ import {MainButton, mainButtonStyles} from "@/components/ui/button";
 import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
 import TokenCheck from "@/components/TokenCheck";
 import {router} from "expo-router";
+import {Toast} from "toastify-react-native";
 
 const SignInScreen = () => {
   const formik = useFormik({
@@ -55,11 +55,8 @@ const SignInScreen = () => {
             setFieldError("email", "User not found.");
             return;
           }
-          Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: err.message,
-          });
+
+          Toast.error(err.message);
         });
     },
   });
@@ -172,11 +169,7 @@ const SignInScreen = () => {
         );
       })
       .catch((error) => {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "This email isn't registered, please sign up",
-        });
+        Toast.error(error.message);
         return console.log("In signInScreen", error);
       });
   };
