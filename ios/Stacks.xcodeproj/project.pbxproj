@@ -7,32 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		03C67DA228BE4E5881C9AB1A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 78B53E3D686745FD9EE87084 /* GoogleService-Info.plist */; };
+		05D6A92726DA30717A8848C5 /* Pods_Stacks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E079864B37473B7E47FF22D /* Pods_Stacks.framework */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2D0ADE5C98EF5824E1C8E374 /* Pods_stacksmobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88197E661E85CF6B161824DC /* Pods_stacksmobile.framework */; };
+		22C0EE9EFAE442A4859BA2E2 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9AE3DD4865405BAF9A6AC8 /* ShareViewController.swift */; };
+		2362EE9B12BF497E9DD889A9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 41756452A21041FA80CF40A4 /* GoogleService-Info.plist */; };
+		27AA0D42D2D84460ABCF4F3E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E9FBD8BA74DD491A9B1C7E19 /* PrivacyInfo.xcprivacy */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		744FFA6827964D329E7CC551 /* ShareExtension.appex in Copy Files */ = {isa = PBXBuildFile; fileRef = B184E831396A470EB247BC76 /* ShareExtension.appex */; };
-		7C64AFF8F48E4A3D8EB7D704 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB19C7F6A60438CA9F0010F /* noop-file.swift */; };
-		9C4B9B2322D140B1A7112A1A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 831A5488496F4D8AB1D07F44 /* PrivacyInfo.xcprivacy */; };
-		AEA51A62FCDE49A2A720C51A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 805A2A4B27554A559865AAA7 /* MainInterface.storyboard */; };
-		AFF3D22F31713714D48B8AF5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4136C656DD5D603528183739 /* PrivacyInfo.xcprivacy */; };
+		4F43DA0ED379D92453904E30 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E9FBD8BA74DD491A9B1C7E19 /* PrivacyInfo.xcprivacy */; };
+		AC6066618288467E9B56D46D /* ShareExtension.appex in Copy Files */ = {isa = PBXBuildFile; fileRef = 27645C3EA57647978D8C530A /* ShareExtension.appex */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C084CF507ED34B1794581537 /* ShareExtensionPreprocessor.js in Resources */ = {isa = PBXBuildFile; fileRef = 38912A8C6CA343D28D09D418 /* ShareExtensionPreprocessor.js */; };
-		D447DE57FA674428BC6B6D22 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 44977A0A15B648A983C6D272 /* GoogleService-Info.plist */; };
-		ED882C7679C144F19D2F1544 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F37BC93424140628B41DB86 /* ShareViewController.swift */; };
+		CE41024ACB874C8C9E20B430 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DCE4C0C125A47A6B6B9FE91 /* MainInterface.storyboard */; };
+		E6DDA07C60E4483FBD483829 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF5FFF25F2943368F0B0D9D /* noop-file.swift */; };
+		EC22D169A6B04098A86D63D6 /* ShareExtensionPreprocessor.js in Resources */ = {isa = PBXBuildFile; fileRef = AED3342C5A3243C6ACCBD267 /* ShareExtensionPreprocessor.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		38C1E722E2B04A35B87CBDDA /* Copy Files */ = {
+		BC96C29031AC43EEA8A17CE1 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				744FFA6827964D329E7CC551 /* ShareExtension.appex in Copy Files */,
+				AC6066618288467E9B56D46D /* ShareExtension.appex in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -40,29 +39,27 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		13B07F961A680F5B00A75B9A /* stacksmobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = stacksmobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = stacksmobile/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = stacksmobile/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = stacksmobile/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = stacksmobile/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = stacksmobile/main.m; sourceTree = "<group>"; };
-		38912A8C6CA343D28D09D418 /* ShareExtensionPreprocessor.js */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = ShareExtensionPreprocessor.js; path = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/ShareExtensionPreprocessor.js"; sourceTree = "<group>"; };
-		4136C656DD5D603528183739 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = stacksmobile/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		44977A0A15B648A983C6D272 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "stacksmobile/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		4F37BC93424140628B41DB86 /* ShareViewController.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/ShareViewController.swift"; sourceTree = "<group>"; };
-		6C2E3173556A471DD304B334 /* Pods-stacksmobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-stacksmobile.debug.xcconfig"; path = "Target Support Files/Pods-stacksmobile/Pods-stacksmobile.debug.xcconfig"; sourceTree = "<group>"; };
-		78B53E3D686745FD9EE87084 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "stacksmobile/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7A4D352CD337FB3A3BF06240 /* Pods-stacksmobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-stacksmobile.release.xcconfig"; path = "Target Support Files/Pods-stacksmobile/Pods-stacksmobile.release.xcconfig"; sourceTree = "<group>"; };
-		805A2A4B27554A559865AAA7 /* MainInterface.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = MainInterface.storyboard; path = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/MainInterface.storyboard"; sourceTree = "<group>"; };
-		831A5488496F4D8AB1D07F44 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = PrivacyInfo.xcprivacy; path = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
-		88197E661E85CF6B161824DC /* Pods_stacksmobile.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_stacksmobile.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A925CA0ACDC40C89E9EC17C /* stacksmobile-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "stacksmobile-Bridging-Header.h"; path = "stacksmobile/stacksmobile-Bridging-Header.h"; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = stacksmobile/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B184E831396A470EB247BC76 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = undefined; name = ShareExtension.appex; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Stacks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stacks.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Stacks/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = Stacks/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Stacks/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Stacks/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Stacks/main.m; sourceTree = "<group>"; };
+		27645C3EA57647978D8C530A /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = undefined; name = ShareExtension.appex; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AFB14CC02DB42F394938D52 /* Stacks-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "Stacks-Bridging-Header.h"; path = "Stacks/Stacks-Bridging-Header.h"; sourceTree = "<group>"; };
+		41756452A21041FA80CF40A4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Stacks/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4BF5FFF25F2943368F0B0D9D /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "Stacks/noop-file.swift"; sourceTree = "<group>"; };
+		4E079864B37473B7E47FF22D /* Pods_Stacks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stacks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5DCE4C0C125A47A6B6B9FE91 /* MainInterface.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = MainInterface.storyboard; path = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/MainInterface.storyboard"; sourceTree = "<group>"; };
+		6C2E3173556A471DD304B334 /* Pods-Stacks.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stacks.debug.xcconfig"; path = "Target Support Files/Pods-Stacks/Pods-Stacks.debug.xcconfig"; sourceTree = "<group>"; };
+		7A4D352CD337FB3A3BF06240 /* Pods-Stacks.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stacks.release.xcconfig"; path = "Target Support Files/Pods-Stacks/Pods-Stacks.release.xcconfig"; sourceTree = "<group>"; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Stacks/SplashScreen.storyboard; sourceTree = "<group>"; };
+		AED3342C5A3243C6ACCBD267 /* ShareExtensionPreprocessor.js */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = ShareExtensionPreprocessor.js; path = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/ShareExtensionPreprocessor.js"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		DEB19C7F6A60438CA9F0010F /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "stacksmobile/noop-file.swift"; sourceTree = "<group>"; };
+		E9FBD8BA74DD491A9B1C7E19 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = PrivacyInfo.xcprivacy; path = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-stacksmobile/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		EF9AE3DD4865405BAF9A6AC8 /* ShareViewController.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/ShareViewController.swift"; sourceTree = "<group>"; };
+		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Stacks/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,14 +67,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D0ADE5C98EF5824E1C8E374 /* Pods_stacksmobile.framework in Frameworks */,
+				05D6A92726DA30717A8848C5 /* Pods_Stacks.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* stacksmobile */ = {
+		13B07FAE1A68108700A75B9A /* Stacks */ = {
 			isa = PBXGroup;
 			children = (
 				BB2F792B24A3F905000567C9 /* Supporting */,
@@ -87,19 +84,18 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				44977A0A15B648A983C6D272 /* GoogleService-Info.plist */,
-				DEB19C7F6A60438CA9F0010F /* noop-file.swift */,
-				8A925CA0ACDC40C89E9EC17C /* stacksmobile-Bridging-Header.h */,
-				4136C656DD5D603528183739 /* PrivacyInfo.xcprivacy */,
+				41756452A21041FA80CF40A4 /* GoogleService-Info.plist */,
+				4BF5FFF25F2943368F0B0D9D /* noop-file.swift */,
+				3AFB14CC02DB42F394938D52 /* Stacks-Bridging-Header.h */,
 			);
-			name = stacksmobile;
+			name = Stacks;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				88197E661E85CF6B161824DC /* Pods_stacksmobile.framework */,
+				4E079864B37473B7E47FF22D /* Pods_Stacks.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -114,7 +110,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* stacksmobile */,
+				13B07FAE1A68108700A75B9A /* Stacks */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -129,18 +125,18 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* stacksmobile.app */,
-				B184E831396A470EB247BC76 /* ShareExtension.appex */,
+				13B07F961A680F5B00A75B9A /* Stacks.app */,
+				27645C3EA57647978D8C530A /* ShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		92DBD88DE9BF7D494EA9DA96 /* stacksmobile */ = {
+		92DBD88DE9BF7D494EA9DA96 /* Stacks */ = {
 			isa = PBXGroup;
 			children = (
 				FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */,
 			);
-			name = stacksmobile;
+			name = Stacks;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -149,14 +145,14 @@
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = stacksmobile/Supporting;
+			path = Stacks/Supporting;
 			sourceTree = "<group>";
 		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6C2E3173556A471DD304B334 /* Pods-stacksmobile.debug.xcconfig */,
-				7A4D352CD337FB3A3BF06240 /* Pods-stacksmobile.release.xcconfig */,
+				6C2E3173556A471DD304B334 /* Pods-Stacks.debug.xcconfig */,
+				7A4D352CD337FB3A3BF06240 /* Pods-Stacks.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -164,7 +160,7 @@
 		D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				92DBD88DE9BF7D494EA9DA96 /* stacksmobile */,
+				92DBD88DE9BF7D494EA9DA96 /* Stacks */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -172,36 +168,36 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* stacksmobile */ = {
+		13B07F861A680F5B00A75B9A /* Stacks */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "stacksmobile" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Stacks" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				5AE4E4286951DC2D4CD1A1C9 /* [Expo] Configure project */,
+				163020E14C0B930A31F1BB28 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				38C1E722E2B04A35B87CBDDA /* Copy Files */,
-				58F7B8CF7F372442F373802F /* [CP] Embed Pods Frameworks */,
-				B3D2D850E3EA1629229C2843 /* [CP-User] [RNFB] Core Configuration */,
+				BC96C29031AC43EEA8A17CE1 /* Copy Files */,
+				6711DCFABA3905018D2E262E /* [CP] Embed Pods Frameworks */,
+				85371E54F2F478E5961EDF88 /* [CP-User] [RNFB] Core Configuration */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = stacksmobile;
-			productName = stacksmobile;
-			productReference = 13B07F961A680F5B00A75B9A /* stacksmobile.app */;
+			name = Stacks;
+			productName = Stacks;
+			productReference = 13B07F961A680F5B00A75B9A /* Stacks.app */;
 			productType = "com.apple.product-type.application";
 		};
-		E9531C7F97E441D09381B088 /* ShareExtension */ = {
+		2863D6896B494576AE70C22A /* ShareExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 76A0DEEB5E1D4CA0A31B80A0 /* Build configuration list for PBXNativeTarget "ShareExtension" */;
+			buildConfigurationList = ADA8423FB4314491AEBFE4A5 /* Build configuration list for PBXNativeTarget "ShareExtension" */;
 			buildPhases = (
-				D5B80854739943509D43A528 /* Sources */,
-				89B10060033B4C27B1D4D645 /* Resources */,
+				B23BA03D4AB04C28A28B1E4E /* Sources */,
+				7120D740150E41019881C44B /* Resources */,
 			);
 			buildRules = (
 			);
@@ -209,7 +205,7 @@
 			);
 			name = ShareExtension;
 			productName = ShareExtension;
-			productReference = B184E831396A470EB247BC76 /* ShareExtension.appex */;
+			productReference = 27645C3EA57647978D8C530A /* ShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -225,7 +221,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "stacksmobile" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Stacks" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -238,8 +234,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* stacksmobile */,
-				E9531C7F97E441D09381B088 /* ShareExtension */,
+				13B07F861A680F5B00A75B9A /* Stacks */,
+				2863D6896B494576AE70C22A /* ShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -252,19 +248,18 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				03C67DA228BE4E5881C9AB1A /* GoogleService-Info.plist in Resources */,
-				AFF3D22F31713714D48B8AF5 /* PrivacyInfo.xcprivacy in Resources */,
-				D447DE57FA674428BC6B6D22 /* GoogleService-Info.plist in Resources */,
+				2362EE9B12BF497E9DD889A9 /* GoogleService-Info.plist in Resources */,
+				4F43DA0ED379D92453904E30 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		89B10060033B4C27B1D4D645 /* Resources */ = {
+		7120D740150E41019881C44B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C084CF507ED34B1794581537 /* ShareExtensionPreprocessor.js in Resources */,
-				AEA51A62FCDE49A2A720C51A /* MainInterface.storyboard in Resources */,
-				9C4B9B2322D140B1A7112A1A /* PrivacyInfo.xcprivacy in Resources */,
+				EC22D169A6B04098A86D63D6 /* ShareExtensionPreprocessor.js in Resources */,
+				CE41024ACB874C8C9E20B430 /* MainInterface.storyboard in Resources */,
+				27AA0D42D2D84460ABCF4F3E /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,20 +296,39 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-stacksmobile-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Stacks-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		58F7B8CF7F372442F373802F /* [CP] Embed Pods Frameworks */ = {
+		163020E14C0B930A31F1BB28 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Stacks/expo-configure-project.sh\"\n";
+		};
+		6711DCFABA3905018D2E262E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-stacksmobile/Pods-stacksmobile-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Stacks/Pods-Stacks-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/FBAEMKit/FBAEMKit.framework/FBAEMKit",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework/FBSDKCoreKit",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/FBSDKCoreKit_Basics/FBSDKCoreKit_Basics.framework/FBSDKCoreKit_Basics",
@@ -335,27 +349,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-stacksmobile/Pods-stacksmobile-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Stacks/Pods-Stacks-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		5AE4E4286951DC2D4CD1A1C9 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-stacksmobile/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -363,7 +358,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-stacksmobile/Pods-stacksmobile-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Stacks/Pods-Stacks-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/AppAuth/AppAuthCore_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXApplication/ExpoApplication_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
@@ -472,10 +467,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-stacksmobile/Pods-stacksmobile-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Stacks/Pods-Stacks-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B3D2D850E3EA1629229C2843 /* [CP-User] [RNFB] Core Configuration */ = {
+		85371E54F2F478E5961EDF88 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -498,15 +493,15 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				7C64AFF8F48E4A3D8EB7D704 /* noop-file.swift in Sources */,
+				E6DDA07C60E4483FBD483829 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D5B80854739943509D43A528 /* Sources */ = {
+		B23BA03D4AB04C28A28B1E4E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ED882C7679C144F19D2F1544 /* ShareViewController.swift in Sources */,
+				22C0EE9EFAE442A4859BA2E2 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -515,18 +510,18 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C2E3173556A471DD304B334 /* Pods-stacksmobile.debug.xcconfig */;
+			baseConfigurationReference = 6C2E3173556A471DD304B334 /* Pods-Stacks.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = stacksmobile/stacksmobile.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Stacks/Stacks.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
-				INFOPLIST_FILE = stacksmobile/Info.plist;
+				INFOPLIST_FILE = Stacks/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
@@ -537,8 +532,8 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.betterstacks;
-				PRODUCT_NAME = "Stacks";
-				SWIFT_OBJC_BRIDGING_HEADER = "stacksmobile/stacksmobile-Bridging-Header.h";
+				PRODUCT_NAME = Stacks;
+				SWIFT_OBJC_BRIDGING_HEADER = "Stacks/Stacks-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -548,13 +543,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7A4D352CD337FB3A3BF06240 /* Pods-stacksmobile.release.xcconfig */;
+			baseConfigurationReference = 7A4D352CD337FB3A3BF06240 /* Pods-Stacks.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = stacksmobile/stacksmobile.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Stacks/Stacks.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = stacksmobile/Info.plist;
+				INFOPLIST_FILE = Stacks/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
@@ -565,32 +560,11 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.betterstacks;
-				PRODUCT_NAME = "Stacks";
-				SWIFT_OBJC_BRIDGING_HEADER = "stacksmobile/stacksmobile-Bridging-Header.h";
+				PRODUCT_NAME = Stacks;
+				SWIFT_OBJC_BRIDGING_HEADER = "Stacks/Stacks-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Release;
-		};
-		5E53F815727641A084F375EA /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/ShareExtension.entitlements";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/ShareExtension-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.0.0;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.betterstacks.share-extension";
-				PRODUCT_NAME = ShareExtension;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -734,7 +708,28 @@
 			};
 			name = Release;
 		};
-		867CB24DE7CD47CA80250A53 /* Debug */ = {
+		DC4C71C7AA914987966626C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/ShareExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "/Users/subho/Documents/Workspace/Work/stacks-mobile/ios/ShareExtension/ShareExtension-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.betterstacks.share-extension";
+				PRODUCT_NAME = ShareExtension;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		EC0316985744404D932D0F2F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -762,7 +757,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "stacksmobile" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Stacks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -771,20 +766,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		76A0DEEB5E1D4CA0A31B80A0 /* Build configuration list for PBXNativeTarget "ShareExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				867CB24DE7CD47CA80250A53 /* Debug */,
-				5E53F815727641A084F375EA /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "stacksmobile" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Stacks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ADA8423FB4314491AEBFE4A5 /* Build configuration list for PBXNativeTarget "ShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC0316985744404D932D0F2F /* Debug */,
+				DC4C71C7AA914987966626C9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
