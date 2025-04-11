@@ -9,6 +9,7 @@ import {
   setSuccessModalMessage,
 } from "@/lib/apollo/store/handlers";
 import { router } from "expo-router";
+import FileUploadView from "../FileUploadView";
 
 type Props = {
   isVisible: boolean;
@@ -17,7 +18,12 @@ type Props = {
   selectedCollectionId?: string;
 };
 
-const BottomDrawer = ({ isVisible, onClose, customContent, selectedCollectionId }: Props) => {
+const BottomDrawer = ({
+  isVisible,
+  onClose,
+  customContent,
+  selectedCollectionId,
+}: Props) => {
   // const navigation = useNavigation<TAfterAuthStackNavigationProp>();
   const [isAddLinkView, setIsAddLinkView] = useState(false);
   const [isFileUploadView, setIsFileUploadView] = useState(false);
@@ -57,7 +63,7 @@ const BottomDrawer = ({ isVisible, onClose, customContent, selectedCollectionId 
 
   const handleNewCollection = useCallback(() => {
     onClose();
-    router.push('/collection/create');
+    router.push("/collection/create");
   }, [onClose]);
 
   const handleBack = () => {
@@ -76,11 +82,11 @@ const BottomDrawer = ({ isVisible, onClose, customContent, selectedCollectionId 
       title: "New Collection",
       onPress: handleNewCollection,
     },
-    {
-      icon: <File size={24} color="#000000" />,
-      title: "New File",
-      onPress: handleNewFile,
-    },
+    // {
+    //   icon: <File size={24} color="#000000" />,
+    //   title: "New File",
+    //   onPress: handleNewFile,
+    // },
   ];
 
   return (
@@ -123,14 +129,11 @@ const BottomDrawer = ({ isVisible, onClose, customContent, selectedCollectionId 
             selectedCollectionId={selectedCollectionId}
           />
         ) : (
-          // <FileUploadView
-          //   onBack={handleBack}
-          //   onClose={onClose}
-          //   onSuccess={handleSuccess}
-          // />
-          <View>
-            <Text>File Upload View</Text>
-          </View>
+          <FileUploadView
+            onBack={handleBack}
+            onClose={onClose}
+            onSuccess={handleSuccess}
+          />
         )}
       </View>
     </ReactNativeModal>
