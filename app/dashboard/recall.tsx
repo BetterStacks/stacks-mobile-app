@@ -1,86 +1,127 @@
-import { TestTube } from "lucide-react-native";
 import React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import Modal from "react-native-modal";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Bell, Brain, Clock, Sparkles } from "lucide-react-native";
 
 export default function RecallScreen() {
-  const [modalVisible, setModalVisible] = React.useState(false);
-
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
-
   return (
-    <View>
-      <Text>Recall</Text>
-      <Text style={styles.subtitle}>Discover new content</Text>
-
-      <View style={styles.card}>
-        <Text>Featured Content</Text>
-        <Text>Featured content will appear here.</Text>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={styles.contentContainer}>
+        <View style={styles.iconContainer}>
+          <View style={styles.iconBackground}>
+            <Brain size={28} color="#1C4A5A" />
+          </View>
+        </View>
+        
+        <Text style={styles.title}>Recall</Text>
+        
+        <View style={styles.comingSoonBadge}>
+          <Sparkles size={14} color="#1C4A5A" />
+          <Text style={styles.comingSoonText}>Coming Soon</Text>
+        </View>
+        
+        <Text style={styles.description}>
+          Recall will help you remember and revisit your saved content at the perfect time, using AI to bring back what matters most to you.
+        </Text>
+        
+        <View style={styles.featuresContainer}>
+          <View style={styles.featureItem}>
+            <Clock size={24} color="#4D8BA3" />
+            <Text style={styles.featureText}>Timely reminders of important content</Text>
+          </View>
+          
+          <View style={styles.featureItem}>
+            <Brain size={24} color="#4D8BA3" />
+            <Text style={styles.featureText}>AI-powered content suggestions</Text>
+          </View>
+          
+          <View style={styles.featureItem}>
+            <Bell size={24} color="#4D8BA3" />
+            <Text style={styles.featureText}>Smart notifications for saved links</Text>
+          </View>
+        </View>
       </View>
-
-      <View style={styles.card}>
-        <Text>Popular</Text>
-        <Text>Popular content will appear here.</Text>
-      </View>
-      <View>
-        <Button title="Open Modal" onPress={toggleModal} />
-      </View>
-
-      <TestModal modalVisible={modalVisible} toggleModal={toggleModal} />
-    </View>
+    </SafeAreaView>
   );
 }
-
-const TestModal = (modalVisible, toggleModal) => {
-  return (
-    <View>
-      <Modal
-        isVisible={modalVisible}
-        onBackdropPress={toggleModal}
-        backdropOpacity={0.8}
-        swipeDirection={["down"]}
-        useNativeDriver
-        useNativeDriverForBackdrop
-        propagateSwipe
-      >
-        <View>
-          <Text>djwiedhj</Text>
-        </View>
-      </Modal>
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  contentContainer: {
+    flex: 1,
     padding: 20,
+    alignItems: 'center',
   },
-  subtitle: {
-    marginTop: 8,
-    marginBottom: 24,
-  },
-  card: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 8,
-    padding: 16,
+  iconContainer: {
+    marginTop: 30,
     marginBottom: 16,
+    alignItems: 'center',
   },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 22,
-    borderRadius: 10,
-    alignItems: "center",
+  iconBackground: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F0F5F7',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#1C4A5A',
+    marginBottom: 8,
+  },
+  comingSoonBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(77, 139, 163, 0.15)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginBottom: 20,
+  },
+  comingSoonText: {
+    color: '#1C4A5A',
+    fontWeight: '500',
+    fontSize: 14,
+    marginLeft: 6,
+  },
+  description: {
+    textAlign: 'center',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#333',
+    marginBottom: 24,
+    paddingHorizontal: 20,
+  },
+  featuresContainer: {
+    width: '100%',
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: 16,
+    borderRadius: 12,
     marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
+  featureText: {
+    marginLeft: 16,
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
   },
 });
