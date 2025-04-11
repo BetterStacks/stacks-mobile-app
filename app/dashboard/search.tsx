@@ -1,4 +1,4 @@
-import {ActivityIndicator, StyleSheet, Text, TextInput, View} from "react-native";
+import {ActivityIndicator, StyleSheet, TextInput, View} from "react-native";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {useLazyQuery} from "@apollo/client";
@@ -88,7 +88,6 @@ const SearchScreen = () => {
 				linksData && (
 					<View style={styles.linksContainer}>
 						<CardLinksList links={linksData.links} showList={!linksLoading} />
-						<Text>CardLinkList</Text>
 					</View>
 				)
 			)}
