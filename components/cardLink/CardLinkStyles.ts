@@ -1,8 +1,8 @@
-import { StyleSheet } from "react-native";
-import { scaleHeight, scaleWidth } from "../design/scale";
-import { getFont } from "../design/fonts/fonts";
-import { EFontWeight } from "../design/fonts/types";
-import { Colors } from "../design/colors";
+import {StyleSheet} from "react-native";
+import {scaleHeight, scaleWidth} from "../design/scale";
+import {getFont} from "../design/fonts/fonts";
+import {EFontWeight} from "../design/fonts/types";
+import {Colors} from "../design/colors";
 
 export const styles = StyleSheet.create({
   container: {
@@ -39,8 +39,13 @@ export const styles = StyleSheet.create({
     fontSize: scaleHeight(12),
     color: Colors.tailwindColors.neutral["500"],
   },
-  linkDescription: {
+  noteContainer: {
     marginTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: scaleWidth(4),
+  },
+  linkDescription: {
     ...getFont(EFontWeight.Medium),
     color: Colors.tailwindColors.neutral["500"],
     // width: scaleWidth(244),

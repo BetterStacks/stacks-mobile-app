@@ -1,28 +1,10 @@
-import { Link } from "@/lib/types/Link";
-import { useCallback, useState, useRef } from "react";
-import {
-  Linking,
-  Text,
-  TouchableOpacity,
-  View,
-  ViewToken,
-  Modal,
-  ActivityIndicator,
-  Alert,
-  Image,
-} from "react-native";
-import FastImage from "react-native-fast-image";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated";
-import { styles } from "./CardLinkStyles";
-import { getIconWithColor } from "../design/icons/getIconWithColor";
-import { EIconName } from "../design/icons/_models";
-import { StacksList } from "./StacksList/StacksList";
-import React from "react";
+import {Link} from "@/lib/types/Link";
+import React, {useCallback, useState} from "react";
+import {Image, Linking, Text, TouchableOpacity, View, ViewToken,} from "react-native";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Animated, {Easing, useAnimatedStyle, withDelay, withTiming,} from "react-native-reanimated";
+import {styles} from "./CardLinkStyles";
+import {StacksList} from "./StacksList/StacksList";
 import Entypo from '@expo/vector-icons/Entypo';
 
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
@@ -232,23 +214,28 @@ export const CardLink: React.FC<Props> = ({
                   </Text>
                 </View>
 
-                {/* <View style={styles.bottomBarButtons}>
+                <View style={styles.bottomBarButtons}>
                   <StacksList
                     stacks={link.stacks}
                     collections={link.collections}
                   />
-                </View> */}
+                </View>
 
                 {link.notes ? (
-                  <Text numberOfLines={2} style={styles.linkDescription}>
-                    {link.notes}
-                  </Text>
+                  <View style={styles.noteContainer}>
+                    <MaterialIcons name="edit-note" size={24} color="black" />
+                    <Text numberOfLines={2} style={styles.linkDescription}>
+                      {link.notes}
+                    </Text>
+                  </View>
                 ) : (
-                  <Text numberOfLines={2} style={styles.linkDescription}>
-                    {link.description
-                      ? link.description
-                      : "No description provided"}
-                  </Text>
+                    <View style={styles.noteContainer}>
+                      <Text numberOfLines={2} style={styles.linkDescription}>
+                        {link.description
+                            ? link.description
+                            : "No description provided"}
+                      </Text>
+                    </View>
                 )}
               </>
             )}

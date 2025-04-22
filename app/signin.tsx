@@ -2,7 +2,7 @@ import React, {useCallback} from "react";
 import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {MUTATION_SIGNIN, MUTATION_SIGNUP, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
 import {useAppleSignIn} from "@/hooks/useAppleSignIn";
@@ -220,7 +220,11 @@ const SignInScreen = () => {
   const signInWithApple = useAppleSignIn(onAppleSignIn);
 
   return (
-    <View style={styles.container}>
+      <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // or 'position'
+          style={{ flex: 1 }}
+      >
+        <View style={styles.container}>
       {/* CHECK FOR THE PRESENCE OF TOKEN */}
       <TokenCheck />
 
@@ -305,6 +309,7 @@ const SignInScreen = () => {
         </TouchableOpacity>
       </View>
     </View>
+      </KeyboardAvoidingView>
   );
 };
 

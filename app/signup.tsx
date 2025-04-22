@@ -1,5 +1,14 @@
 import React, {useCallback, useState} from "react";
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import {
+	Image,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import {useRouter} from "expo-router";
 import TokenCheck from "@/components/TokenCheck";
 import {useFormik} from "formik";
@@ -190,7 +199,11 @@ const SignupScreen = () => {
 	const signInWithApple = useAppleSignIn(onAppleSignUp);
 
 	return (
-		<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+		<KeyboardAvoidingView
+			behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // or 'position'
+			style={{ flex: 1 }}
+		>
+			<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
 			{/* CHECK FOR THE PRESENCE OF TOKEN */}
 			<TokenCheck />
 
@@ -291,6 +304,7 @@ const SignupScreen = () => {
 				</TouchableOpacity>
 			</View>
 		</ScrollView>
+		</KeyboardAvoidingView>
 	);
 }
 

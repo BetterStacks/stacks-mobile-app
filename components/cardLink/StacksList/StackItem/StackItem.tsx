@@ -1,7 +1,5 @@
-import { getIconWithColor } from "@/components/design/icons/getIconWithColor";
-import { styles } from "./StackItemStyles";
-import { View, Text } from "react-native";
-import { EIconName } from "@/components/design/icons/_models";
+import {styles} from "./StackItemStyles";
+import {Text, View} from "react-native";
 
 type Props = {
   stackName: string;
@@ -19,15 +17,15 @@ export const StackItem: React.FC<Props> = ({
 
   return (
     <View style={styles.container}>
-      {/* {!isCollection && (
-        <View style={styles.icon}>
-          {getIconWithColor(stackNameIcon as unknown as EIconName)}
-        </View>
-      )} */}
+      {/*{!isCollection && (*/}
+      {/*  <View style={styles.icon}>*/}
+      {/*    {getIconWithColor(stackNameIcon as unknown as EIconName)}*/}
+      {/*  </View>*/}
+      {/*)}*/}
 
-      {/* <Text numberOfLines={1} style={styles.text}>
+      <Text numberOfLines={1} style={styles.text}>
         {prettyStackName}
-      </Text> */}
+      </Text>
     </View>
   );
 };
