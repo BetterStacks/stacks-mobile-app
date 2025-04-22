@@ -13,6 +13,9 @@ import {getEmojiFromCode} from "@/lib/utils";
 import {Collection} from "@/lib/types/Collection";
 import {router} from "expo-router";
 import {Colors} from "@/components/design/colors";
+import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
+import EditCollectionView from "@/components/BottomDrawer/EditCollectionView";
+import { setIsSuccessModalVisible, setSuccessModalMessage } from "@/lib/apollo/store/handlers";
 
 interface Section {
   title: string;
@@ -25,11 +28,14 @@ interface SectionProps {
 
 interface CollectionItemProps {
   item: Collection;
+  onLongPress: (collection: Collection) => void;
 }
 
 export default function CollectionsScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const [isEditDrawerVisible, setIsEditDrawerVisible] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -125,10 +131,30 @@ export default function CollectionsScreen() {
     return sections;
   }, [workspaceId, workspaceCollections, otherCollections]);
 
-  const renderCollectionItem = ({ item: collection }: CollectionItemProps) => (
+  const handleLongPress = useCallback((collection: Collection) => {
+    setSelectedCollection(collection);
+    setIsEditDrawerVisible(true);
+  }, []);
+
+  const handleEditSuccess = useCallback((message: { title: string; description: string }) => {
+    setSuccessModalMessage({
+      ...message,
+      closeText: "Got it!",
+      preventNavigation: true,
+    });
+    setIsSuccessModalVisible(true);
+    
+    // Refetch collections to update the list
+    refetchWorkspaceCollections();
+    refetchAllCollections();
+  }, [refetchWorkspaceCollections, refetchAllCollections]);
+
+  const renderCollectionItem = ({ item: collection, onLongPress }: CollectionItemProps) => (
     <TouchableOpacity 
       style={styles.collectionItem} 
       onPress={() => handleCollectionPress(collection)}
+      onLongPress={() => onLongPress(collection)}
+      delayLongPress={500}
     >
       <View style={styles.collectionContent}>
         <View style={styles.emojiContainer}>
@@ -155,7 +181,10 @@ export default function CollectionsScreen() {
       <Text style={styles.sectionTitle}>{section.title}</Text>
       <FlatList
         data={section.data}
-        renderItem={renderCollectionItem}
+        renderItem={({ item }) => renderCollectionItem({ 
+          item, 
+          onLongPress: handleLongPress 
+        })}
         ItemSeparatorComponent={renderSeparator}
         scrollEnabled={false}
       />
@@ -246,6 +275,24 @@ export default function CollectionsScreen() {
           />
         )}
       </Animated.View>
+
+      {selectedCollection && (
+        <View>
+          <BottomDrawer
+          isVisible={isEditDrawerVisible}
+          onClose={() => setIsEditDrawerVisible(false)}
+          customContent={
+            <EditCollectionView
+              collection={selectedCollection}
+              onBack={() => setIsEditDrawerVisible(false)}
+              onClose={() => setIsEditDrawerVisible(false)}
+              onSuccess={handleEditSuccess}
+            />
+          }
+        />
+        </View>
+   
+      )}
     </SafeAreaView>
   );
 }
