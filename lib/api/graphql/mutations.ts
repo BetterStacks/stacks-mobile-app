@@ -442,3 +442,27 @@ export const MUTATION_UPDATE_LINK = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_QUICK_NOTE = gql`
+  mutation Update_quick_note($content: String!, $color: String!, $id: ID!) {
+    update_quick_note(input: { id: $id, content: $content, color: $color }) {
+      color
+      content
+      created_at
+      id
+      updated_at
+    }
+  }
+`;
+
+export const MUTATION_CREATE_QUICK_NOTE = gql`
+  mutation Create_quick_note($content: String!, $color: String!) {
+    create_quick_note(input: { content: $content, color: $color }) {
+      color
+      content
+      created_at
+      id
+      updated_at
+    }
+  }
+`;
