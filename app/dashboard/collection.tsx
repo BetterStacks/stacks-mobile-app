@@ -1,13 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Stack, router } from 'expo-router';
 import { ParticularCollectionScreen } from '@/components/collections/ParticularCollectionScreen';
 import { useLocalSearchParams } from 'expo-router';
 import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Feather } from '@expo/vector-icons';
 import { getEmojiFromCode } from '@/lib/utils';
+import BottomDrawer from '@/components/BottomDrawer/BottomDrawer';
+import EditCollectionView from '@/components/BottomDrawer/EditCollectionView';
+import { setIsSuccessModalVisible, setSuccessModalMessage } from '@/lib/apollo/store/handlers';
 
 export default function CollectionScreen() {
-  const { title, emoji } = useLocalSearchParams<{ title: string, emoji: string }>();
+  const params = useLocalSearchParams<{ title: string, emoji: string, id: string }>();
+  const [currentTitle, setCurrentTitle] = useState(params.title || 'Collection');
+  const [isEditDrawerVisible, setIsEditDrawerVisible] = useState(false);
+  
+  const handleEditPress = () => {
+    setIsEditDrawerVisible(true);
+  };
+
+  const handleEditSuccess = (message: { title: string; description: string }) => {
+    // Update the current title with the edited title
+    setCurrentTitle(message.title);
+    
+    // Navigate back to refresh the screen with updated data
+    router.replace({
+      pathname: "/dashboard/collection",
+      params: {
+        id: params.id,
+        title: message.title,
+        emoji: params.emoji,
+      },
+    });
+  };
   
   return (
     <>
@@ -17,12 +41,12 @@ export default function CollectionScreen() {
           headerBackVisible: false, // Hide default back button
           headerTitle: () => (
             <View style={styles.headerTitle}>
-              {emoji && (
+              {params.emoji && (
                 <Text style={styles.emoji}>
-                  {getEmojiFromCode(emoji)}
+                  {getEmojiFromCode(params.emoji)}
                 </Text>
               )}
-              <Text style={styles.title}>{title || 'Collection'}</Text>
+              <Text style={styles.title}>{currentTitle}</Text>
             </View>
           ),
           headerLeft: () => (
@@ -33,9 +57,32 @@ export default function CollectionScreen() {
               <AntDesign name="arrowleft" size={24} color="black" />
             </TouchableOpacity>
           ),
+          headerRight: () => (
+            <TouchableOpacity 
+              onPress={handleEditPress} 
+              style={{ marginRight: 16 }}
+            >
+              <Feather name="edit-2" size={20} color="black" />
+            </TouchableOpacity>
+          ),
         }} 
       />
       <ParticularCollectionScreen />
+
+      <View>
+        <BottomDrawer
+          isVisible={isEditDrawerVisible}
+          onClose={() => setIsEditDrawerVisible(false)}
+          customContent={
+            <EditCollectionView
+              collection={{ id: params.id, title: currentTitle, emoji: params.emoji }}
+              onBack={() => setIsEditDrawerVisible(false)}
+              onClose={() => setIsEditDrawerVisible(false)}
+              onSuccess={handleEditSuccess}
+            />
+          }
+        />
+      </View>
     </>
   );
 }
