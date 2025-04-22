@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Link, FolderPlus, File } from "lucide-react-native";
+import { Link, FolderPlus, File, Edit } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import Modal, { ReactNativeModal } from "react-native-modal";
 import AddLinkView from "./AddLinkView";
@@ -61,6 +61,13 @@ const BottomDrawer = ({
     setIsFileUploadView(true);
   };
 
+  const handleNewQuickNote = () => {
+    onClose();
+    router.push({
+      pathname: "/quick-note-editor"
+    });
+  };
+
   const handleNewCollection = useCallback(() => {
     onClose();
     router.push("/collection/create");
@@ -86,6 +93,11 @@ const BottomDrawer = ({
       icon: <File size={24} color="#000000" />,
       title: "New File",
       onPress: handleNewFile,
+    },
+    {
+      icon: <Edit size={24} color="#000000" />,
+      title: "New Quick Note",
+      onPress: handleNewQuickNote,
     },
   ];
 
