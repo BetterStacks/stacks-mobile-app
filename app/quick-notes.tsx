@@ -1,8 +1,8 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
-import React, { useState, useEffect } from "react";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_QUICK_NOTES } from "@/lib/api/graphql/queries";
-import { MUTATION_CREATE_QUICK_NOTE } from "@/lib/api/graphql/mutations";
+import { MUTATION_CREATE_QUICK_NOTE, MUTATION_DELETE_QUICK_NOTE } from "@/lib/api/graphql/mutations";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors as colors } from "@/components/design/colors";
 import { router, Stack } from "expo-router";
@@ -13,16 +13,25 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
+  runOnJS,
 } from "react-native-reanimated";
+import { Swipeable } from "react-native-gesture-handler";
+import { Toast } from "toastify-react-native";
 
 export default function QuickNotesScreen() {
   const { loading, error, data, refetch } = useQuery(QUERY_QUICK_NOTES);
   const [createQuickNote] = useMutation(MUTATION_CREATE_QUICK_NOTE);
+  const [deleteQuickNote] = useMutation(MUTATION_DELETE_QUICK_NOTE);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Animation values for FAB
   const scrollY = useSharedValue(0);
   const lastScrollY = useSharedValue(0);
   const fabAnimation = useSharedValue(1);
+
+  // Store reference to open swipeable items
+  const swipeableRefs = React.useRef<Map<string, Swipeable>>(new Map());
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -62,6 +71,71 @@ export default function QuickNotesScreen() {
     });
   };
 
+  const closeAllSwipeables = () => {
+    swipeableRefs.current.forEach((ref) => {
+      ref?.close();
+    });
+  };
+
+  const confirmDelete = useCallback((id: string) => {
+    Alert.alert(
+      "Delete Note",
+      "Are you sure you want to delete this note?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+          onPress: () => {
+            const swipeable = swipeableRefs.current.get(id);
+            swipeable?.close();
+          }
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => handleDelete(id),
+        },
+      ],
+      { cancelable: false }
+    );
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      setDeletingId(id);
+      await deleteQuickNote({
+        variables: {
+          quick_note_id: id
+        }
+      });
+      await refetch();
+      Toast.success("Note deleted successfully", "bottom");
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      Toast.error("Failed to delete note", "bottom");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const renderRightActions = useCallback((id: string) => {
+    return (
+      <View style={styles.deleteContainer}>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => confirmDelete(id)}
+          disabled={deletingId === id}
+        >
+          {deletingId === id ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <AntDesign name="delete" size={20} color="#FFFFFF" />
+          )}
+        </TouchableOpacity>
+      </View>
+    );
+  }, [confirmDelete, deletingId]);
+
   const renderNoteItem = ({ item }: { item: any }) => {
     // Extract first line as title
     const title = item.content.split('\n')[0].replace(/^#+ /, '') || 'Untitled Note';
@@ -79,32 +153,52 @@ export default function QuickNotesScreen() {
     });
 
     return (
-      <TouchableOpacity 
-        style={styles.noteItem}
-        onPress={() => {
-          router.push({
-            pathname: "/quick-note-editor",
-            params: { id: item.id }
+      <Swipeable
+        ref={(ref) => {
+          if (ref) {
+            swipeableRefs.current.set(item.id, ref);
+          } else {
+            swipeableRefs.current.delete(item.id);
+          }
+        }}
+        renderRightActions={() => renderRightActions(item.id)}
+        onSwipeableOpen={() => {
+          // Close all other open swipeables
+          swipeableRefs.current.forEach((ref, id) => {
+            if (id !== item.id) {
+              ref?.close();
+            }
           });
         }}
       >
-        <View style={styles.noteHeader}>
-          <View style={styles.iconContainer}>
-            <AntDesign name="file1" size={16} color={colors.TextColor.LignMainColor} />
+        <TouchableOpacity 
+          style={styles.noteItem}
+          onPress={() => {
+            closeAllSwipeables();
+            router.push({
+              pathname: "/quick-note-editor",
+              params: { id: item.id }
+            });
+          }}
+        >
+          <View style={styles.noteHeader}>
+            <View style={styles.iconContainer}>
+              <AntDesign name="file1" size={16} color={colors.TextColor.LignMainColor} />
+            </View>
+            <Text style={styles.noteTitle} numberOfLines={1} ellipsizeMode="tail">
+              {title}
+            </Text>
           </View>
-          <Text style={styles.noteTitle} numberOfLines={1} ellipsizeMode="tail">
-            {title}
-          </Text>
-        </View>
-        
-        {preview && (
-          <Text style={styles.notePreview} numberOfLines={2} ellipsizeMode="tail">
-            {preview}
-          </Text>
-        )}
-        
-        <Text style={styles.noteDate}>{formattedDate}</Text>
-      </TouchableOpacity>
+          
+          {preview && (
+            <Text style={styles.notePreview} numberOfLines={2} ellipsizeMode="tail">
+              {preview}
+            </Text>
+          )}
+          
+          <Text style={styles.noteDate}>{formattedDate}</Text>
+        </TouchableOpacity>
+      </Swipeable>
     );
   };
 
@@ -225,6 +319,21 @@ const styles = StyleSheet.create({
     color: "#AAAAAA",
     fontWeight: "400",
     paddingLeft: 44, // Align with title and preview
+  },
+  deleteContainer: {
+    marginBottom: 16,
+    width: 80,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30',
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   centered: {
     flex: 1,

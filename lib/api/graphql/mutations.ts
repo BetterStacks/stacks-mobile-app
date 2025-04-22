@@ -466,3 +466,9 @@ export const MUTATION_CREATE_QUICK_NOTE = gql`
     }
   }
 `;
+
+export const MUTATION_DELETE_QUICK_NOTE = gql`
+  mutation Delete_quick_note($quick_note_id: ID!) {
+    delete_quick_note(input: { quick_note_id: $quick_note_id })
+  }
+`;
