@@ -4,15 +4,26 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import React from "react";
 import WebView from "react-native-webview";
 import {Colors} from "@/components/design/colors";
+import {getValueFromStorage} from "@/utils/storage/getStorage";
 
 const IndividualPage = () => {
+	const [token, setToken] = React.useState<string | null>(null);
+
+	React.useEffect(() => {
+		const fetchToken = async () => {
+			const storedToken = await getValueFromStorage("token");
+			setToken(storedToken);
+		};
+		fetchToken();
+	}, []);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar style="light" />
 			<View style={{ width: "100%", height: "110%" }}>
-				<WebView
-					source={{ uri: "http://localhost:3000/page?pageId=220&gqlToken=oe9iqT956g2jFstENSY4" }}
-				/>
+				{token && <WebView
+					source={{uri: `http://localhost:3000/page?pageId=220&gqlToken=${token}`}}
+				/>}
 			</View>
 
 		</SafeAreaView>
