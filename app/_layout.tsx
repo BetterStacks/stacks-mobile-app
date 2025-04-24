@@ -13,6 +13,7 @@ import {useShareIntent} from "expo-share-intent";
 import ToastManager from "toastify-react-native";
 import {AddNewLinkModal} from "@/components/AddNewLinkModal";
 import {View} from "react-native";
+import {KeyboardProvider} from "react-native-keyboard-controller";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -48,32 +49,34 @@ export default function RootLayout() {
 
 	return (
 		<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-			<ApolloProvider client={client}>
-				<Stack>
-					<Stack.Screen name="index" options={{ headerShown: false }} />
-					<Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
-					<Stack.Screen
-						name="signin"
-						options={{
-							title: 'Sign In',
-							headerShown: true // or false based on your needs
-						}}
-					/>
-					<Stack.Screen name="dashboard" options={{ headerShown: false }} />
-					<Stack.Screen name="+not-found" />
-				</Stack>
-				<StatusBar style="auto" />
+			<KeyboardProvider>
+				<ApolloProvider client={client}>
+					<Stack>
+						<Stack.Screen name="index" options={{ headerShown: false }} />
+						<Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
+						<Stack.Screen
+							name="signin"
+							options={{
+								title: 'Sign In',
+								headerShown: true // or false based on your needs
+							}}
+						/>
+						<Stack.Screen name="dashboard" options={{ headerShown: false }} />
+						<Stack.Screen name="+not-found" />
+					</Stack>
+					<StatusBar style="auto" />
 
-				<View>
-					<AddNewLinkModal
-						isNewLinkModalShown={shareModalVisible}
-						setIsNewLinkModalShown={setShareModalVisible}
-						link={link}
-						setLink={setLink}
-					/>
-				</View>
-				<ToastManager />
-			</ApolloProvider>
+					<View>
+						<AddNewLinkModal
+							isNewLinkModalShown={shareModalVisible}
+							setIsNewLinkModalShown={setShareModalVisible}
+							link={link}
+							setLink={setLink}
+						/>
+					</View>
+					<ToastManager />
+				</ApolloProvider>
+			</KeyboardProvider>
 		</ThemeProvider>
 	);
 }
