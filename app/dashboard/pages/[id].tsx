@@ -5,9 +5,12 @@ import React from "react";
 import WebView from "react-native-webview";
 import {Colors} from "@/components/design/colors";
 import {getValueFromStorage} from "@/utils/storage/getStorage";
+import {useLocalSearchParams} from "expo-router";
 
 const IndividualPage = () => {
 	const [token, setToken] = React.useState<string | null>(null);
+
+	const {id} = useLocalSearchParams();
 
 	React.useEffect(() => {
 		const fetchToken = async () => {
@@ -22,7 +25,7 @@ const IndividualPage = () => {
 			<StatusBar style="light" />
 			<View style={{ width: "100%", height: "110%" }}>
 				{token && <WebView
-					source={{uri: `http://localhost:3000/page?pageId=220&gqlToken=${token}`}}
+					source={{uri: `http://localhost:3000/page?pageId=${id}&gqlToken=${token}`}}
 				/>}
 			</View>
 
