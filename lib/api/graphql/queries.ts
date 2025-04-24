@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import {gql} from "@apollo/client";
 
 export const QUERY_LINKS = gql`
   query QUERY_LINKS(
@@ -61,6 +61,9 @@ export const QUERY_LINKS = gql`
         name
       }
       is_user_page
+      user_page {
+        id
+      }
       is_quick_note
       collections {
         id

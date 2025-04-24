@@ -1,5 +1,5 @@
-import { Collection } from "./Collection";
-import { User } from "./User";
+import {Collection} from "./Collection";
+import {User} from "./User";
 
 type Annotation = {
   created_at: string;
@@ -48,6 +48,9 @@ export type Link = {
   annotations?: Annotation[];
   user: User;
   is_user_page: boolean;
+  user_page: {
+    id: string;
+  }
   is_quick_note: boolean;
   collections: Collection[];
   user_repositories: UserRepository[];
