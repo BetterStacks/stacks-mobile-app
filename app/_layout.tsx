@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
 import {useEffect, useState} from 'react';
 import 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import {useColorScheme} from '@/hooks/useColorScheme';
 import {ApolloProvider} from "@apollo/client";
@@ -48,8 +49,8 @@ export default function RootLayout() {
 	}
 
 	return (
-		<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-			<KeyboardProvider>
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
 				<ApolloProvider client={client}>
 					<Stack>
 						<Stack.Screen name="index" options={{ headerShown: false }} />
@@ -76,7 +77,7 @@ export default function RootLayout() {
 					</View>
 					<ToastManager />
 				</ApolloProvider>
-			</KeyboardProvider>
-		</ThemeProvider>
+			</ThemeProvider>
+		</GestureHandlerRootView>
 	);
 }

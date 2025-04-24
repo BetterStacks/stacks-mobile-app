@@ -145,13 +145,17 @@ export default function DashboardHomeScreen() {
   };
 
   const handleNotesPress = () => {
-    router.push({
-      pathname: "/all-links",
-      params: {
-        withNotes: "true",
-        title: "Notes"
-      }
-    });
+    // Comment out previous implementation
+    // router.push({
+    //   pathname: "/all-links",
+    //   params: {
+    //     withNotes: "true",
+    //     title: "Notes"
+    //   }
+    // });
+    
+    // Navigate to new quick notes screen
+    router.push("/quick-notes" as any);
   };
 
   const handleHighlightsPress = () => {
@@ -192,7 +196,7 @@ export default function DashboardHomeScreen() {
     },
     {
       emoji: "📑",
-      title: "Notes",
+      title: "Quick Notes",
       count: 0,
       onPress: handleNotesPress,
     },
@@ -269,7 +273,7 @@ export default function DashboardHomeScreen() {
     // },
     {
       emoji: "📝",
-      title: "Notes",
+      title: "Quick Notes",
       onPress: handleNotesPress,
     },
     {

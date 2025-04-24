@@ -557,3 +557,15 @@ export const QUERY_QUICK_LINKS = gql`
     }
   }
 `;
+
+export const QUERY_QUICK_NOTES = gql`
+  query Quick_notes {
+    quick_notes {
+      color
+      content
+      created_at
+      id
+      updated_at
+    }
+  }
+`;
