@@ -13,8 +13,6 @@ install! 'cocoapods',
 
 prepare_react_native_project!
 
-project 'Stacks.xcodeproj'
-
 target 'Stacks' do
   use_expo_modules!
 
@@ -43,7 +41,7 @@ target 'Stacks' do
     :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",
-    :privacy_file_aggregation_enabled => false,
+    :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
   )
 
   post_install do |installer|

@@ -14,6 +14,7 @@ import {useShareIntent} from "expo-share-intent";
 import ToastManager from "toastify-react-native";
 import {AddNewLinkModal} from "@/components/AddNewLinkModal";
 import {View} from "react-native";
+import {KeyboardProvider} from "react-native-keyboard-controller";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

@@ -2,7 +2,16 @@ import React, {useCallback} from "react";
 import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {MUTATION_SIGNIN, MUTATION_SIGNUP, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
-import {Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+	Image,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
 import {useAppleSignIn} from "@/hooks/useAppleSignIn";
@@ -224,11 +233,11 @@ const SignInScreen = () => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // or 'position'
           style={{ flex: 1 }}
       >
-        <View style={styles.container}>
-      {/* CHECK FOR THE PRESENCE OF TOKEN */}
-      <TokenCheck />
+        <ScrollView style={styles.container}>
+          {/* CHECK FOR THE PRESENCE OF TOKEN */}
+          <TokenCheck />
 
-      <View style={styles.mainContainer}>
+          <View style={styles.mainContainer}>
         <LogoIcon width={63} height={53} />
 
         <Text style={styles.title}>Login to your account</Text>
@@ -302,13 +311,13 @@ const SignInScreen = () => {
         </View>
       </View>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerSubtitle}>Don't have an account?</Text>
-        <TouchableOpacity>
-          <Text style={styles.footerTitle}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <View style={styles.footer}>
+            <Text style={styles.footerSubtitle}>Don't have an account?</Text>
+            <TouchableOpacity>
+              <Text style={styles.footerTitle}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
   );
 };

@@ -9,6 +9,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
 import EditLinkView from "../BottomDrawer/EditLinkView";
+import {useRouter} from "expo-router";
 
 function getFileExtension(url: string) {
   // Get the last part of the URL after the last dot
@@ -45,6 +46,8 @@ export const CardLink: React.FC<Props> = ({
   const [articleText, setArticleText] = useState("");
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
+  const router = useRouter();
+
   // const { isPlaying, ttsReady, toggleSpeech } = useTTS({
   //   title: link.title,
   //   articleText,
@@ -67,6 +70,10 @@ export const CardLink: React.FC<Props> = ({
     }
     if (imgTypes.includes(extension)) {
       setImageUri(targetUrl);
+      return;
+    }
+    if (isUserPage) {
+      router.push(`/dashboard/pages/${link.user_page.id}`);
       return;
     }
     Linking.openURL(targetUrl);
@@ -158,6 +165,8 @@ export const CardLink: React.FC<Props> = ({
     zIndex: 10,
   };
 
+  const isUserPage = link.is_user_page
+
   return (
     <Animated.View style={[styles.container, rStyle]}>
       <TouchableOpacity
@@ -237,6 +246,8 @@ export const CardLink: React.FC<Props> = ({
                       </Text>
                     </View>
                 )}
+
+                <Text>{isUserPage ? `Is Page ${link.user_page.id}` : 'Is not Page'}</Text>
               </>
             )}
           </View>
