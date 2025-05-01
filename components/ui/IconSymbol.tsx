@@ -17,6 +17,7 @@ const MAPPING = {
 	'person.fill': 'person',
 	'chevron.left.forwardslash.chevron.right': 'code',
 	'chevron.right': 'chevron-forward',
+	'sparkles': 'sparkles',
 } as Partial<
 	Record<
 		string,

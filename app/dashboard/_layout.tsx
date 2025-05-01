@@ -36,11 +36,11 @@ export default function DashboardLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="collections"
+				name="ai"
 				options={{
-					title: "Collections",
+					title: "Stacks AI",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol name="folder.fill" color={color} />
+						<IconSymbol name="sparkles" color={color} />
 					),
 				}}
 			/>
@@ -73,6 +73,12 @@ export default function DashboardLayout() {
 			/>
 			<Tabs.Screen
 				name="collection"
+				options={{
+					href: null
+				}}
+			/>
+			<Tabs.Screen
+				name="collections"
 				options={{
 					href: null
 				}}

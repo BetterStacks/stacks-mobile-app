@@ -207,11 +207,11 @@ export default function DashboardHomeScreen() {
       onPress: handleHighlightsPress,
     },
     {
-      emoji: "⏰",
-      title: "Reminder",
-      count: 1,
+      emoji: "📂",
+      title: "Collections",
+      count: 0,
       onPress: () => {
-        Toast.success("Reminders coming soon!");
+        router.push("/dashboard/collections");
       },
     },
     {

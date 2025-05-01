@@ -1,4 +1,3 @@
-import {styles} from "@/components/collections/CollectionsScreenStyle";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View,} from "react-native";
 import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
@@ -151,22 +150,22 @@ export default function CollectionsScreen() {
 
   const renderCollectionItem = ({ item: collection, onLongPress }: CollectionItemProps) => (
     <TouchableOpacity 
-      style={styles.collectionItem} 
+      style={localStyles.collectionItem} 
       onPress={() => handleCollectionPress(collection)}
       onLongPress={() => onLongPress(collection)}
       delayLongPress={500}
     >
-      <View style={styles.collectionContent}>
-        <View style={styles.emojiContainer}>
-          <Text style={styles.collectionEmoji} allowFontScaling={false}>
+      <View style={localStyles.collectionContent}>
+        <View style={localStyles.emojiContainer}>
+          <Text style={localStyles.collectionEmoji} allowFontScaling={false}>
             {getEmojiFromCode(collection.emoji)}
           </Text>
         </View>
-        <View style={styles.collectionInfo}>
-          <Text style={styles.collectionTitle}>
+        <View style={localStyles.collectionInfo}>
+          <Text style={localStyles.collectionTitle}>
             {collection.title}
-            <Text style={styles.collectionCount}>
-              ({collection.links_count})
+            <Text style={localStyles.collectionCount}>
+              {' '}({collection.links_count})
             </Text>
           </Text>
         </View>
@@ -174,11 +173,11 @@ export default function CollectionsScreen() {
     </TouchableOpacity>
   );
 
-  const renderSeparator = () => <View style={styles.separator} />;
+  const renderSeparator = () => <View style={localStyles.separator} />;
 
   const renderSection = ({ item: section }: SectionProps) => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
+    <View style={localStyles.section}>
+      <Text style={localStyles.sectionTitle}>{section.title}</Text>
       <FlatList
         data={section.data}
         renderItem={({ item }) => renderCollectionItem({ 
@@ -220,42 +219,153 @@ export default function CollectionsScreen() {
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 50,
-    }
+    },
+    backButton: {
+      padding: 8,
+      marginRight: 8,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 16,
+      backgroundColor: '#fff',
+    },
+    headerInfo: {
+      flex: 1,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: '500',
+      color: '#333',
+    },
+    text: {
+      fontSize: 14,
+      color: '#888',
+    },
+    addButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 8,
+      backgroundColor: '#f5f5f5',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    searchContainer: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      marginBottom: 8,
+    },
+    searchWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#f5f5f5',
+      borderRadius: 8,
+      paddingHorizontal: 10,
+    },
+    searchIcon: {
+      marginRight: 8,
+    },
+    searchInput: {
+      flex: 1,
+      height: 40,
+      color: '#333',
+    },
+    section: {
+      marginBottom: 16,
+    },
+    sectionTitle: {
+      fontSize: 16,
+      fontWeight: '400',
+      marginBottom: 8,
+      paddingHorizontal: 16,
+      color: '#666',
+    },
+    collectionItem: {
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+    },
+    collectionContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    emojiContainer: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: '#f7f7f7',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 12,
+    },
+    collectionEmoji: {
+      fontSize: 18,
+    },
+    collectionInfo: {
+      flex: 1,
+    },
+    collectionTitle: {
+      fontSize: 15,
+      fontWeight: '400',
+      color: '#333',
+    },
+    collectionCount: {
+      fontSize: 13,
+      color: '#888',
+      marginLeft: 4,
+    },
+    separator: {
+      height: 1,
+      backgroundColor: '#f0f0f0',
+      marginLeft: 68,
+    },
+    listContentContainer: {
+      paddingBottom: 150,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+    },
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={localStyles.container}>
       <Animated.View style={[animViewStyle]}>
-        <View style={styles.header}>
-          <View style={styles.headerInfo}>
-            <Text style={styles.title}>Collections</Text>
-            <Text style={styles.text}>Browse your collections</Text>
+        <View style={localStyles.header}>
+          <TouchableOpacity
+            style={localStyles.backButton}
+            onPress={() => router.back()}
+          >
+            <AntDesign name="arrowleft" size={22} color="#666" />
+          </TouchableOpacity>
+          
+          <View style={localStyles.headerInfo}>
+            <Text style={localStyles.title}>Collections</Text>
+            <Text style={localStyles.text}>Browse your collections</Text>
           </View>
 
-          <View style={styles.addButton}>
-            <TouchableOpacity
-              onPress={onAddCollectionPress}
-              style={[styles.addButton, localStyles.addButtonWrapper]}
-            >
-              <AntDesign name="plus" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={onAddCollectionPress}
+            style={localStyles.addButton}
+          >
+            <AntDesign name="plus" size={22} color="#666" />
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.searchContainer}>
-          <View style={styles.searchWrapper}>
+        <View style={localStyles.searchContainer}>
+          <View style={localStyles.searchWrapper}>
             <AntDesign
               name="search1"
               size={16}
               color="#666"
-              style={styles.searchIcon}
+              style={localStyles.searchIcon}
             />
             <TextInput
               value={searchQuery}
               onChangeText={setSearchQuery}
               placeholder="Search collections..."
               placeholderTextColor="#666"
-              style={styles.searchInput}
+              style={localStyles.searchInput}
             />
           </View>
         </View>
@@ -270,7 +380,7 @@ export default function CollectionsScreen() {
             renderItem={renderSection}
             keyExtractor={(section) => section.title}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContentContainer}
+            contentContainerStyle={localStyles.listContentContainer}
             extraData={workspaceId}
           />
         )}
@@ -291,7 +401,6 @@ export default function CollectionsScreen() {
           }
         />
         </View>
-   
       )}
     </SafeAreaView>
   );
