@@ -1,25 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  TextInput, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Text,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator
+import React, {useEffect, useState} from 'react';
+import {
+	ActivityIndicator,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	useColorScheme,
+	View
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
-import { Colors as colors } from '@/components/design/colors';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {StatusBar} from 'expo-status-bar';
+import {Colors as colors} from '@/components/design/colors';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useLocalSearchParams, router, Stack } from 'expo-router';
-import { useQuery, useMutation } from '@apollo/client';
-import { QUERY_QUICK_NOTES } from '@/lib/api/graphql/queries';
-import { MUTATION_UPDATE_QUICK_NOTE, MUTATION_CREATE_QUICK_NOTE } from '@/lib/api/graphql/mutations';
+import {router, Stack, useLocalSearchParams} from 'expo-router';
+import {useMutation, useQuery} from '@apollo/client';
+import {QUERY_QUICK_NOTES} from '@/lib/api/graphql/queries';
+import {MUTATION_CREATE_QUICK_NOTE, MUTATION_UPDATE_QUICK_NOTE} from '@/lib/api/graphql/mutations';
 import Markdown from 'react-native-markdown-display';
-import { Toast } from "toastify-react-native";
+import {Toast} from "toastify-react-native";
 
 // Define types
 interface QuickNote {
@@ -31,6 +32,9 @@ interface QuickNote {
 }
 
 export default function QuickNoteEditorScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
   const { id } = useLocalSearchParams();
   const [noteContent, setNoteContent] = useState('');
   const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -105,7 +109,7 @@ export default function QuickNoteEditorScreen() {
   };
 
   // Markdown styling rules
-  const markdownStyles = {
+  const lightMarkdownStyles = {
     body: {
       fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
       fontSize: 16,
@@ -117,18 +121,21 @@ export default function QuickNoteEditorScreen() {
       marginTop: 16,
       marginBottom: 8,
       fontWeight: 'bold',
+      color: '#1C4A5A',
     },
     heading2: {
       fontSize: 20,
       marginTop: 16,
       marginBottom: 8,
       fontWeight: 'bold',
+      color: '#1C4A5A',
     },
     heading3: {
       fontSize: 18,
       marginTop: 16,
       marginBottom: 8,
       fontWeight: 'bold',
+      color: '#1C4A5A',
     },
     link: {
       color: colors.TextColor.LignMainColor,
@@ -160,9 +167,72 @@ export default function QuickNoteEditorScreen() {
     },
   };
 
+  // Dark mode markdown styles
+  const darkMarkdownStyles = {
+    body: {
+      fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+      fontSize: 16,
+      lineHeight: 24,
+      color: '#FFFFFF',
+    },
+    heading1: {
+      fontSize: 24,
+      marginTop: 16,
+      marginBottom: 8,
+      fontWeight: 'bold',
+      color: '#FFFFFF',
+    },
+    heading2: {
+      fontSize: 20,
+      marginTop: 16,
+      marginBottom: 8,
+      fontWeight: 'bold',
+      color: '#FFFFFF',
+    },
+    heading3: {
+      fontSize: 18,
+      marginTop: 16,
+      marginBottom: 8,
+      fontWeight: 'bold',
+      color: '#FFFFFF',
+    },
+    link: {
+      color: '#8EACB7',
+      textDecorationLine: 'underline' as 'underline',
+    },
+    blockquote: {
+      backgroundColor: '#262626',
+      padding: 8,
+      borderLeftWidth: 4,
+      borderLeftColor: '#505050',
+      marginVertical: 8,
+    },
+    bullet_list: {
+      marginVertical: 8,
+    },
+    code_block: {
+      backgroundColor: '#262626',
+      padding: 10,
+      borderRadius: 4,
+      fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+      fontSize: 14,
+      color: '#E0E0E0',
+    },
+    code_inline: {
+      backgroundColor: '#262626',
+      fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+      fontSize: 14,
+      paddingHorizontal: 4,
+      borderRadius: 2,
+      color: '#E0E0E0',
+    },
+  };
+
+  const markdownStyles = isDark ? darkMarkdownStyles : lightMarkdownStyles;
+
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={isDark ? styles.container_dark : styles.container}>
         <ActivityIndicator size="large" color={colors.TextColor.LignMainColor} />
       </SafeAreaView>
     );
@@ -170,8 +240,8 @@ export default function QuickNoteEditorScreen() {
 
   if (error && !isCreateMode) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text>Error loading note</Text>
+      <SafeAreaView style={isDark ? styles.container_dark : styles.container}>
+        <Text style={isDark ? { color: "#FFFFFF" } : undefined}>Error loading note</Text>
       </SafeAreaView>
     );
   }
@@ -179,17 +249,18 @@ export default function QuickNoteEditorScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <SafeAreaView style={styles.container}>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <SafeAreaView style={isDark ? styles.container_dark : styles.container}>
         
-        <View style={styles.header}>
+        <View style={isDark ? styles.header_dark : styles.header}>
           <TouchableOpacity 
             style={styles.headerButton}
             onPress={() => router.back()}
           >
-            <AntDesign name="arrowleft" size={24} color="#000" />
+            <AntDesign name="arrowleft" size={24} color={isDark ? "#FFFFFF" : "#000"} />
           </TouchableOpacity>
           
-          <Text style={styles.headerTitle}>
+          <Text style={isDark ? styles.headerTitle_dark : styles.headerTitle}>
             {isCreateMode ? "New Quick Note" : "Edit Quick Note"}
           </Text>
           
@@ -201,7 +272,7 @@ export default function QuickNoteEditorScreen() {
               <AntDesign 
                 name={isPreviewMode ? "edit" : "eye"} 
                 size={24} 
-                color="#000" 
+                color={isDark ? "#FFFFFF" : "#000"} 
               />
             </TouchableOpacity>
             
@@ -210,7 +281,7 @@ export default function QuickNoteEditorScreen() {
               onPress={handleSave}
               disabled={isSaving}
             >
-              <AntDesign name="check" size={24} color="#000" />
+              <AntDesign name="check" size={24} color={isDark ? "#FFFFFF" : "#000"} />
             </TouchableOpacity>
           </View>
         </View>
@@ -220,19 +291,20 @@ export default function QuickNoteEditorScreen() {
           style={styles.content}
         >
           {isPreviewMode ? (
-            <ScrollView style={styles.previewContainer}>
+            <ScrollView style={isDark ? styles.previewContainer_dark : styles.previewContainer}>
               <Markdown style={markdownStyles as any}>
                 {noteContent}
               </Markdown>
             </ScrollView>
           ) : (
-            <ScrollView style={styles.editorContainer}>
+            <ScrollView style={isDark ? styles.editorContainer_dark : styles.editorContainer}>
               <TextInput
-                style={styles.editor}
+                style={isDark ? styles.editor_dark : styles.editor}
                 multiline
                 value={noteContent}
                 onChangeText={setNoteContent}
                 placeholder="Start writing your note here..."
+                placeholderTextColor={isDark ? "#8F8F8F" : "#999"}
                 autoFocus
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -250,6 +322,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
+  container_dark: {
+    flex: 1,
+    backgroundColor: '#0A0A0A',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -258,11 +334,27 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eeeeee',
   },
+  header_dark: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#262626',
+  },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
     flex: 1,
     textAlign: 'center',
+    color: '#1C4A5A',
+  },
+  headerTitle_dark: {
+    fontSize: 18,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'center',
+    color: '#FFFFFF',
   },
   headerActions: {
     flexDirection: 'row',
@@ -276,6 +368,11 @@ const styles = StyleSheet.create({
   },
   editorContainer: {
     flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  editorContainer_dark: {
+    flex: 1,
+    backgroundColor: '#171717',
   },
   editor: {
     minHeight: '100%',
@@ -284,9 +381,26 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     lineHeight: 24,
     textAlignVertical: 'top',
+    color: '#333333',
+  },
+  editor_dark: {
+    minHeight: '100%',
+    padding: 16,
+    fontSize: 16,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    lineHeight: 24,
+    textAlignVertical: 'top',
+    color: '#FFFFFF',
+    backgroundColor: '#171717',
   },
   previewContainer: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#ffffff',
+  },
+  previewContainer_dark: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#171717',
   },
 }); 

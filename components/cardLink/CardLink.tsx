@@ -1,6 +1,6 @@
 import {Link} from "@/lib/types/Link";
 import React, {useCallback, useState} from "react";
-import {Image, Linking, Text, TouchableOpacity, View, ViewToken,} from "react-native";
+import {ColorSchemeName, Image, Linking, Text, TouchableOpacity, useColorScheme, View, ViewToken,} from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Animated, {Easing, useAnimatedStyle, withDelay, withTiming,} from "react-native-reanimated";
 import {styles} from "./CardLinkStyles";
@@ -26,6 +26,7 @@ type Props = {
   setPdfViewerVisible?: (a: string) => void;
   setVideoPlayerUri?: (a: string) => void;
   setImageUri?: (a: string) => void;
+  colorScheme?: ColorSchemeName;
 };
 
 const videoTypes = ["mp4", "mov", "wmv", "avi", "mkv", "webm"];
@@ -38,7 +39,12 @@ export const CardLink: React.FC<Props> = ({
   setPdfViewerVisible = () => null,
   setVideoPlayerUri = () => null,
   setImageUri = () => null,
+  colorScheme: propColorScheme,
 }) => {
+  const deviceColorScheme = useColorScheme();
+  const colorScheme = propColorScheme || deviceColorScheme;
+  const isDark = colorScheme === 'dark';
+  
   const [isDetailsOpenned, setIsDetailsOpenned] = useState(false);
   const [readerVisible, setReaderVisible] = useState(false);
   const [_isLoading, setIsLoading] = useState(false);
@@ -168,14 +174,14 @@ export const CardLink: React.FC<Props> = ({
   const isUserPage = link.is_user_page
 
   return (
-    <Animated.View style={[styles.container, rStyle]}>
+    <Animated.View style={[isDark ? styles.container__dark : styles.container, rStyle]}>
       <TouchableOpacity
-        style={styles.contentContainer}
+        style={isDark ? styles.contentContainer__dark : styles.contentContainer}
         onPress={handleOpenLink}
         onLongPress={handleLongPress}
         delayLongPress={500}
       >
-        <View style={styles.imageContainer}>
+        <View style={isDark ? styles.imageContainer__dark : styles.imageContainer}>
           {link.image_url ? (
             <Image
               style={styles.image}
@@ -191,7 +197,7 @@ export const CardLink: React.FC<Props> = ({
           )}
         </View>
 
-        <View style={styles.content}>
+        <View style={isDark ? styles.content__dark : styles.content}>
           <View>
             {!link.title && !link.description ? (
               <View style={styles.iconPlaceholder}>
@@ -200,7 +206,7 @@ export const CardLink: React.FC<Props> = ({
             ) : (
               <>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text numberOfLines={2} style={[styles.linkTitle, { flex: 1, marginRight: 10 }]}>
+                  <Text numberOfLines={2} style={[isDark ? styles.linkTitle__dark : styles.linkTitle, { flex: 1, marginRight: 10 }]}>
                     {link.title}
                   </Text>
                   <TouchableOpacity
@@ -208,7 +214,7 @@ export const CardLink: React.FC<Props> = ({
                     hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                     style={{ alignSelf: 'flex-start', marginTop: 3 }}
                   >
-                    <Entypo name="dots-three-vertical" size={16} color="#888" />
+                    <Entypo name="dots-three-vertical" size={16} color={isDark ? "#A0A0A0" : "#888"} />
                   </TouchableOpacity>
                 </View>
 
@@ -218,7 +224,7 @@ export const CardLink: React.FC<Props> = ({
                     isQuickNote={link.is_quick_note}
                     faviconUrl={link.favicon_url}
                   /> */}
-                  <Text numberOfLines={1} style={styles.url}>
+                  <Text numberOfLines={1} style={isDark ? styles.url__dark : styles.url}>
                     {link.target_url}
                   </Text>
                 </View>
@@ -227,19 +233,20 @@ export const CardLink: React.FC<Props> = ({
                   <StacksList
                     stacks={link.stacks}
                     collections={link.collections}
+                    colorScheme={colorScheme}
                   />
                 </View>
 
                 {link.notes ? (
                   <View style={styles.noteContainer}>
-                    <MaterialIcons name="edit-note" size={24} color="black" />
-                    <Text numberOfLines={2} style={styles.linkDescription}>
+                    <MaterialIcons name="edit-note" size={24} color={isDark ? "#A0A0A0" : "black"} />
+                    <Text numberOfLines={2} style={isDark ? styles.linkDescription__dark : styles.linkDescription}>
                       {link.notes}
                     </Text>
                   </View>
                 ) : (
                     <View style={styles.noteContainer}>
-                      <Text numberOfLines={2} style={styles.linkDescription}>
+                      <Text numberOfLines={2} style={isDark ? styles.linkDescription__dark : styles.linkDescription}>
                         {link.description
                             ? link.description
                             : "No description provided"}
@@ -247,7 +254,9 @@ export const CardLink: React.FC<Props> = ({
                     </View>
                 )}
 
-                <Text>{isUserPage ? `Is Page ${link.user_page.id}` : 'Is not Page'}</Text>
+                <Text style={isDark ? styles.linkDescription__dark : styles.linkDescription}>
+                  {isUserPage ? `Is Page ${link.user_page.id}` : 'Is not Page'}
+                </Text>
               </>
             )}
           </View>

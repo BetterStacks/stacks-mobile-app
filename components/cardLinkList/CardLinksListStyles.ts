@@ -1,8 +1,8 @@
-import { StyleSheet, Dimensions } from "react-native";
-import { scaleHeight } from "../design/scale";
-import { EFontWeight } from "../design/fonts/types";
-import { getFont } from "../design/fonts/fonts";
-import { Colors } from "../design/colors";
+import {Dimensions, StyleSheet} from "react-native";
+import {scaleHeight} from "../design/scale";
+import {EFontWeight} from "../design/fonts/types";
+import {getFont} from "../design/fonts/fonts";
+import {Colors} from "../design/colors";
 
 const { width, height } = Dimensions.get("window");
 
@@ -10,6 +10,11 @@ export const styles = StyleSheet.create({
   container: {
     width: "100%",
     paddingBottom: scaleHeight(30),
+  },
+  container__dark: {
+    width: "100%",
+    paddingBottom: scaleHeight(30),
+    backgroundColor: "#0A0A0A",
   },
   indicator: {
     marginTop: scaleHeight(15),
@@ -19,6 +24,14 @@ export const styles = StyleSheet.create({
     fontSize: scaleHeight(14),
     lineHeight: scaleHeight(21),
     color: Colors.TextColor.MainColor,
+    marginTop: scaleHeight(30),
+    textAlign: "center",
+  },
+  noLinksText__dark: {
+    ...getFont(EFontWeight.Medium),
+    fontSize: scaleHeight(14),
+    lineHeight: scaleHeight(21),
+    color: "#8EACB7",
     marginTop: scaleHeight(30),
     textAlign: "center",
   },
@@ -43,6 +56,10 @@ export const styles = StyleSheet.create({
   },
   imgWrapper: {
     flex: 1,
+  },
+  imgWrapper__dark: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
   },
   loadingSpinerWrapper: {
     position: "absolute",

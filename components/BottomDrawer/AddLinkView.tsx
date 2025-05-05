@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
 import {
-	ActivityIndicator,
-	Keyboard,
-	StyleSheet,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	useColorScheme,
-	View,
+  ActivityIndicator,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
 import {useMutation, useQuery} from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -179,6 +179,7 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
         onRemoveCollection={handleRemoveCollection}
         isExpanded={isCollectionsExpanded}
         onExpandToggle={handleCollectionButtonPress}
+        colorScheme={colorScheme}
       />
 
       <View style={styles.buttonContainer}>
@@ -208,15 +209,18 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: "#FFFFFF",
   },
   container_dark: {
     padding: 16,
+    backgroundColor: "#171717",
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
     textAlign: "center",
     marginBottom: 20,
+    color: "#1C4A5A",
   },
   title_dark: {
     fontSize: 18,

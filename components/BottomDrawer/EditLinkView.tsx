@@ -1,29 +1,29 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  ActivityIndicator,
-  Image,
+	ActivityIndicator,
+	Image,
+	StyleSheet,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	useColorScheme,
+	View,
 } from "react-native";
-import { useMutation, useQuery } from "@apollo/client";
+import {useMutation, useQuery} from "@apollo/client";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FastImage from "react-native-fast-image";
-import { Link } from "@/lib/types/Link";
-import { NavigationProp } from "@react-navigation/native";
+import {Link} from "@/lib/types/Link";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SELECTED_WORKSPACE_ID_KEY } from "@/lib/constants";
-import { QUERY_COLLECTIONS } from "@/lib/api/graphql/queries";
-import { MUTATION_UPDATE_LINK } from "@/lib/api/graphql/mutations";
-import { parseAnnotationSelectedText } from "@/lib/utils";
-import { CollectionSelector } from "../CollectionSelector";
-import { Colors } from "../design/colors";
-import { scaleHeight, scaleWidth } from "../design/scale";
-import { getFont } from "../design/fonts/fonts";
-import { EFontWeight } from "../design/fonts/types";
+import {SELECTED_WORKSPACE_ID_KEY} from "@/lib/constants";
+import {QUERY_COLLECTIONS} from "@/lib/api/graphql/queries";
+import {MUTATION_UPDATE_LINK} from "@/lib/api/graphql/mutations";
+import {parseAnnotationSelectedText} from "@/lib/utils";
+import {CollectionSelector} from "../CollectionSelector";
+import {Colors} from "../design/colors";
+import {scaleHeight, scaleWidth} from "../design/scale";
+import {getFont} from "../design/fonts/fonts";
+import {EFontWeight} from "../design/fonts/types";
 
 type Props = {
   onBack: () => void;
@@ -42,6 +42,8 @@ type Props = {
 // type NavigationProps = NavigationProp<RootStackParamList>;
 
 const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   // const navigation = useNavigation<NavigationProps>();
   const [selectedCollections, setSelectedCollections] = useState<string[]>(
     link.collections?.map((c) => c.id) || [],
@@ -160,10 +162,10 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
   // }, [link, navigation, onClose]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Edit link</Text>
+    <View style={isDark ? styles.container_dark : styles.container}>
+      <Text style={isDark ? styles.title_dark : styles.title}>Edit link</Text>
 
-      <View style={styles.linkPreview}>
+      <View style={isDark ? styles.linkPreview_dark : styles.linkPreview}>
         {link.image_url && (
           <Image
             source={{ uri: link.image_url }}
@@ -172,7 +174,7 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
           />
         )}
         <View style={styles.linkInfo}>
-          <Text style={styles.linkTitle} numberOfLines={2}>
+          <Text style={isDark ? styles.linkTitle_dark : styles.linkTitle} numberOfLines={2}>
             {link.title}
           </Text>
           <View style={styles.urlBox}>
@@ -184,10 +186,11 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
         </View>
       </View>
 
-      <Text style={styles.label}>Notes</Text>
+      <Text style={isDark ? styles.label_dark : styles.label}>Notes</Text>
       <TextInput
-        style={styles.notesInput}
+        style={isDark ? styles.notesInput_dark : styles.notesInput}
         placeholder="Add your notes here..."
+        placeholderTextColor={isDark ? "#8F8F8F" : undefined}
         value={notes}
         onChangeText={setNotes}
         multiline
@@ -195,7 +198,7 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
         numberOfLines={4}
       />
 
-      <Text style={styles.label}>Collections</Text>
+      <Text style={isDark ? styles.label_dark : styles.label}>Collections</Text>
       <CollectionSelector
         collections={collectionsData?.collections || []}
         selectedCollections={selectedCollections}
@@ -203,20 +206,21 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
         onRemoveCollection={handleRemoveCollection}
         isExpanded={isCollectionsExpanded}
         onExpandToggle={() => setIsCollectionsExpanded(!isCollectionsExpanded)}
+        colorScheme={colorScheme}
       />
 
       {link.tags && link.tags.length > 0 && (
         <>
-          <Text style={styles.label}>Tags</Text>
+          <Text style={isDark ? styles.label_dark : styles.label}>Tags</Text>
           <View style={styles.tagsWrapper}>
             {link.tags.map((tag, index) => (
-              <View key={index} style={styles.tag}>
+              <View key={index} style={isDark ? styles.tag_dark : styles.tag}>
                 <AntDesign
                   name="tags"
                   size={14}
-                  color={Colors.tailwindColors.neutral["500"]}
+                  color={isDark ? "#8EACB7" : Colors.tailwindColors.neutral["500"]}
                 />
-                <Text style={styles.tagText}>{tag}</Text>
+                <Text style={isDark ? styles.tagText_dark : styles.tagText}>{tag}</Text>
               </View>
             ))}
           </View>
@@ -225,13 +229,13 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
 
       {annotations.length > 0 && (
         <>
-          <Text style={styles.label}>Annotations ({annotations.length})</Text>
+          <Text style={isDark ? styles.label_dark : styles.label}>Annotations ({annotations.length})</Text>
           <View style={styles.annotationsWrapper}>
             {annotations.map((annotation, index) => (
               <View key={index} style={styles.annotationItem}>
-                <View style={styles.highlightBar} />
+                <View style={isDark ? styles.highlightBar_dark : styles.highlightBar} />
                 <View style={styles.annotationContent}>
-                  <Text style={styles.annotationText}>
+                  <Text style={isDark ? styles.annotationText_dark : styles.annotationText}>
                     {annotation.selected_text}
                   </Text>
                   <View style={styles.annotationAuthor}>
@@ -239,8 +243,8 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
                       style={styles.authorImage}
                       source={{ uri: annotation.author.image_url }}
                     />
-                    <Text style={styles.byText}>By </Text>
-                    <Text style={styles.authorName}>
+                    <Text style={isDark ? styles.byText_dark : styles.byText}>By </Text>
+                    <Text style={isDark ? styles.authorName_dark : styles.authorName}>
                       {annotation.author.name}
                     </Text>
                   </View>
@@ -253,17 +257,17 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
 
       {comments.length > 0 && (
         <>
-          <Text style={styles.label}>Comments ({comments.length})</Text>
+          <Text style={isDark ? styles.label_dark : styles.label}>Comments ({comments.length})</Text>
           <View style={styles.commentsWrapper}>
             {comments.map((comment, index) => (
-              <View key={index} style={styles.commentItem}>
+              <View key={index} style={isDark ? styles.commentItem_dark : styles.commentItem}>
                 <FastImage
                   style={styles.commentAuthorImage}
                   source={{ uri: comment.author.image_url }}
                 />
                 <View style={styles.commentContent}>
-                  <Text style={styles.authorName}>{comment.author.name}</Text>
-                  <Text style={styles.commentText}>{comment.comment}</Text>
+                  <Text style={isDark ? styles.authorName_dark : styles.authorName}>{comment.author.name}</Text>
+                  <Text style={isDark ? styles.commentText_dark : styles.commentText}>{comment.comment}</Text>
                 </View>
               </View>
             ))}
@@ -303,7 +307,7 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
             onPress={onBack}
             disabled={loading}
           >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+            <Text style={isDark ? styles.cancelButtonText_dark : styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -314,16 +318,34 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  container_dark: {
+    padding: 16,
+    backgroundColor: '#171717',
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
     textAlign: "center",
     marginBottom: 20,
+    color: '#1C4A5A',
+  },
+  title_dark: {
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: 20,
+    color: '#FFFFFF',
   },
   label: {
     fontSize: 14,
     color: Colors.tailwindColors.neutral["600"],
+    marginBottom: 8,
+  },
+  label_dark: {
+    fontSize: 14,
+    color: "#A0B3BC",
     marginBottom: 8,
   },
   input: {
@@ -361,6 +383,10 @@ const styles = StyleSheet.create({
     color: Colors.TextColor.MainColor,
     fontSize: 16,
   },
+  cancelButtonText_dark: {
+    color: "#8EACB7",
+    fontSize: 16,
+  },
   tagsWrapper: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -376,9 +402,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     gap: 4,
   },
+  tag_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#262626",
+    borderRadius: 16,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    gap: 4,
+  },
   tagText: {
     fontSize: 14,
     color: Colors.TextColor.DarkHeadingColor,
+  },
+  tagText_dark: {
+    fontSize: 14,
+    color: "#FFFFFF",
   },
   annotationsWrapper: {
     gap: 16,
@@ -393,6 +432,10 @@ const styles = StyleSheet.create({
     width: 4,
     backgroundColor: Colors.tailwindColors.neutral["400"],
   },
+  highlightBar_dark: {
+    width: 4,
+    backgroundColor: "#8EACB7",
+  },
   annotationContent: {
     flex: 1,
     paddingLeft: 12,
@@ -400,6 +443,13 @@ const styles = StyleSheet.create({
   annotationText: {
     fontSize: 14,
     color: Colors.tailwindColors.neutral["700"],
+    lineHeight: 20,
+    fontStyle: "italic",
+    marginBottom: 8,
+  },
+  annotationText_dark: {
+    fontSize: 14,
+    color: "#FFFFFF",
     lineHeight: 20,
     fontStyle: "italic",
     marginBottom: 8,
@@ -418,10 +468,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.tailwindColors.neutral["500"],
   },
+  byText_dark: {
+    fontSize: 14,
+    color: "#8F8F8F",
+  },
   authorName: {
     fontSize: 14,
     fontWeight: "500",
     color: Colors.TextColor.DarkHeadingColor,
+  },
+  authorName_dark: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#FFFFFF",
   },
   commentsWrapper: {
     gap: 12,
@@ -432,6 +491,13 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     alignItems: "flex-start",
+  },
+  commentItem_dark: {
+    flexDirection: "row",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "flex-start",
+    backgroundColor: "#262626",
   },
   commentAuthorImage: {
     width: 40,
@@ -448,6 +514,12 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 4,
   },
+  commentText_dark: {
+    fontSize: 14,
+    color: "#A0B3BC",
+    lineHeight: 20,
+    marginTop: 4,
+  },
   linkPreview: {
     flexDirection: "row",
     borderRadius: 8,
@@ -456,6 +528,17 @@ const styles = StyleSheet.create({
     padding: 12,
     gap: 12,
     alignItems: "center",
+    backgroundColor: "#F8F9FA",
+  },
+  linkPreview_dark: {
+    flexDirection: "row",
+    borderRadius: 8,
+    overflow: "hidden",
+    marginBottom: 16,
+    padding: 12,
+    gap: 12,
+    alignItems: "center",
+    backgroundColor: "#262626",
   },
   linkImage: {
     width: 60,
@@ -487,6 +570,12 @@ const styles = StyleSheet.create({
     color: Colors.TextColor.DarkHeadingColor,
     lineHeight: 18,
   },
+  linkTitle_dark: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#FFFFFF",
+    lineHeight: 18,
+  },
   notesInput: {
     borderWidth: 1,
     borderColor: Colors.tailwindColors.neutral["200"],
@@ -496,6 +585,19 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     height: 100,
     textAlignVertical: "top",
+    backgroundColor: "#FFFFFF",
+  },
+  notesInput_dark: {
+    borderWidth: 1,
+    borderColor: "#262626",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    marginBottom: 16,
+    height: 100,
+    textAlignVertical: "top",
+    backgroundColor: "#262626",
+    color: "#FFFFFF",
   },
   aiSection: {
     marginTop: scaleHeight(16),

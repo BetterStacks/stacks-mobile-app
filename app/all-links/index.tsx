@@ -1,71 +1,47 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {Image, Text, useColorScheme, View,} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
+import {styles} from "@/app/all-links/AllLinksStyles";
+import {useLazyQuery, useMutation, useQuery, useReactiveVar,} from "@apollo/client";
+import {isNeedRefreshVar, sharedLinkTextVar, userInfoVar, userTokenVar,} from "@/lib/apollo/store";
+import {usePagination} from "@/hooks/usePagination";
+import {useStacksPagination} from "@/hooks/useStacksPagination";
+import {User} from "@/lib/types/User";
 import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  PermissionsAndroid,
-  Image,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import { styles } from "@/app/all-links/AllLinksStyles";
-import {
-  useLazyQuery,
-  useMutation,
-  useQuery,
-  useReactiveVar,
-} from "@apollo/client";
-import {
-  isNeedRefreshVar,
-  sharedLinkTextVar,
-  userInfoVar,
-  userTokenVar,
-} from "@/lib/apollo/store";
-import { usePagination } from "@/hooks/usePagination";
-import { useStacksPagination } from "@/hooks/useStacksPagination";
-import { User } from "@/lib/types/User";
-import {
-  QUERY_DOMAIN_LINKS,
-  QUERY_DOMAIN_LINKS_BY_STACKID,
-  QUERY_LINKS,
-  QUERY_STACK_LINKS,
-  QUERY_STACKS,
-  QUERY_USER,
+	QUERY_DOMAIN_LINKS,
+	QUERY_DOMAIN_LINKS_BY_STACKID,
+	QUERY_LINKS,
+	QUERY_STACK_LINKS,
+	QUERY_STACKS,
+	QUERY_USER,
 } from "@/lib/api/graphql/queries";
 import {
-  setIsNeedRefresh,
-  setIsNewLinkModalShown,
-  setIsSuccessModalVisible,
-  setSuccessModalMessage,
-  setUserInfo,
+	setIsNeedRefresh,
+	setIsNewLinkModalShown,
+	setIsSuccessModalVisible,
+	setSuccessModalMessage,
+	setUserInfo,
 } from "@/lib/apollo/store/handlers";
 import client from "@/lib/apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  SELECTED_WORKSPACE_ID_KEY,
-  SELECTED_WORKSPACE_KEY,
-} from "@/lib/constants";
-import { Link } from "@/lib/types/Link";
-import { MUTATION_SUBSCRIBE_NOTIFICATION } from "@/lib/api/graphql/mutations";
-import metrics from "@/components/design/metrics";
-import { useIsFocused } from "@react-navigation/native";
-import { clearUserInfo } from "@/utils/storage/setToStorage";
-import { StacksCarousel } from "@/components/stacksCarousel/stacksCarousel";
-import { HomeScreenContent } from "@/components/homeScreenContent/HomeScreenContent";
-import { CardLinksList } from "@/components/cardLinkList/CardLinksList";
-import { Loader } from "@/components/Loader";
-import { CommonButton } from "@/components/CommonButton/CommonButton";
-import { selectStackName } from "@/lib/utils";
-import messaging from "@react-native-firebase/messaging";
-import { useLocalSearchParams, Stack } from "expo-router";
+import {SELECTED_WORKSPACE_ID_KEY, SELECTED_WORKSPACE_KEY,} from "@/lib/constants";
+import {Link} from "@/lib/types/Link";
+import {MUTATION_SUBSCRIBE_NOTIFICATION} from "@/lib/api/graphql/mutations";
+import {useIsFocused} from "@react-navigation/native";
+import {clearUserInfo} from "@/utils/storage/setToStorage";
+import {StacksCarousel} from "@/components/stacksCarousel/stacksCarousel";
+import {HomeScreenContent} from "@/components/homeScreenContent/HomeScreenContent";
+import {CardLinksList} from "@/components/cardLinkList/CardLinksList";
+import {Loader} from "@/components/Loader";
+import {CommonButton} from "@/components/CommonButton/CommonButton";
+import {selectStackName} from "@/lib/utils";
+import {Stack, useLocalSearchParams} from "expo-router";
 
 export default function AllLinksScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
   const params = useLocalSearchParams();
   const withAnnotations = params.withAnnotations === "true";
   const withNotes = params.withNotes === "true";
@@ -547,22 +523,26 @@ export default function AllLinksScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={isDark ? styles.container__dark : styles.container} edges={['bottom', 'left', 'right']}>
       <Stack.Screen
         options={{
           title: screenTitle || selectedStack || "All Links",
           headerTitleStyle: {
-            fontWeight: "bold"
+            fontWeight: "bold",
+            color: isDark ? "#FFFFFF" : undefined
+          },
+          headerStyle: {
+            backgroundColor: isDark ? "#171717" : undefined
           }
         }}
       />
-      <Animated.View style={[styles.container, animViewStyle]}>
-        <View style={styles.headerContainer}>
+      <Animated.View style={[isDark ? styles.container__dark : styles.container, animViewStyle]}>
+        <View style={isDark ? styles.headerContainer__dark : styles.headerContainer}>
           <View style={styles.headerContent}>
-            <Text style={styles.headerDescription}>
+            <Text style={isDark ? styles.headerDescription__dark : styles.headerDescription}>
               You are browsing links from{" "}
             </Text>
-            <Text style={styles.workspaceName} numberOfLines={1}>
+            <Text style={isDark ? styles.workspaceName__dark : styles.workspaceName} numberOfLines={1}>
               {workspaceName}
             </Text>
           </View>
@@ -573,11 +553,13 @@ export default function AllLinksScreen() {
               onPress={handleStackPressed}
               selectedStack={selectedStack}
               containerStyles={[styles.carouselContainer, styles.placesStacks]}
+              colorScheme={colorScheme}
             />
 
             <HomeScreenContent
               contentContainer={[styles.contentContainer, styles.placesContent]}
               selectedStack={selectedStack}
+              colorScheme={colorScheme}
             />
           </>
         ) : (
@@ -604,6 +586,7 @@ export default function AllLinksScreen() {
                 <HomeScreenContent
                   contentContainer={styles.contentContainer}
                   selectedStack={selectedStack}
+                  colorScheme={colorScheme}
                 />
               </>
             }
@@ -636,6 +619,7 @@ export default function AllLinksScreen() {
                 ? linksData?.links || []
                 : stackLinksData?.stack?.links || []
             }
+            colorScheme={colorScheme}
           />
         )}
 
@@ -655,11 +639,11 @@ export default function AllLinksScreen() {
               style={styles.image}
             />
 
-            <Text style={styles.noLinksTitle}>
+            <Text style={isDark ? styles.noLinksTitle__dark : styles.noLinksTitle}>
               You haven't got recently saved items
             </Text>
 
-            <Text style={styles.noLinksText}>
+            <Text style={isDark ? styles.noLinksText__dark : styles.noLinksText}>
               You haven't got recently saved items
             </Text>
 
@@ -667,8 +651,8 @@ export default function AllLinksScreen() {
               <CommonButton
                 text={`+ Add your first ${selectStackName(selectedStack)}`}
                 onPress={showNewLinkModal}
-                additionalButtonStyles={styles.buttonAdditionalStyles}
-                additionalTextStyles={styles.buttonTextAdditionalStyles}
+                additionalButtonStyles={isDark ? styles.buttonAdditionalStyles__dark : styles.buttonAdditionalStyles}
+                additionalTextStyles={isDark ? styles.buttonTextAdditionalStyles__dark : styles.buttonTextAdditionalStyles}
               />
             </View>
           </View>
