@@ -15,7 +15,7 @@ export default function DashboardLayout() {
 		<Tabs
 			screenOptions={{
 				tabBarActiveTintColor: colors.TextColor.LignMainColor,
-				tabBarInactiveTintColor: isDark ? "#8F8F8F" : "#4A6572",
+				tabBarInactiveTintColor: isDark ? "#8F8F8F" : "#737373",
 				headerShown: false,
 				tabBarButton: HapticTab,
 				tabBarBackground: () => <TabBarBackground colorScheme={colorScheme} />,

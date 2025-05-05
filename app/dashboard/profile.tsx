@@ -1,14 +1,16 @@
 import React from "react";
 import {
-	ActivityIndicator,
-	Alert,
-	Image,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	useColorScheme,
-	View,
+  ActivityIndicator,
+  Alert,
+  Appearance,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
 import {useQuery} from "@apollo/client";
 import {QUERY_USER} from "@/lib/api/graphql/queries";
@@ -25,6 +27,8 @@ interface Identity {
   valid_token: boolean;
   label: string;
 }
+
+const THEME_PREFERENCE_KEY = "theme_preference";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -121,27 +125,23 @@ export default function ProfileScreen() {
             </View>
           )}
 
-          {/* {user?.identities?.length > 0 && (
-						<View style={styles.detailItem}>
-							<Ionicons name="link-outline" size={18} color="#555" />
-							<Text style={styles.detailText}>
-								{user.identities.map((identity: Identity) => identity.provider).join(', ')}
-							</Text>
-						</View>
-					)} */}
-
-          {/* {user?.tags?.length > 0 && (
-						<View style={styles.tagsContainer}>
-							<Text style={styles.sectionTitle}>Tags</Text>
-							<View style={styles.tagsList}>
-								{user.tags.map((tag: string, index: number) => (
-									<View key={index} style={styles.tag}>
-										<Text style={styles.tagText}>{tag}</Text>
-									</View>
-								))}
-							</View>
-						</View>
-					)} */}
+          {/* Theme settings */}
+          <View style={isDark ? styles.detailItem_dark : styles.detailItem}>
+            <Ionicons name={isDark ? "moon" : "sunny"} size={18} color={isDark ? "#8EACB7" : "#555"} />
+            <Text style={[isDark ? styles.detailText_dark : styles.detailText, styles.settingLabel]}>
+              Dark Mode
+            </Text>
+            {/* <Switch
+              value={isDark}
+              onValueChange={toggleTheme}
+              trackColor={{ false: "#767577", true: "#1C4A5A" }}
+              thumbColor={isDark ? "#4793E0" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+            /> */}
+            <Switch value={colorScheme=='dark'} onChange={() => {
+              Appearance.setColorScheme(colorScheme=='dark' ? 'light' : 'dark')
+            }} />
+          </View>
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Ionicons name="log-out-outline" size={16} color="#ff3b30" />
@@ -382,6 +382,37 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     marginLeft: 10,
     flex: 1,
+  },
+  settingLabel: {
+    flex: 1,
+  },
+  systemThemeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    marginBottom: 16,
+    backgroundColor: "#f8f8f8",
+    borderRadius: 10,
+  },
+  systemThemeButton_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    marginBottom: 16,
+    backgroundColor: "#171717",
+    borderRadius: 10,
+  },
+  systemThemeText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#333",
+  },
+  systemThemeText_dark: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#FFFFFF",
   },
   sectionTitle: {
     fontSize: 16,
