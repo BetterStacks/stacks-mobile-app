@@ -281,6 +281,12 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
   },
+  workspaceOptionSelected: {
+    backgroundColor: "#F5F5F5",
+  },
+  workspaceOptionSelected__dark: {
+    backgroundColor: "#262626",
+  },
   workspaceOptionText: {
     fontSize: 16,
     color: "#1C4A5A",

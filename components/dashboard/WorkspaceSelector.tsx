@@ -1,9 +1,9 @@
-import { styles } from "@/components/dashboard/HomeScreenStyles";
-import { useQuery } from "@apollo/client";
-import { useMemo, useState } from "react";
-import { Modal, Text, TouchableOpacity, View } from "react-native";
+import React, {useMemo, useState} from "react";
+import {styles} from "@/components/dashboard/HomeScreenStyles";
+import {useQuery} from "@apollo/client";
+import {Modal, Text, TouchableOpacity, useColorScheme, View} from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
-import { QUERY_USER_REPOSITORIES } from "@/lib/api/graphql/queries";
+import {QUERY_USER_REPOSITORIES} from "@/lib/api/graphql/queries";
 
 export const WorkspaceSelector = ({
   selectedWorkspace,
@@ -12,6 +12,7 @@ export const WorkspaceSelector = ({
   selectedWorkspace: string;
   onSelect: (workspace: string) => void;
 }) => {
+  const colorScheme = useColorScheme();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: repositoriesData, loading } = useQuery(QUERY_USER_REPOSITORIES);
 
@@ -59,11 +60,18 @@ export const WorkspaceSelector = ({
           activeOpacity={1}
           onPress={() => setIsModalVisible(false)}
         >
-          <View style={styles.modalContent}>
+          <View style={colorScheme === 'dark' ? styles.modalContent__dark : styles.modalContent}>
             {workspaces.map((workspace, index) => (
               <TouchableOpacity
                 key={index}
-                style={styles.workspaceOption}
+                style={[
+                  styles.workspaceOption,
+                  workspace === selectedWorkspace && (
+                    colorScheme === 'dark' 
+                    ? styles.workspaceOptionSelected__dark 
+                    : styles.workspaceOptionSelected
+                  )
+                ]}
                 onPress={() => {
                   onSelect(workspace);
                   setIsModalVisible(false);
@@ -71,9 +79,9 @@ export const WorkspaceSelector = ({
               >
                 <Text
                   style={[
-                    styles.workspaceOptionText,
+                    colorScheme === 'dark' ? styles.workspaceOptionText__dark : styles.workspaceOptionText,
                     workspace === selectedWorkspace &&
-                      styles.workspaceOptionTextSelected,
+                      (colorScheme === 'dark' ? styles.workspaceOptionTextSelected__dark : styles.workspaceOptionTextSelected),
                   ]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
