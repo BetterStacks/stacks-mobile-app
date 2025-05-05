@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 8,
-    paddingBottom: 20,
+    paddingBottom: 0,
   },
   indicator: {
     width: 50,

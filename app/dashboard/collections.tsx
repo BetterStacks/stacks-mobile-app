@@ -344,12 +344,12 @@ export default function CollectionsScreen() {
             <Text style={localStyles.text}>Browse your collections</Text>
           </View>
 
-          <TouchableOpacity
-            onPress={onAddCollectionPress}
+            <TouchableOpacity
+              onPress={onAddCollectionPress}
             style={localStyles.addButton}
-          >
+            >
             <AntDesign name="plus" size={22} color="#666" />
-          </TouchableOpacity>
+            </TouchableOpacity>
         </View>
 
         <View style={localStyles.searchContainer}>
