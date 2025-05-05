@@ -214,7 +214,7 @@ export const CardLink: React.FC<Props> = ({
                     hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                     style={{ alignSelf: 'flex-start', marginTop: 3 }}
                   >
-                    <Entypo name="dots-three-vertical" size={16} color={isDark ? "#A0A0A0" : "#888"} />
+                    <Entypo name="dots-three-vertical" size={16} color="#888" />
                   </TouchableOpacity>
                 </View>
 
@@ -224,7 +224,7 @@ export const CardLink: React.FC<Props> = ({
                     isQuickNote={link.is_quick_note}
                     faviconUrl={link.favicon_url}
                   /> */}
-                  <Text numberOfLines={1} style={isDark ? styles.url__dark : styles.url}>
+                  <Text numberOfLines={1} style={styles.url}>
                     {link.target_url}
                   </Text>
                 </View>
