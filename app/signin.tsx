@@ -39,7 +39,7 @@ import {Toast} from "toastify-react-native";
 const SignInScreen = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -232,14 +232,14 @@ const SignInScreen = () => {
 
   const signInGoogle = useGoogleSignIn(onGoogleSignIn);
   const signInWithApple = useAppleSignIn(onAppleSignIn);
-  
+
   const handleLoginPress = (event: GestureResponderEvent) => {
     handleSubmit();
   };
 
   return (
       <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{ flex: 1 }}
       >
         <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
@@ -253,8 +253,8 @@ const SignInScreen = () => {
             <Text style={isDark ? styles.title_dark : styles.title}>Login to your account</Text>
 
             <View style={styles.socialsContainer}>
-              <TouchableOpacity 
-                style={isDark ? styles.socialButton_dark : styles.socialButton} 
+              <TouchableOpacity
+                style={isDark ? styles.socialButton_dark : styles.socialButton}
                 onPress={signInGoogle}
               >
                 <Image
@@ -267,8 +267,8 @@ const SignInScreen = () => {
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={isDark ? styles.socialButton_dark : styles.socialButton} 
+              <TouchableOpacity
+                style={isDark ? styles.socialButton_dark : styles.socialButton}
                 onPress={signInWithApple}
               >
                 <Image
@@ -281,8 +281,8 @@ const SignInScreen = () => {
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={isDark ? styles.socialButton_dark : styles.socialButton} 
+              <TouchableOpacity
+                style={isDark ? styles.socialButton_dark : styles.socialButton}
                 onPress={signInGoogle}
               >
                 <Image
@@ -323,8 +323,8 @@ const SignInScreen = () => {
                 <Text style={isDark ? styles.forgotText_dark : styles.forgotText}>Forgot Password?</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={isDark ? styles.loginButton_dark : styles.loginButton} 
+              <TouchableOpacity
+                style={isDark ? styles.loginButton_dark : styles.loginButton}
                 onPress={handleLoginPress}
                 disabled={signInLoading || signUpLoading}
               >

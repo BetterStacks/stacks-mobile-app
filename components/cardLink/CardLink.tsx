@@ -44,7 +44,7 @@ export const CardLink: React.FC<Props> = ({
   const deviceColorScheme = useColorScheme();
   const colorScheme = propColorScheme || deviceColorScheme;
   const isDark = colorScheme === 'dark';
-  
+
   const [isDetailsOpenned, setIsDetailsOpenned] = useState(false);
   const [readerVisible, setReaderVisible] = useState(false);
   const [_isLoading, setIsLoading] = useState(false);
