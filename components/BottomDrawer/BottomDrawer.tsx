@@ -1,14 +1,10 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Link, FolderPlus, File, Edit } from "lucide-react-native";
-import { useNavigation } from "@react-navigation/native";
-import Modal, { ReactNativeModal } from "react-native-modal";
+import React, {useCallback, useEffect, useState} from "react";
+import {StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
+import {Edit, File, FolderPlus, Link} from "lucide-react-native";
+import {ReactNativeModal} from "react-native-modal";
 import AddLinkView from "./AddLinkView";
-import {
-  setIsSuccessModalVisible,
-  setSuccessModalMessage,
-} from "@/lib/apollo/store/handlers";
-import { router } from "expo-router";
+import {setIsSuccessModalVisible, setSuccessModalMessage,} from "@/lib/apollo/store/handlers";
+import {router} from "expo-router";
 import FileUploadView from "../FileUploadView";
 
 type Props = {
@@ -24,6 +20,8 @@ const BottomDrawer = ({
   customContent,
   selectedCollectionId,
 }: Props) => {
+  const colorScheme = useColorScheme();
+  
   // const navigation = useNavigation<TAfterAuthStackNavigationProp>();
   const [isAddLinkView, setIsAddLinkView] = useState(false);
   const [isFileUploadView, setIsFileUploadView] = useState(false);
@@ -80,22 +78,22 @@ const BottomDrawer = ({
 
   const options = [
     {
-      icon: <Link size={24} color="#000000" />,
+      icon: <Link size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
       title: "New Link",
       onPress: handleNewLink,
     },
     {
-      icon: <FolderPlus size={24} color="#000000" />,
+      icon: <FolderPlus size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
       title: "New Collection",
       onPress: handleNewCollection,
     },
     {
-      icon: <File size={24} color="#000000" />,
+      icon: <File size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
       title: "New File",
       onPress: handleNewFile,
     },
     {
-      icon: <Edit size={24} color="#000000" />,
+      icon: <Edit size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
       title: "New Quick Note",
       onPress: handleNewQuickNote,
     },
@@ -113,23 +111,23 @@ const BottomDrawer = ({
       backdropOpacity={0.4}
       propagateSwipe
     >
-      <View style={styles.content}>
-        <View style={styles.indicator} />
+      <View style={colorScheme === 'dark' ? styles.content_dark : styles.content}>
+        <View style={colorScheme === 'dark' ? styles.indicator_dark : styles.indicator} />
         {customContent ? (
           customContent
         ) : !isAddLinkView && !isFileUploadView ? (
-          <View style={styles.container}>
+          <View style={colorScheme === 'dark' ? styles.container_dark : styles.container}>
             {options.map((option, index) => (
               <TouchableOpacity
                 key={index}
                 style={[
-                  styles.option,
+                  colorScheme === 'dark' ? styles.option_dark : styles.option,
                   index === options.length - 1 && styles.lastOption,
                 ]}
                 onPress={option.onPress}
               >
                 {option.icon}
-                <Text style={styles.optionText}>{option.title}</Text>
+                <Text style={colorScheme === 'dark' ? styles.optionText_dark : styles.optionText}>{option.title}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -164,6 +162,13 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 20,
   },
+  content_dark: {
+    backgroundColor: "#171717",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 8,
+    paddingBottom: 20,
+  },
   indicator: {
     width: 50,
     height: 4,
@@ -172,7 +177,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderRadius: 2,
   },
+  indicator_dark: {
+    width: 50,
+    height: 4,
+    backgroundColor: "#333333",
+    alignSelf: "center",
+    marginBottom: 8,
+    borderRadius: 2,
+  },
   container: {
+    padding: 16,
+  },
+  container_dark: {
     padding: 16,
   },
   option: {
@@ -182,6 +198,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5E5",
   },
+  option_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#262626",
+  },
   lastOption: {
     borderBottomWidth: 0,
   },
@@ -189,6 +212,11 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     fontSize: 16,
     color: "#000000",
+  },
+  optionText_dark: {
+    marginLeft: 16,
+    fontSize: 16,
+    color: "#FFFFFF",
   },
 });
 

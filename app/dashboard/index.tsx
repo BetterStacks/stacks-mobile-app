@@ -8,7 +8,7 @@ import {SELECTED_WORKSPACE_ID_KEY, SELECTED_WORKSPACE_KEY,} from "@/lib/constant
 import {useQuery, useReactiveVar} from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {useEffect, useState} from "react";
-import {Text, TouchableOpacity, View} from "react-native";
+import {Text, TouchableOpacity, useColorScheme, View} from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -24,12 +24,14 @@ import {styles} from "@/components/dashboard/HomeScreenStyles";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 import {StatusBar} from "expo-status-bar";
 import {LinearGradient} from 'expo-linear-gradient';
-import { Toast } from "toastify-react-native";
+import {Toast} from "toastify-react-native";
 
 export default function DashboardHomeScreen() {
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
   const { data: repositoriesData } = useQuery(QUERY_USER_REPOSITORIES);
   const { data: quickLinksData } = useQuery(QUERY_QUICK_LINKS);
+
+  let colorScheme = useColorScheme()
 
   const scrollY = useSharedValue(0);
   const lastScrollY = useSharedValue(0);
@@ -313,9 +315,9 @@ export default function DashboardHomeScreen() {
   };
 
   return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={colorScheme === 'light' ? styles.container : styles.container__dark}>
         {isFocused && <StatusBar backgroundColor={colors.TextColor.LignMainColor} style="light" />}
-        <View style={styles.container}>
+        <View style={colorScheme === 'light' ? styles.container : styles.container__dark}>
           <Animated.ScrollView
               onScroll={scrollHandler}
               scrollEventThrottle={16}
@@ -366,7 +368,7 @@ export default function DashboardHomeScreen() {
 
             {/* Quick Actions Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Quick Actions</Text>
+              <Text style={colorScheme === 'light' ? styles.sectionTitle : styles.sectionTitle__dark}>Quick Actions</Text>
               <View style={styles.quickActionsGrid}>
                 {quickActions.map((action, index) => (
                     <QuickActionCard
@@ -375,6 +377,7 @@ export default function DashboardHomeScreen() {
                         title={action.title}
                         count={action.count}
                         onPress={action.onPress}
+                        colorScheme={colorScheme}
                     />
                 ))}
               </View>
@@ -382,8 +385,8 @@ export default function DashboardHomeScreen() {
 
             {/* Categories Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Categories</Text>
-              <View style={styles.categoriesContainer}>
+              <Text style={colorScheme === 'light' ? styles.sectionTitle : styles.sectionTitle__dark}>Categories</Text>
+              <View style={colorScheme === 'light' ? styles.categoriesContainer : styles.categoriesContainer__dark}>
                 {categories.map((category, index) => (
                     <CategoryItem
                         key={index}
@@ -391,6 +394,7 @@ export default function DashboardHomeScreen() {
                         title={category.title}
                         isLast={index === categories.length - 1}
                         onPress={category.onPress}
+                        colorScheme={colorScheme}
                     />
                 ))}
               </View>

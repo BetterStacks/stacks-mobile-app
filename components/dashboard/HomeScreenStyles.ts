@@ -8,6 +8,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F9FA",
   },
+  container__dark: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
+  },
   header: {
     paddingTop: 16,
     paddingHorizontal: 16,
@@ -76,6 +80,12 @@ export const styles = StyleSheet.create({
     color: "#1C4A5A",
     marginBottom: 16,
   },
+  sectionTitle__dark: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#8EACB7",
+    marginBottom: 16,
+  },
   quickActionsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -90,6 +100,18 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderWidth: 1,
     borderColor: "#E5E5E5",
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  quickActionCard__dark: {
+    backgroundColor: "#171717",
+    borderRadius: 12,
+    padding: 16,
+    width: "47%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#262626",
     elevation: 0,
     shadowOpacity: 0,
   },
@@ -109,9 +131,19 @@ export const styles = StyleSheet.create({
     color: "#1C4A5A",
     alignSelf: "flex-start",
   },
+  quickActionCount__dark: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#8EACB7",
+    alignSelf: "flex-start",
+  },
   quickActionTitle: {
     fontSize: 14,
     color: "#4A6572",
+  },
+  quickActionTitle__dark: {
+    fontSize: 14,
+    color: "#A0B3BC",
   },
   categoriesList: {
     gap: 16,
@@ -124,6 +156,14 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5E5",
   },
+  categoryItem__dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#262626",
+  },
   categoryIconContainer: {
     width: 24,
     height: 24,
@@ -134,6 +174,11 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "500",
     color: "#1C4A5A",
+  },
+  categoryTitle__dark: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#8EACB7",
   },
   searchIconContainer: {
     width: 20,
@@ -153,11 +198,25 @@ export const styles = StyleSheet.create({
     color: "#222222",
     includeFontPadding: false,
   },
+  emoji__dark: {
+    fontSize: 24,
+    opacity: 0.9,
+    color: "#F0F0F0",
+    includeFontPadding: false,
+  },
   categoryEmoji: {
     fontSize: 14,
     width: 32,
     opacity: 0.9,
     color: "#222222",
+    includeFontPadding: false,
+    textAlign: "center",
+  },
+  categoryEmoji__dark: {
+    fontSize: 14,
+    width: 32,
+    opacity: 0.9,
+    color: "#F0F0F0",
     includeFontPadding: false,
     textAlign: "center",
   },
@@ -168,6 +227,14 @@ export const styles = StyleSheet.create({
     gap: 4,
     borderWidth: 1,
     borderColor: "#E5E5E5",
+  },
+  categoriesContainer__dark: {
+    backgroundColor: "transparent",
+    borderRadius: 16,
+    padding: 8,
+    gap: 4,
+    borderWidth: 1,
+    borderColor: "#262626",
   },
   workspaceSelector: {
     flexDirection: "row",
@@ -194,6 +261,21 @@ export const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  modalContent__dark: {
+    backgroundColor: "#1E1E1E",
+    marginTop: 80,
+    marginHorizontal: 16,
+    borderRadius: 12,
+    padding: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   workspaceOption: {
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -203,8 +285,16 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: "#1C4A5A",
   },
+  workspaceOptionText__dark: {
+    fontSize: 16,
+    color: "#8EACB7",
+  },
   workspaceOptionTextSelected: {
     color: "#4A6572",
+    fontWeight: "600",
+  },
+  workspaceOptionTextSelected__dark: {
+    color: "#A0B3BC",
     fontWeight: "600",
   },
   avatarFallback: {
