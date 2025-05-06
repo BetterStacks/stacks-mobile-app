@@ -1,10 +1,8 @@
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
-import { useQuery } from "@apollo/client";
-import { ExternalLink, Globe } from "lucide-react-native";
-import { Linking } from "react-native";
-import { StyleSheet } from "react-native";
-import { QUERY_QUICK_LINKS } from "@/lib/api/graphql/queries";
-import { Loader } from "./Loader";
+import {ColorSchemeName, FlatList, Image, Linking, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {useQuery} from "@apollo/client";
+import {ExternalLink} from "lucide-react-native";
+import {QUERY_QUICK_LINKS} from "@/lib/api/graphql/queries";
+import {Loader} from "./Loader";
 
 type QuickLink = {
   domain: string;
@@ -14,7 +12,16 @@ type QuickLink = {
   title: string;
 };
 
-const QuickLinkCard = ({ link }: { link: QuickLink }) => {
+type QuickLinkCardProps = {
+  link: QuickLink;
+  isDark?: boolean;
+};
+
+type QuickLinksScreenProps = {
+  colorScheme?: ColorSchemeName;
+};
+
+const QuickLinkCard = ({ link, isDark }: QuickLinkCardProps) => {
   const handlePress = async () => {
     try {
       await Linking.openURL(link.target_url);
@@ -24,7 +31,7 @@ const QuickLinkCard = ({ link }: { link: QuickLink }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={handlePress}>
+    <TouchableOpacity style={isDark ? styles.card_dark : styles.card} onPress={handlePress}>
       <View style={styles.cardHeader}>
         <View style={styles.domainContainer}>
           <Image
@@ -34,31 +41,32 @@ const QuickLinkCard = ({ link }: { link: QuickLink }) => {
             style={styles.favicon}
             // defaultSource={Globe}
           />
-          <Text style={styles.domain}>{link.domain}</Text>
+          <Text style={isDark ? styles.domain_dark : styles.domain}>{link.domain}</Text>
         </View>
-        <ExternalLink size={20} color="#4A6572" />
+        <ExternalLink size={20} color={isDark ? "#8EACB7" : "#4A6572"} />
       </View>
 
-      <Text style={styles.title} numberOfLines={2}>
+      <Text style={isDark ? styles.title_dark : styles.title} numberOfLines={2}>
         {link.title}
       </Text>
 
-      <Text style={styles.url} numberOfLines={1}>
+      <Text style={isDark ? styles.url_dark : styles.url} numberOfLines={1}>
         {link.target_url}
       </Text>
     </TouchableOpacity>
   );
 };
 
-export const QuickLinksScreen = () => {
+export const QuickLinksScreen = ({ colorScheme }: QuickLinksScreenProps) => {
   const { data, loading } = useQuery(QUERY_QUICK_LINKS);
+  const isDark = colorScheme === 'dark';
 
   if (loading) {
     return <Loader />;
   }
 
   return (
-    <View style={styles.container}>
+    <View style={isDark ? styles.container_dark : styles.container}>
       {/* <View style={styles.header}>
         <Text style={styles.headerTitle}>Quick Links</Text>
         <Text style={styles.headerSubtitle}>
@@ -69,13 +77,13 @@ export const QuickLinksScreen = () => {
       <FlatList
         data={data?.quick_links}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <QuickLinkCard link={item} />}
+        renderItem={({ item }) => <QuickLinkCard link={item} isDark={isDark} />}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No quick links yet</Text>
-            <Text style={styles.emptySubtext}>
+            <Text style={isDark ? styles.emptyText_dark : styles.emptyText}>No quick links yet</Text>
+            <Text style={isDark ? styles.emptySubtext_dark : styles.emptySubtext}>
               Pin your important links for quick access
             </Text>
           </View>
@@ -90,11 +98,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F9FA",
   },
+  container_dark: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
+  },
   header: {
     padding: 16,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5E5",
+  },
+  header_dark: {
+    padding: 16,
+    backgroundColor: "#171717",
+    borderBottomWidth: 1,
+    borderBottomColor: "#262626",
   },
   headerTitle: {
     fontSize: 24,
@@ -102,9 +120,19 @@ const styles = StyleSheet.create({
     color: "#1C4A5A",
     marginBottom: 4,
   },
+  headerTitle_dark: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginBottom: 4,
+  },
   headerSubtitle: {
     fontSize: 16,
     color: "#4A6572",
+  },
+  headerSubtitle_dark: {
+    fontSize: 16,
+    color: "#A0B3BC",
   },
   listContent: {
     padding: 16,
@@ -116,6 +144,14 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: "#E5E5E5",
+    gap: 12,
+  },
+  card_dark: {
+    backgroundColor: "#171717",
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#262626",
     gap: 12,
   },
   cardHeader: {
@@ -138,15 +174,31 @@ const styles = StyleSheet.create({
     color: "#4A6572",
     fontWeight: "500",
   },
+  domain_dark: {
+    fontSize: 14,
+    color: "#8EACB7",
+    fontWeight: "500",
+  },
   title: {
     fontSize: 16,
     fontWeight: "600",
     color: "#1C4A5A",
     lineHeight: 24,
   },
+  title_dark: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    lineHeight: 24,
+  },
   url: {
     fontSize: 14,
     color: "#4A6572",
+    opacity: 0.8,
+  },
+  url_dark: {
+    fontSize: 14,
+    color: "#8EACB7",
     opacity: 0.8,
   },
   emptyContainer: {
@@ -160,9 +212,20 @@ const styles = StyleSheet.create({
     color: "#1C4A5A",
     marginBottom: 8,
   },
+  emptyText_dark: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginBottom: 8,
+  },
   emptySubtext: {
     fontSize: 16,
     color: "#4A6572",
+    textAlign: "center",
+  },
+  emptySubtext_dark: {
+    fontSize: 16,
+    color: "#A0B3BC",
     textAlign: "center",
   },
 });

@@ -1,21 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
   ActivityIndicator,
   Alert,
+  Appearance,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
-import { useQuery } from "@apollo/client";
-import { QUERY_USER } from "@/lib/api/graphql/queries";
+import {useQuery} from "@apollo/client";
+import {QUERY_USER} from "@/lib/api/graphql/queries";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Toast } from "toastify-react-native";
+import {useRouter} from "expo-router";
+import {Ionicons} from "@expo/vector-icons";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {Toast} from "toastify-react-native";
 
 interface Identity {
   provider: string;
@@ -25,9 +28,13 @@ interface Identity {
   label: string;
 }
 
+const THEME_PREFERENCE_KEY = "theme_preference";
+
 export default function ProfileScreen() {
   const router = useRouter();
   const { data, loading, error } = useQuery(QUERY_USER);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const handleLogout = async () => {
     try {
@@ -55,18 +62,18 @@ export default function ProfileScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0066CC" />
+      <View style={isDark ? styles.loadingContainer_dark : styles.loadingContainer}>
+        <ActivityIndicator size="large" color={isDark ? "#4793E0" : "#0066CC"} />
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Failed to load profile</Text>
+      <View style={isDark ? styles.errorContainer_dark : styles.errorContainer}>
+        <Text style={isDark ? styles.errorText_dark : styles.errorText}>Failed to load profile</Text>
         <TouchableOpacity
-          style={styles.retryButton}
+          style={isDark ? styles.retryButton_dark : styles.retryButton}
           onPress={() => window.location.reload()}
         >
           <Text style={styles.retryButtonText}>Retry</Text>
@@ -78,67 +85,63 @@ export default function ProfileScreen() {
   const user = data?.user;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={isDark ? styles.container_dark : styles.container} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
+        <View style={isDark ? styles.header_dark : styles.header}>
           {user?.profile_image_url ? (
             <Image
               source={{ uri: user.profile_image_url }}
-              style={styles.profileImage}
+              style={isDark ? styles.profileImage_dark : styles.profileImage}
             />
           ) : (
-            <View style={styles.avatarPlaceholder}>
-              <Text style={styles.avatarInitial}>
+            <View style={isDark ? styles.avatarPlaceholder_dark : styles.avatarPlaceholder}>
+              <Text style={isDark ? styles.avatarInitial_dark : styles.avatarInitial}>
                 {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
               </Text>
             </View>
           )}
-          <Text style={styles.name}>{user?.name || "User"}</Text>
+          <Text style={isDark ? styles.name_dark : styles.name}>{user?.name || "User"}</Text>
           {user?.username && (
-            <Text style={styles.username}>@{user.username}</Text>
+            <Text style={isDark ? styles.username_dark : styles.username}>@{user.username}</Text>
           )}
           {user?.job_title && (
-            <Text style={styles.jobTitle}>{user.job_title}</Text>
+            <Text style={isDark ? styles.jobTitle_dark : styles.jobTitle}>{user.job_title}</Text>
           )}
-          <Text style={styles.bio}>{user?.description || "Stacks user"}</Text>
+          <Text style={isDark ? styles.bio_dark : styles.bio}>{user?.description || "Stacks user"}</Text>
         </View>
 
         <View style={styles.detailsContainer}>
-          <View style={styles.detailItem}>
-            <Ionicons name="mail-outline" size={18} color="#555" />
-            <Text style={styles.detailText}>
+          <View style={isDark ? styles.detailItem_dark : styles.detailItem}>
+            <Ionicons name="mail-outline" size={18} color={isDark ? "#8EACB7" : "#555"} />
+            <Text style={isDark ? styles.detailText_dark : styles.detailText}>
               {user?.email || "No email provided"}
             </Text>
           </View>
 
           {user?.phone && (
-            <View style={styles.detailItem}>
-              <Ionicons name="call-outline" size={18} color="#555" />
-              <Text style={styles.detailText}>{user.phone}</Text>
+            <View style={isDark ? styles.detailItem_dark : styles.detailItem}>
+              <Ionicons name="call-outline" size={18} color={isDark ? "#8EACB7" : "#555"} />
+              <Text style={isDark ? styles.detailText_dark : styles.detailText}>{user.phone}</Text>
             </View>
           )}
 
-          {/* {user?.identities?.length > 0 && (
-						<View style={styles.detailItem}>
-							<Ionicons name="link-outline" size={18} color="#555" />
-							<Text style={styles.detailText}>
-								{user.identities.map((identity: Identity) => identity.provider).join(', ')}
-							</Text>
-						</View>
-					)} */}
-
-          {/* {user?.tags?.length > 0 && (
-						<View style={styles.tagsContainer}>
-							<Text style={styles.sectionTitle}>Tags</Text>
-							<View style={styles.tagsList}>
-								{user.tags.map((tag: string, index: number) => (
-									<View key={index} style={styles.tag}>
-										<Text style={styles.tagText}>{tag}</Text>
-									</View>
-								))}
-							</View>
-						</View>
-					)} */}
+          {/* Theme settings */}
+          <View style={isDark ? styles.detailItem_dark : styles.detailItem}>
+            <Ionicons name={isDark ? "moon" : "sunny"} size={18} color={isDark ? "#8EACB7" : "#555"} />
+            <Text style={[isDark ? styles.detailText_dark : styles.detailText, styles.settingLabel]}>
+              Dark Mode
+            </Text>
+            {/* <Switch
+              value={isDark}
+              onValueChange={toggleTheme}
+              trackColor={{ false: "#767577", true: "#1C4A5A" }}
+              thumbColor={isDark ? "#4793E0" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+            /> */}
+            <Switch value={colorScheme=='dark'} onChange={() => {
+              Appearance.setColorScheme(colorScheme=='dark' ? 'light' : 'dark')
+            }} />
+          </View>
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Ionicons name="log-out-outline" size={16} color="#ff3b30" />
@@ -155,6 +158,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  container_dark: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
+  },
   scrollContent: {
     flexGrow: 1,
   },
@@ -162,20 +169,46 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  loadingContainer_dark: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#0A0A0A",
   },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "#fff",
+  },
+  errorContainer_dark: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#0A0A0A",
   },
   errorText: {
     fontSize: 16,
     color: "#ff3b30",
     marginBottom: 16,
   },
+  errorText_dark: {
+    fontSize: 16,
+    color: "#ff453a",
+    marginBottom: 16,
+  },
   retryButton: {
     backgroundColor: "#0066CC",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButton_dark: {
+    backgroundColor: "#0A84FF",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
@@ -191,6 +224,12 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     backgroundColor: "#fff",
   },
+  header_dark: {
+    alignItems: "center",
+    paddingTop: 30,
+    paddingBottom: 24,
+    backgroundColor: "#0A0A0A",
+  },
   profileImage: {
     width: 100,
     height: 100,
@@ -201,6 +240,19 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  profileImage_dark: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 12,
+    borderWidth: 3,
+    borderColor: "#262626",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
   },
@@ -220,19 +272,52 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  avatarPlaceholder_dark: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#0A84FF",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
+    borderWidth: 3,
+    borderColor: "#262626",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   avatarInitial: {
     fontSize: 40,
     fontWeight: "bold",
     color: "#0288d1",
   },
+  avatarInitial_dark: {
+    fontSize: 40,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
   name: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 4,
+    color: "#000",
+  },
+  name_dark: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 4,
+    color: "#FFFFFF",
   },
   username: {
     fontSize: 14,
     color: "#666",
+    marginBottom: 4,
+  },
+  username_dark: {
+    fontSize: 14,
+    color: "#8EACB7",
     marginBottom: 4,
   },
   jobTitle: {
@@ -240,9 +325,20 @@ const styles = StyleSheet.create({
     color: "#0066CC",
     marginBottom: 6,
   },
+  jobTitle_dark: {
+    fontSize: 14,
+    color: "#4793E0",
+    marginBottom: 6,
+  },
   bio: {
     fontSize: 14,
     color: "#666",
+    textAlign: "center",
+    paddingHorizontal: 24,
+  },
+  bio_dark: {
+    fontSize: 14,
+    color: "#A0B3BC",
     textAlign: "center",
     paddingHorizontal: 24,
   },
@@ -262,17 +358,73 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
   },
+  detailItem_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    backgroundColor: "#171717",
+    padding: 14,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 1,
+  },
   detailText: {
     fontSize: 14,
     color: "#333",
     marginLeft: 10,
     flex: 1,
   },
+  detailText_dark: {
+    fontSize: 14,
+    color: "#FFFFFF",
+    marginLeft: 10,
+    flex: 1,
+  },
+  settingLabel: {
+    flex: 1,
+  },
+  systemThemeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    marginBottom: 16,
+    backgroundColor: "#f8f8f8",
+    borderRadius: 10,
+  },
+  systemThemeButton_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    marginBottom: 16,
+    backgroundColor: "#171717",
+    borderRadius: 10,
+  },
+  systemThemeText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#333",
+  },
+  systemThemeText_dark: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#FFFFFF",
+  },
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 10,
     color: "#555",
+  },
+  sectionTitle_dark: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 10,
+    color: "#8EACB7",
   },
   tagsContainer: {
     marginTop: 6,
@@ -290,9 +442,21 @@ const styles = StyleSheet.create({
     marginRight: 6,
     marginBottom: 6,
   },
+  tag_dark: {
+    backgroundColor: "#0A84FF",
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    marginRight: 6,
+    marginBottom: 6,
+  },
   tagText: {
     fontSize: 12,
     color: "#0288d1",
+  },
+  tagText_dark: {
+    fontSize: 12,
+    color: "#FFFFFF",
   },
   logoutButton: {
     flexDirection: "row",

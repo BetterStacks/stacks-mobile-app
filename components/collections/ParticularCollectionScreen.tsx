@@ -1,19 +1,20 @@
-import { Image, Text, View, ActivityIndicator, StyleSheet } from "react-native";
-import { styles } from "./ParticularCollectionScreenStyles";
-import { useCallback, useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
-import { QUERY_COLLECTION_LINKS } from "@/lib/api/graphql/queries";
-import { CardLinksList } from "../cardLinkList/CardLinksList";
-import { CommonButton } from "../CommonButton/CommonButton";
-import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import {ActivityIndicator, Image, StyleSheet, Text, useColorScheme, View} from "react-native";
+import {styles} from "./ParticularCollectionScreenStyles";
+import React, {useCallback, useEffect, useState} from "react";
+import {useQuery} from "@apollo/client";
+import {QUERY_COLLECTION_LINKS} from "@/lib/api/graphql/queries";
+import {CardLinksList} from "../cardLinkList/CardLinksList";
+import {CommonButton} from "../CommonButton/CommonButton";
+import {useLocalSearchParams} from "expo-router";
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
-import { Colors } from "@/components/design/colors";
+import {Colors} from "@/components/design/colors";
 
 export const ParticularCollectionScreen = () => {
   const params = useLocalSearchParams<{ collectionId: string, id: string }>();
   const collectionId = params.collectionId || params.id;
   const [isBottomDrawerVisible, setIsBottomDrawerVisible] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const { data: collectionsLinksData, loading } = useQuery(
     QUERY_COLLECTION_LINKS,
@@ -40,7 +41,7 @@ export const ParticularCollectionScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={isDark ? styles.container__dark : styles.container}>
       {loading ? (
         <View style={localStyles.loaderContainer}>
           <ActivityIndicator size="large" color={Colors.TextColor.LignMainColor} />
@@ -49,7 +50,7 @@ export const ParticularCollectionScreen = () => {
         <>
           {/* {collectionsLinksData.stack.links.length > 0 && (
             <View style={styles.contentHeader}>
-              <Text style={styles.subtitle}>Saved links</Text>
+              <Text style={isDark ? styles.subtitle__dark : styles.subtitle}>Saved links</Text>
             </View>
           )} */}
 
@@ -58,6 +59,7 @@ export const ParticularCollectionScreen = () => {
               <CardLinksList
                 links={collectionsLinksData.stack.links}
                 showList={true}
+                colorScheme={colorScheme}
               />
             )}
           </View>
@@ -69,11 +71,11 @@ export const ParticularCollectionScreen = () => {
                 style={styles.image}
               />
 
-              <Text style={styles.noLinksTitle}>
+              <Text style={isDark ? styles.noLinksTitle__dark : styles.noLinksTitle}>
                 You haven't got recently saved items
               </Text>
 
-              <Text style={styles.noLinksText}>
+              <Text style={isDark ? styles.noLinksText__dark : styles.noLinksText}>
                 You haven't got recently saved items{" "}
               </Text>
 
@@ -81,8 +83,8 @@ export const ParticularCollectionScreen = () => {
                 <CommonButton
                   text="+ Add your first link"
                   onPress={onButtonPress}
-                  additionalButtonStyles={styles.buttonAdditionalStyles}
-                  additionalTextStyles={styles.buttonTextAdditionalStyles}
+                  additionalButtonStyles={isDark ? styles.buttonAdditionalStyles__dark : styles.buttonAdditionalStyles}
+                  additionalTextStyles={isDark ? styles.buttonTextAdditionalStyles__dark : styles.buttonTextAdditionalStyles}
                 />
               </View>
             </View>
@@ -95,8 +97,8 @@ export const ParticularCollectionScreen = () => {
           />
         </>
       ) : (
-        <View style={localStyles.loaderContainer}>
-          <Text>No collection data available</Text>
+        <View style={isDark ? [localStyles.loaderContainer, localStyles.loaderContainer__dark] : localStyles.loaderContainer}>
+          <Text style={isDark ? localStyles.errorText__dark : localStyles.errorText}>No collection data available</Text>
         </View>
       )}
     </View>
@@ -108,5 +110,14 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loaderContainer__dark: {
+    backgroundColor: "#0A0A0A",
+  },
+  errorText: {
+    color: "#1C4A5A",
+  },
+  errorText__dark: {
+    color: "#FFFFFF",
   },
 });

@@ -1,22 +1,27 @@
-import { styles } from "@/components/dashboard/HomeScreenStyles";
-import { Text, TouchableOpacity } from "react-native";
+import {styles} from "@/components/dashboard/HomeScreenStyles";
+import {ColorSchemeName, Text, TouchableOpacity} from "react-native";
 
 export const CategoryItem = ({
   emoji,
   title,
   isLast,
   onPress,
+  colorScheme,
 }: {
   emoji: string;
   title: string;
   isLast?: boolean;
   onPress?: () => void;
+  colorScheme?: ColorSchemeName;
 }) => (
   <TouchableOpacity
-    style={[styles.categoryItem, isLast && { borderBottomWidth: 0 }]}
+    style={[
+      colorScheme === 'light' ? styles.categoryItem : styles.categoryItem__dark, 
+      isLast && { borderBottomWidth: 0 }
+    ]}
     onPress={onPress}
   >
-    <Text style={styles.categoryEmoji}>{emoji}</Text>
-    <Text style={styles.categoryTitle}>{title}</Text>
+    <Text style={colorScheme === 'light' ? styles.categoryEmoji : styles.categoryEmoji__dark}>{emoji}</Text>
+    <Text style={colorScheme === 'light' ? styles.categoryTitle : styles.categoryTitle__dark}>{title}</Text>
   </TouchableOpacity>
 );

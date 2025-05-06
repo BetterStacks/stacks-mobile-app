@@ -1,17 +1,11 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
-import { ChevronRight, X } from "lucide-react-native";
-import { Collection } from "@/lib/types/Collection";
-import { getEmojiFromCode } from "@/lib/utils";
-import { Colors } from "./design/colors";
-import { getFont } from "./design/fonts/fonts";
-import { EFontWeight } from "./design/fonts/types";
+import {ColorSchemeName, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import {ChevronRight, X} from "lucide-react-native";
+import {Collection} from "@/lib/types/Collection";
+import {getEmojiFromCode} from "@/lib/utils";
+import {Colors} from "./design/colors";
+import {getFont} from "./design/fonts/fonts";
+import {EFontWeight} from "./design/fonts/types";
 
 type Props = {
   collections: Collection[];
@@ -20,6 +14,7 @@ type Props = {
   onRemoveCollection: (collectionId: string) => void;
   isExpanded: boolean;
   onExpandToggle: () => void;
+  colorScheme?: ColorSchemeName;
 };
 
 export const CollectionSelector: React.FC<Props> = ({
@@ -29,18 +24,24 @@ export const CollectionSelector: React.FC<Props> = ({
   onRemoveCollection,
   isExpanded,
   onExpandToggle,
+  colorScheme,
 }) => {
+  const isDark = colorScheme === 'dark';
+
   return (
     <View>
       <TouchableOpacity
-        style={[styles.collectionButton, { marginBottom: isExpanded ? 0 : 24 }]}
+        style={[
+          isDark ? styles.collectionButton_dark : styles.collectionButton, 
+          { marginBottom: isExpanded ? 0 : 24 }
+        ]}
         onPress={onExpandToggle}
       >
         <View style={styles.collectionButtonContent}>
-          <View style={styles.collectionIconContainer}>
+          <View style={isDark ? styles.collectionIconContainer_dark : styles.collectionIconContainer}>
             <Text>{selectedCollections.length > 0 ? "📑" : "📁"}</Text>
           </View>
-          <Text style={styles.collectionText}>
+          <Text style={isDark ? styles.collectionText_dark : styles.collectionText}>
             {selectedCollections.length === 0
               ? "Add to collection"
               : `${selectedCollections.length} collection${
@@ -50,13 +51,13 @@ export const CollectionSelector: React.FC<Props> = ({
         </View>
         <ChevronRight
           size={20}
-          color="#666666"
+          color={isDark ? "#A0B3BC" : "#666666"}
           style={[styles.chevron, isExpanded && styles.chevronExpanded]}
         />
       </TouchableOpacity>
 
       {isExpanded && (
-        <View style={styles.collectionsContainer}>
+        <View style={isDark ? styles.collectionsContainer_dark : styles.collectionsContainer}>
           <ScrollView
             style={styles.collectionsScroll}
             showsVerticalScrollIndicator={false}
@@ -67,8 +68,8 @@ export const CollectionSelector: React.FC<Props> = ({
                 <View
                   key={collection.id}
                   style={[
-                    styles.collectionItem,
-                    isSelected && styles.selectedCollectionItem,
+                    isDark ? styles.collectionItem_dark : styles.collectionItem,
+                    isSelected && (isDark ? styles.selectedCollectionItem_dark : styles.selectedCollectionItem),
                   ]}
                 >
                   <TouchableOpacity
@@ -76,12 +77,12 @@ export const CollectionSelector: React.FC<Props> = ({
                     onPress={() => onCollectionSelect(collection.id)}
                   >
                     <View style={styles.collectionItemContent}>
-                      <View style={styles.collectionItemIcon}>
+                      <View style={isDark ? styles.collectionItemIcon_dark : styles.collectionItemIcon}>
                         <Text style={styles.emojiText}>
                           {getEmojiFromCode(collection.emoji) || "📁"}
                         </Text>
                       </View>
-                      <Text style={styles.collectionItemText}>
+                      <Text style={isDark ? styles.collectionItemText_dark : styles.collectionItemText}>
                         {collection.title}
                       </Text>
                     </View>
@@ -93,7 +94,7 @@ export const CollectionSelector: React.FC<Props> = ({
                       onPress={() => onRemoveCollection(collection.id)}
                       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     >
-                      <X size={20} color="#666666" />
+                      <X size={20} color={isDark ? "#A0B3BC" : "#666666"} />
                     </TouchableOpacity>
                   )}
                 </View>
@@ -115,6 +116,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.tailwindColors.neutral["200"],
     borderRadius: 8,
+    backgroundColor: "#FFFFFF",
+  },
+  collectionButton_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#262626",
+    borderRadius: 8,
+    backgroundColor: "#262626",
   },
   collectionButtonContent: {
     flexDirection: "row",
@@ -129,9 +141,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 12,
   },
+  collectionIconContainer_dark: {
+    width: 32,
+    height: 32,
+    backgroundColor: "#3A3A3A",
+    borderRadius: 6,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
   collectionText: {
     fontSize: 16,
     color: Colors.tailwindColors.neutral["600"],
+  },
+  collectionText_dark: {
+    fontSize: 16,
+    color: "#FFFFFF",
   },
   chevron: {
     transform: [{ rotate: "0deg" }],
@@ -147,6 +172,17 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
     marginBottom: 24,
     maxHeight: 400,
+    backgroundColor: "#FFFFFF",
+  },
+  collectionsContainer_dark: {
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderColor: "#262626",
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    marginBottom: 24,
+    maxHeight: 400,
+    backgroundColor: "#171717",
   },
   collectionsScroll: {
     flexGrow: 0,
@@ -158,6 +194,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.tailwindColors.neutral["0"],
     borderBottomWidth: 1,
     borderBottomColor: Colors.tailwindColors.neutral["200"],
+  },
+  collectionItem_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#171717",
+    borderBottomWidth: 1,
+    borderBottomColor: "#262626",
   },
   collectionItemTouchable: {
     flex: 1,
@@ -176,6 +220,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 12,
   },
+  collectionItemIcon_dark: {
+    width: 32,
+    height: 32,
+    backgroundColor: "#3A3A3A",
+    borderRadius: 6,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
   emojiText: {
     fontSize: 16,
   },
@@ -186,8 +239,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
+  collectionItemText_dark: {
+    ...getFont(EFontWeight.Regular),
+    fontSize: 16,
+    color: "#FFFFFF",
+    flex: 1,
+    marginRight: 8,
+  },
   selectedCollectionItem: {
     backgroundColor: Colors.tailwindColors.neutral["50"],
+  },
+  selectedCollectionItem_dark: {
+    backgroundColor: "#262626",
   },
   removeButton: {
     padding: 4,

@@ -25,7 +25,7 @@ const IndividualPage = () => {
 			<StatusBar style="light" />
 			<View style={{ width: "100%", height: "110%" }}>
 				{token && <WebView
-					source={{uri: `http://localhost:3000/page?pageId=${id}&gqlToken=${token}`}}
+					source={{uri: `https://app.betterstacks.com/page?pageId=${id}&gqlToken=${token}`}}
 				/>}
 			</View>
 

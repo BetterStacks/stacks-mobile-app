@@ -3,14 +3,17 @@ import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {MUTATION_SIGNIN, MUTATION_SIGNUP, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
 import {
-	Image,
-	KeyboardAvoidingView,
-	Platform,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View
+  GestureResponderEvent,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
@@ -28,13 +31,15 @@ import {setToStorage} from "@/utils/storage/setToStorage";
 import {scaleHeight, scaleWidth} from "@/components/design/scale";
 import {getFont} from "@/components/design/fonts/fonts";
 import {EFontWeight} from "@/components/design/fonts/types";
-import {MainButton, mainButtonStyles} from "@/components/ui/button";
 import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
 import TokenCheck from "@/components/TokenCheck";
 import {router} from "expo-router";
 import {Toast} from "toastify-react-native";
 
 const SignInScreen = () => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -228,93 +233,114 @@ const SignInScreen = () => {
   const signInGoogle = useGoogleSignIn(onGoogleSignIn);
   const signInWithApple = useAppleSignIn(onAppleSignIn);
 
+  const handleLoginPress = (event: GestureResponderEvent) => {
+    handleSubmit();
+  };
+
   return (
       <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // or 'position'
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{ flex: 1 }}
       >
-        <ScrollView style={styles.container}>
+        <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
+        <ScrollView style={isDark ? styles.container_dark : styles.container}>
           {/* CHECK FOR THE PRESENCE OF TOKEN */}
           <TokenCheck />
 
           <View style={styles.mainContainer}>
-        <LogoIcon width={63} height={53} />
+            <LogoIcon width={63} height={53} />
 
-        <Text style={styles.title}>Login to your account</Text>
+            <Text style={isDark ? styles.title_dark : styles.title}>Login to your account</Text>
 
-        <View style={styles.socialsContainer}>
-          <MainButton.Outline onPress={signInGoogle}>
-            <Image
-              style={styles.socialImage}
-              source={require("@/assets/png/socialGoogle.png")}
-              resizeMode={FastImage.resizeMode.contain}
-            />
-            <Text style={mainButtonStyles.outline.buttonText}>
-              Login with Google
-            </Text>
-          </MainButton.Outline>
+            <View style={styles.socialsContainer}>
+              <TouchableOpacity
+                style={isDark ? styles.socialButton_dark : styles.socialButton}
+                onPress={signInGoogle}
+              >
+                <Image
+                  style={styles.socialImage}
+                  source={require("@/assets/png/socialGoogle.png")}
+                  resizeMode={FastImage.resizeMode.contain}
+                />
+                <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+                  Login with Google
+                </Text>
+              </TouchableOpacity>
 
-          <MainButton.Outline onPress={signInWithApple}>
-            <Image
-              style={styles.socialImage}
-              source={require("@/assets/png/socialApple.png")}
-              resizeMode={FastImage.resizeMode.contain}
-            />
-            <Text style={mainButtonStyles.outline.buttonText}>
-              Login with Apple
-            </Text>
-          </MainButton.Outline>
+              <TouchableOpacity
+                style={isDark ? styles.socialButton_dark : styles.socialButton}
+                onPress={signInWithApple}
+              >
+                <Image
+                  style={styles.socialImage}
+                  source={require("@/assets/png/socialApple.png")}
+                  resizeMode={FastImage.resizeMode.contain}
+                />
+                <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+                  Login with Apple
+                </Text>
+              </TouchableOpacity>
 
-          <MainButton.Outline onPress={signInGoogle}>
-            <Image
-              style={styles.socialImage}
-              source={require("@/assets/png/socialFacebook.png")}
-              resizeMode={FastImage.resizeMode.contain}
-            />
-            <Text style={mainButtonStyles.outline.buttonText}>
-              Login with Facebook
-            </Text>
-          </MainButton.Outline>
-        </View>
+              <TouchableOpacity
+                style={isDark ? styles.socialButton_dark : styles.socialButton}
+                onPress={signInGoogle}
+              >
+                <Image
+                  style={styles.socialImage}
+                  source={require("@/assets/png/socialFacebook.png")}
+                  resizeMode={FastImage.resizeMode.contain}
+                />
+                <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+                  Login with Facebook
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-        <Text style={styles.divider}>or</Text>
+            <Text style={isDark ? styles.divider_dark : styles.divider}>or</Text>
 
-        <View style={styles.inputsContainer}>
-          <CommonInput
-            onChangeText={handleChange("email")}
-            onBlur={handleBlur("email")}
-            value={values.email}
-            placeholder="Email"
-            keyboardType="email-address"
-            placeholderTextColor={Colors.TextColor.InputPlaceholderColor}
-          />
+            <View style={styles.inputsContainer}>
+              <CommonInput
+                onChangeText={handleChange("email")}
+                onBlur={handleBlur("email")}
+                value={values.email}
+                placeholder="Email"
+                keyboardType="email-address"
+                placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
+                colorScheme={colorScheme}
+              />
 
-          <CommonInput
-            placeholder="Password"
-            onChangeText={handleChange("password")}
-            onBlur={handleBlur("password")}
-            value={values.password}
-            placeholderTextColor={Colors.TextColor.InputPlaceholderColor}
-            secureTextEntry
-          />
+              <CommonInput
+                placeholder="Password"
+                onChangeText={handleChange("password")}
+                onBlur={handleBlur("password")}
+                value={values.password}
+                placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
+                secureTextEntry
+                colorScheme={colorScheme}
+              />
 
-          <TouchableOpacity style={styles.forgotTouchable}>
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
+              <TouchableOpacity style={styles.forgotTouchable}>
+                <Text style={isDark ? styles.forgotText_dark : styles.forgotText}>Forgot Password?</Text>
+              </TouchableOpacity>
 
-          <MainButton.Primary // @ts-ignore
-            onPress={handleSubmit}
-            loading={signInLoading || signUpLoading}
-          >
-            <Text style={mainButtonStyles.primary.buttonText}>Login</Text>
-          </MainButton.Primary>
-        </View>
-      </View>
+              <TouchableOpacity
+                style={isDark ? styles.loginButton_dark : styles.loginButton}
+                onPress={handleLoginPress}
+                disabled={signInLoading || signUpLoading}
+              >
+                {(signInLoading || signUpLoading) ? (
+                  <Text style={styles.loginButtonText}>Loading...</Text>
+                ) : (
+                  <Text style={styles.loginButtonText}>Login</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerSubtitle}>Don't have an account?</Text>
-            <TouchableOpacity>
-              <Text style={styles.footerTitle}>Sign Up</Text>
+            <Text style={isDark ? styles.footerSubtitle_dark : styles.footerSubtitle}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => router.push('/signup')}>
+              <Text style={isDark ? styles.footerTitle_dark : styles.footerTitle}>Sign Up</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -328,6 +354,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: scaleWidth(16),
     backgroundColor: Colors.OtherColor.MainBackgroundColor,
   },
+  container_dark: {
+    flex: 1,
+    paddingHorizontal: scaleWidth(16),
+    backgroundColor: "#0A0A0A",
+  },
   mainContainer: {
     flex: 1,
     alignItems: "center",
@@ -339,16 +370,26 @@ const styles = StyleSheet.create({
     fontSize: scaleHeight(16),
     color: Colors.TextColor.DarkHeadingColor,
   },
+  title_dark: {
+    marginTop: scaleHeight(24),
+    ...getFont(EFontWeight.Bold),
+    fontSize: scaleHeight(16),
+    color: "#FFFFFF",
+  },
   inputsContainer: {
     gap: scaleHeight(16),
     width: "100%",
   },
   forgotTouchable: {
     alignSelf: "flex-end",
-    // marginTop: scaleHeight(12),
   },
   forgotText: {
     color: Colors.TextColor.LignMainColor,
+    ...getFont(EFontWeight.Medium),
+    fontSize: scaleHeight(12),
+  },
+  forgotText_dark: {
+    color: "#4793E0",
     ...getFont(EFontWeight.Medium),
     fontSize: scaleHeight(12),
   },
@@ -357,14 +398,73 @@ const styles = StyleSheet.create({
     ...getFont(EFontWeight.Bold),
     fontSize: scaleHeight(14),
   },
+  divider_dark: {
+    marginVertical: scaleHeight(24),
+    ...getFont(EFontWeight.Bold),
+    fontSize: scaleHeight(14),
+    color: "#FFFFFF",
+  },
   socialsContainer: {
     gap: 16,
     marginTop: scaleHeight(24),
     width: "100%",
   },
+  socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    gap: 10,
+  },
+  socialButton_dark: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#171717',
+    borderRadius: 8,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#262626',
+    gap: 10,
+  },
+  socialButtonText: {
+    color: '#1C4A5A',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  socialButtonText_dark: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
   socialImage: {
     width: scaleWidth(25),
     height: scaleHeight(25),
+  },
+  loginButton: {
+    backgroundColor: "#1C4A5A",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 8,
+    width: '100%',
+  },
+  loginButton_dark: {
+    backgroundColor: "#1C4A5A",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 8,
+    width: '100%',
+  },
+  loginButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
   },
   footer: {
     alignItems: "center",
@@ -379,9 +479,21 @@ const styles = StyleSheet.create({
     fontSize: scaleHeight(16),
     lineHeight: 24,
   },
+  footerSubtitle_dark: {
+    ...getFont(EFontWeight.Regular),
+    color: "#8EACB7",
+    fontSize: scaleHeight(16),
+    lineHeight: 24,
+  },
   footerTitle: {
     ...getFont(EFontWeight.Bold),
     color: Colors.TextColor.MainColor,
+    fontSize: scaleHeight(16),
+    lineHeight: 24,
+  },
+  footerTitle_dark: {
+    ...getFont(EFontWeight.Bold),
+    color: "#FFFFFF",
     fontSize: scaleHeight(16),
     lineHeight: 24,
   },

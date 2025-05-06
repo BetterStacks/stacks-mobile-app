@@ -1,17 +1,10 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  ActivityIndicator,
-} from "react-native";
-import { useMutation } from "@apollo/client";
-import { MUTATION_UPDATE_COLLECTION } from "@/lib/api/graphql/mutations";
-import { Colors } from "../design/colors";
-import { getEmojiFromCode } from "@/lib/utils";
-import { Toast } from "toastify-react-native";
+import React, {useState} from "react";
+import {ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View,} from "react-native";
+import {useMutation} from "@apollo/client";
+import {MUTATION_UPDATE_COLLECTION} from "@/lib/api/graphql/mutations";
+import {Colors} from "../design/colors";
+import {getEmojiFromCode} from "@/lib/utils";
+import {Toast} from "toastify-react-native";
 
 type Props = {
   onBack: () => void;
@@ -25,6 +18,8 @@ type Props = {
 };
 
 const EditCollectionView = ({ onBack, onClose, collection, onSuccess }: Props) => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [title, setTitle] = useState(collection.title);
   const [updateCollection, { loading }] = useMutation(MUTATION_UPDATE_COLLECTION, {
     onCompleted: (data) => {
@@ -67,17 +62,18 @@ const EditCollectionView = ({ onBack, onClose, collection, onSuccess }: Props) =
   const hasChanges = title.trim() !== collection.title;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Edit collection</Text>
+    <View style={isDark ? styles.container_dark : styles.container}>
+      <Text style={isDark ? styles.title_dark : styles.title}>Edit collection</Text>
 
       <View style={styles.collectionPreview}>
-        <Text style={styles.emoji}>{getEmojiFromCode(collection.emoji)}</Text>
+        <Text style={isDark ? styles.emoji_dark : styles.emoji}>{getEmojiFromCode(collection.emoji)}</Text>
       </View>
 
-      <Text style={styles.label}>Collection Name</Text>
+      <Text style={isDark ? styles.label_dark : styles.label}>Collection Name</Text>
       <TextInput
-        style={styles.input}
+        style={isDark ? styles.input_dark : styles.input}
         placeholder="Collection name"
+        placeholderTextColor={isDark ? "#8F8F8F" : undefined}
         value={title}
         onChangeText={setTitle}
         autoFocus
@@ -86,7 +82,10 @@ const EditCollectionView = ({ onBack, onClose, collection, onSuccess }: Props) =
       {hasChanges && (
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[styles.saveButton, loading && styles.saveButtonDisabled]}
+            style={[
+              isDark ? styles.saveButton_dark : styles.saveButton, 
+              loading && styles.saveButtonDisabled
+            ]}
             onPress={handleSave}
             disabled={loading}
           >
@@ -101,7 +100,7 @@ const EditCollectionView = ({ onBack, onClose, collection, onSuccess }: Props) =
             onPress={onBack}
             disabled={loading}
           >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+            <Text style={isDark ? styles.cancelButtonText_dark : styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -112,12 +111,25 @@ const EditCollectionView = ({ onBack, onClose, collection, onSuccess }: Props) =
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  container_dark: {
+    padding: 16,
+    backgroundColor: "#171717",
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
     textAlign: "center",
     marginBottom: 20,
+    color: "#1C4A5A",
+  },
+  title_dark: {
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#FFFFFF",
   },
   collectionPreview: {
     alignItems: "center",
@@ -126,10 +138,21 @@ const styles = StyleSheet.create({
   emoji: {
     fontSize: 48,
     marginBottom: 8,
+    color: "#000000",
+  },
+  emoji_dark: {
+    fontSize: 48,
+    marginBottom: 8,
+    color: "#F0F0F0",
   },
   label: {
     fontSize: 14,
     color: Colors.tailwindColors.neutral["600"],
+    marginBottom: 8,
+  },
+  label_dark: {
+    fontSize: 14,
+    color: "#A0B3BC",
     marginBottom: 8,
   },
   input: {
@@ -139,12 +162,31 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+    color: "#1C4A5A",
+  },
+  input_dark: {
+    borderWidth: 1,
+    borderColor: "#262626",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 16,
+    backgroundColor: "#262626",
+    color: "#FFFFFF",
   },
   buttonContainer: {
     marginTop: 24,
   },
   saveButton: {
     backgroundColor: Colors.TextColor.MainColor,
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  saveButton_dark: {
+    backgroundColor: "#1C4A5A",
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
@@ -165,6 +207,10 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: Colors.TextColor.MainColor,
+    fontSize: 16,
+  },
+  cancelButtonText_dark: {
+    color: "#8EACB7",
     fontSize: 16,
   },
 });

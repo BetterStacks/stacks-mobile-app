@@ -1,5 +1,5 @@
 import React, {forwardRef, ReactNode} from 'react';
-import {StyleSheet, TextInput, TextInputProps, View} from 'react-native';
+import {ColorSchemeName, StyleSheet, TextInput, TextInputProps, useColorScheme, View} from 'react-native';
 import {getFont} from "@/components/design/fonts/fonts";
 import {EFontWeight} from "@/components/design/fonts/types";
 import {scaleHeight, scaleWidth} from "@/components/design/scale";
@@ -8,14 +8,19 @@ interface Props extends TextInputProps {
     iconName?: ReactNode;
     additionalInputStyles?: object;
     isIconNotTouchable?: boolean;
+    colorScheme?: ColorSchemeName;
 }
 
 const CommonInput = forwardRef<TextInput, Props>(({
     iconName,
     additionalInputStyles,
     isIconNotTouchable,
+    colorScheme,
     ...props
 }, ref) => {
+    const systemColorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark' || systemColorScheme === 'dark';
+
     return (
         <View style={styles.container}>
             {iconName && (
@@ -25,7 +30,10 @@ const CommonInput = forwardRef<TextInput, Props>(({
             )}
             <TextInput
                 ref={ref}
-                style={[styles.input, additionalInputStyles]}
+                style={[
+                    isDark ? styles.input_dark : styles.input, 
+                    additionalInputStyles
+                ]}
                 {...props}
             />
         </View>
@@ -44,6 +52,16 @@ const styles = StyleSheet.create({
         fontSize: scaleHeight(16),
         color: "#1C4A5A",
         backgroundColor: "#F8F9FA",
+        borderRadius: 8,
+        paddingVertical: scaleHeight(12),
+        paddingHorizontal: scaleWidth(16),
+        paddingLeft: scaleWidth(44),
+    },
+    input_dark: {
+        ...getFont(EFontWeight.Regular),
+        fontSize: scaleHeight(16),
+        color: "#FFFFFF",
+        backgroundColor: "#262626",
         borderRadius: 8,
         paddingVertical: scaleHeight(12),
         paddingHorizontal: scaleWidth(16),

@@ -1,24 +1,25 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useState} from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  ActivityIndicator,
+	ActivityIndicator,
+	SafeAreaView,
+	StyleSheet,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	useColorScheme,
+	View,
 } from "react-native";
-import { useMutation } from "@apollo/client";
-import {
-  MUTATION_ADD_NEW_COLLECTION,
-} from "@/lib/api/graphql/mutations";
+import {useMutation} from "@apollo/client";
+import {MUTATION_ADD_NEW_COLLECTION,} from "@/lib/api/graphql/mutations";
 import client from "@/lib/apollo/client";
-import { Colors } from "@/components/design/colors";
-import { router } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
-import { Toast } from "toastify-react-native";
+import {Colors} from "@/components/design/colors";
+import {router} from "expo-router";
+import {AntDesign} from "@expo/vector-icons";
+import {Toast} from "toastify-react-native";
 
 export const CreateCollectionScreen = () => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [title, setTitle] = useState("");
   const [createNewCollection, { loading }] = useMutation(
     MUTATION_ADD_NEW_COLLECTION,
@@ -64,17 +65,17 @@ export const CreateCollectionScreen = () => {
   }, [title, createNewCollection]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={isDark ? styles.container_dark : styles.container}>
       <View style={styles.mainContent}>
         <View style={styles.inputWrapper}>
-          <Text style={styles.label}>Collection Name</Text>
-          <View style={styles.inputContainer}>
+          <Text style={isDark ? styles.label_dark : styles.label}>Collection Name</Text>
+          <View style={isDark ? styles.inputContainer_dark : styles.inputContainer}>
             <TextInput
               value={title}
               onChangeText={setTitle}
               placeholder="Enter collection name"
-              placeholderTextColor="#999"
-              style={styles.input}
+              placeholderTextColor={isDark ? "#8F8F8F" : "#999"}
+              style={isDark ? styles.input_dark : styles.input}
               autoFocus={true}
             />
           </View>
@@ -108,6 +109,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.OtherColor.UsualWhite,
     padding: 20,
   },
+  container_dark: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
+    padding: 20,
+  },
   mainContent: {
     alignItems: 'center',
   },
@@ -115,6 +121,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: Colors.TextColor.MainColor,
+    marginBottom: 40,
+    marginTop: 20,
+    alignSelf: 'flex-start',
+  },
+  header_dark: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
     marginBottom: 40,
     marginTop: 20,
     alignSelf: 'flex-start',
@@ -129,6 +143,12 @@ const styles = StyleSheet.create({
     color: Colors.TextColor.MainColor,
     marginBottom: 10,
   },
+  label_dark: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 10,
+  },
   inputContainer: {
     backgroundColor: 'white',
     borderWidth: 1,
@@ -140,10 +160,27 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  inputContainer_dark: {
+    backgroundColor: '#171717',
+    borderWidth: 1,
+    borderColor: '#262626',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
   input: {
     padding: 16,
     fontSize: 16,
     color: Colors.TextColor.MainColor,
+    height: 56,
+  },
+  input_dark: {
+    padding: 16,
+    fontSize: 16,
+    color: '#FFFFFF',
     height: 56,
   },
   createButton: {

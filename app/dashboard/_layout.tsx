@@ -1,28 +1,33 @@
 import {Tabs} from "expo-router";
 import React from "react";
+import {useColorScheme} from "react-native";
 
 import {HapticTab} from "@/components/HapticTab";
 import {IconSymbol} from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import {Colors as colors} from "@/components/design/colors";
-import {useColorScheme} from "@/hooks/useColorScheme";
 
 export default function DashboardLayout() {
 	const colorScheme = useColorScheme();
+	const isDark = colorScheme === 'dark';
 
 	return (
 		<Tabs
 			screenOptions={{
 				tabBarActiveTintColor: colors.TextColor.LignMainColor,
+				tabBarInactiveTintColor: isDark ? "#8F8F8F" : "#737373",
 				headerShown: false,
 				tabBarButton: HapticTab,
-				tabBarBackground: TabBarBackground,
+				tabBarBackground: () => <TabBarBackground colorScheme={colorScheme} />,
 				tabBarLabelStyle: {
 					fontSize: 14,
+					color: isDark ? "#FFFFFF" : undefined,
 				},
 				tabBarStyle: {
 					height: 85,
 					paddingTop: 15,
+					borderTopColor: isDark ? "#262626" : undefined,
+					borderTopWidth: isDark ? 0 : undefined,
 				},
 			}}
 		>

@@ -1,6 +1,15 @@
 import {styles} from "@/components/collections/CollectionsScreenStyle";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
 import {SafeAreaView} from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -15,7 +24,7 @@ import {router} from "expo-router";
 import {Colors} from "@/components/design/colors";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 import EditCollectionView from "@/components/BottomDrawer/EditCollectionView";
-import { setIsSuccessModalVisible, setSuccessModalMessage } from "@/lib/apollo/store/handlers";
+import {setIsSuccessModalVisible, setSuccessModalMessage} from "@/lib/apollo/store/handlers";
 
 interface Section {
   title: string;
@@ -24,14 +33,19 @@ interface Section {
 
 interface SectionProps {
   item: Section;
+  colorScheme?: string;
 }
 
 interface CollectionItemProps {
   item: Collection;
   onLongPress: (collection: Collection) => void;
+  colorScheme?: string;
 }
 
 export default function CollectionsScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
   const [isEditDrawerVisible, setIsEditDrawerVisible] = useState(false);
@@ -149,47 +163,56 @@ export default function CollectionsScreen() {
     refetchAllCollections();
   }, [refetchWorkspaceCollections, refetchAllCollections]);
 
-  const renderCollectionItem = ({ item: collection, onLongPress }: CollectionItemProps) => (
-    <TouchableOpacity 
-      style={styles.collectionItem} 
-      onPress={() => handleCollectionPress(collection)}
-      onLongPress={() => onLongPress(collection)}
-      delayLongPress={500}
-    >
-      <View style={styles.collectionContent}>
-        <View style={styles.emojiContainer}>
-          <Text style={styles.collectionEmoji} allowFontScaling={false}>
-            {getEmojiFromCode(collection.emoji)}
-          </Text>
-        </View>
-        <View style={styles.collectionInfo}>
-          <Text style={styles.collectionTitle}>
-            {collection.title}
-            <Text style={styles.collectionCount}>
-              ({collection.links_count})
+  const renderCollectionItem = ({ item: collection, onLongPress, colorScheme }: CollectionItemProps) => {
+    const isDark = colorScheme === 'dark';
+    return (
+      <TouchableOpacity 
+        style={styles.collectionItem} 
+        onPress={() => handleCollectionPress(collection)}
+        onLongPress={() => onLongPress(collection)}
+        delayLongPress={500}
+      >
+        <View style={styles.collectionContent}>
+          <View style={styles.emojiContainer}>
+            <Text style={isDark ? styles.collectionEmoji__dark : styles.collectionEmoji} allowFontScaling={false}>
+              {getEmojiFromCode(collection.emoji)}
             </Text>
-          </Text>
+          </View>
+          <View style={styles.collectionInfo}>
+            <Text style={isDark ? styles.collectionTitle__dark : styles.collectionTitle}>
+              {collection.title}
+              <Text style={isDark ? styles.collectionCount__dark : styles.collectionCount}>
+                ({collection.links_count})
+              </Text>
+            </Text>
+          </View>
         </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderSeparator = () => (
+    <View style={isDark ? styles.separator__dark : styles.separator} />
+  );
+
+  const renderSection = ({ item: section, colorScheme }: SectionProps) => {
+    const isDark = colorScheme === 'dark';
+    return (
+      <View style={styles.section}>
+        <Text style={isDark ? styles.sectionTitle__dark : styles.sectionTitle}>{section.title}</Text>
+        <FlatList
+          data={section.data}
+          renderItem={({ item }) => renderCollectionItem({ 
+            item, 
+            onLongPress: handleLongPress,
+            colorScheme 
+          })}
+          ItemSeparatorComponent={renderSeparator}
+          scrollEnabled={false}
+        />
       </View>
-    </TouchableOpacity>
-  );
-
-  const renderSeparator = () => <View style={styles.separator} />;
-
-  const renderSection = ({ item: section }: SectionProps) => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
-      <FlatList
-        data={section.data}
-        renderItem={({ item }) => renderCollectionItem({ 
-          item, 
-          onLongPress: handleLongPress 
-        })}
-        ItemSeparatorComponent={renderSeparator}
-        scrollEnabled={false}
-      />
-    </View>
-  );
+    );
+  };
 
   const onAddCollectionPress = useCallback(() => {
     router.push('/collection/create');
@@ -224,12 +247,12 @@ export default function CollectionsScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={isDark ? styles.container__dark : styles.container}>
       <Animated.View style={[animViewStyle]}>
         <View style={styles.header}>
           <View style={styles.headerInfo}>
-            <Text style={styles.title}>Collections</Text>
-            <Text style={styles.text}>Browse your collections</Text>
+            <Text style={isDark ? styles.title__dark : styles.title}>Collections</Text>
+            <Text style={isDark ? styles.text__dark : styles.text}>Browse your collections</Text>
           </View>
 
           <View style={styles.addButton}>
@@ -243,19 +266,19 @@ export default function CollectionsScreen() {
         </View>
 
         <View style={styles.searchContainer}>
-          <View style={styles.searchWrapper}>
+          <View style={isDark ? styles.searchWrapper__dark : styles.searchWrapper}>
             <AntDesign
               name="search1"
               size={16}
-              color="#666"
+              color={isDark ? "#8F8F8F" : "#666"}
               style={styles.searchIcon}
             />
             <TextInput
               value={searchQuery}
               onChangeText={setSearchQuery}
               placeholder="Search collections..."
-              placeholderTextColor="#666"
-              style={styles.searchInput}
+              placeholderTextColor={isDark ? "#8F8F8F" : "#666"}
+              style={isDark ? styles.searchInput__dark : styles.searchInput}
             />
           </View>
         </View>
@@ -266,12 +289,12 @@ export default function CollectionsScreen() {
           </View>
         ) : (
           <FlatList<Section>
-            data={renderSections()}
-            renderItem={renderSection}
+            data={renderSections()} // @ts-ignore
+            renderItem={({ item }) => renderSection({ item, colorScheme })}
             keyExtractor={(section) => section.title}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContentContainer}
-            extraData={workspaceId}
+            extraData={[workspaceId, colorScheme]}
           />
         )}
       </Animated.View>
