@@ -1,8 +1,8 @@
-import {styles} from "@/components/collections/CollectionsScreenStyle";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -25,6 +25,10 @@ import {Colors} from "@/components/design/colors";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 import EditCollectionView from "@/components/BottomDrawer/EditCollectionView";
 import {setIsSuccessModalVisible, setSuccessModalMessage} from "@/lib/apollo/store/handlers";
+import {scaleHeight, scaleWidth} from "@/components/design/scale";
+import metrics from "@/components/design/metrics";
+import {getFont} from "@/components/design/fonts/fonts";
+import {EFontWeight} from "@/components/design/fonts/types";
 
 interface Section {
   title: string;
@@ -45,7 +49,7 @@ interface CollectionItemProps {
 export default function CollectionsScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
   const [isEditDrawerVisible, setIsEditDrawerVisible] = useState(false);
@@ -166,22 +170,22 @@ export default function CollectionsScreen() {
   const renderCollectionItem = ({ item: collection, onLongPress, colorScheme }: CollectionItemProps) => {
     const isDark = colorScheme === 'dark';
     return (
-      <TouchableOpacity 
-        style={styles.collectionItem} 
+      <TouchableOpacity
+        style={localStyles.collectionItem}
         onPress={() => handleCollectionPress(collection)}
         onLongPress={() => onLongPress(collection)}
         delayLongPress={500}
       >
-        <View style={styles.collectionContent}>
-          <View style={styles.emojiContainer}>
-            <Text style={isDark ? styles.collectionEmoji__dark : styles.collectionEmoji} allowFontScaling={false}>
+        <View style={localStyles.collectionContent}>
+          <View style={localStyles.emojiContainer}>
+            <Text style={isDark ? localStyles.collectionEmoji__dark : localStyles.collectionEmoji} allowFontScaling={false}>
               {getEmojiFromCode(collection.emoji)}
             </Text>
           </View>
-          <View style={styles.collectionInfo}>
-            <Text style={isDark ? styles.collectionTitle__dark : styles.collectionTitle}>
+          <View style={localStyles.collectionInfo}>
+            <Text style={isDark ? localStyles.collectionTitle__dark : localStyles.collectionTitle}>
               {collection.title}
-              <Text style={isDark ? styles.collectionCount__dark : styles.collectionCount}>
+              <Text style={isDark ? localStyles.collectionCount__dark : localStyles.collectionCount}>
                 ({collection.links_count})
               </Text>
             </Text>
@@ -192,20 +196,20 @@ export default function CollectionsScreen() {
   };
 
   const renderSeparator = () => (
-    <View style={isDark ? styles.separator__dark : styles.separator} />
+    <View style={isDark ? localStyles.separator__dark : localStyles.separator} />
   );
 
   const renderSection = ({ item: section, colorScheme }: SectionProps) => {
     const isDark = colorScheme === 'dark';
     return (
-      <View style={styles.section}>
-        <Text style={isDark ? styles.sectionTitle__dark : styles.sectionTitle}>{section.title}</Text>
+      <View style={localStyles.section}>
+        <Text style={isDark ? localStyles.sectionTitle__dark : localStyles.sectionTitle}>{section.title}</Text>
         <FlatList
           data={section.data}
-          renderItem={({ item }) => renderCollectionItem({ 
-            item, 
+          renderItem={({ item }) => renderCollectionItem({
+            item,
             onLongPress: handleLongPress,
-            colorScheme 
+            colorScheme
           })}
           ItemSeparatorComponent={renderSeparator}
           scrollEnabled={false}
@@ -243,42 +247,234 @@ export default function CollectionsScreen() {
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 50,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: Colors.OtherColor.UsualWhite,
+      paddingHorizontal: scaleWidth(16),
+      paddingTop: metrics.isAndroid ? scaleHeight(24) : scaleHeight(12),
+    },
+    container__dark: {
+      flex: 1,
+      backgroundColor: "#0A0A0A",
+      paddingHorizontal: scaleWidth(16),
+      paddingTop: metrics.isAndroid ? scaleHeight(24) : scaleHeight(12),
+    },
+    header: {
+      marginTop: scaleHeight(13),
+      justifyContent: "space-between",
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%",
+    },
+    headerInfo: {
+      gap: scaleHeight(4),
+    },
+    text: {
+      color: Colors.TextColor.SecondaryColor,
+      ...getFont(EFontWeight.Medium),
+      fontSize: scaleHeight(14),
+      lineHeight: scaleHeight(17.5),
+    },
+    text__dark: {
+      color: "#A0B3BC",
+      ...getFont(EFontWeight.Medium),
+      fontSize: scaleHeight(14),
+      lineHeight: scaleHeight(17.5),
+    },
+    title: {
+      ...getFont(EFontWeight.Bold),
+      fontSize: scaleHeight(20),
+      color: Colors.TextColor.MainColor,
+      lineHeight: scaleHeight(24),
+    },
+    title__dark: {
+      ...getFont(EFontWeight.Bold),
+      fontSize: scaleHeight(20),
+      color: "#FFFFFF",
+      lineHeight: scaleHeight(24),
+    },
+    addButton: {
+      backgroundColor: Colors.ButtonsColor.MainButton,
+      borderRadius: 12,
+    },
+    listContainer: {
+      marginTop: scaleHeight(28),
+    },
+    searchContainer: {
+      marginTop: scaleHeight(16),
+      marginBottom: scaleHeight(24),
+    },
+    searchWrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: Colors.OtherColor.UsualWhite,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: Colors.OtherColor.InputGrayBorder,
+      paddingHorizontal: scaleWidth(12),
+      height: scaleHeight(40),
+    },
+    searchWrapper__dark: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: "#171717",
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: "#262626",
+      paddingHorizontal: scaleWidth(12),
+      height: scaleHeight(40),
+    },
+    searchIcon: {
+      marginRight: scaleWidth(8),
+    },
+    searchInput: {
+      flex: 1,
+      height: "100%",
+      padding: 0,
+      color: Colors.TextColor.MainColor,
+      ...getFont(EFontWeight.Regular),
+      fontSize: scaleHeight(14),
+    },
+    searchInput__dark: {
+      flex: 1,
+      height: "100%",
+      padding: 0,
+      color: "#FFFFFF",
+      ...getFont(EFontWeight.Regular),
+      fontSize: scaleHeight(14),
+    },
+    collectionItem: {
+      paddingVertical: scaleHeight(12),
+    },
+    collectionContent: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    collectionEmoji: {
+      fontSize: scaleHeight(18),
+      marginRight: scaleWidth(12),
+      includeFontPadding: false,
+      textAlignVertical: "center",
+      color: "#000",
+      ...Platform.select({
+        ios: {
+          lineHeight: scaleHeight(22),
+        },
+        android: {
+          lineHeight: scaleHeight(20),
+        },
+      }),
+    },
+    collectionEmoji__dark: {
+      fontSize: scaleHeight(18),
+      marginRight: scaleWidth(12),
+      includeFontPadding: false,
+      textAlignVertical: "center",
+      color: "#F0F0F0",
+      ...Platform.select({
+        ios: {
+          lineHeight: scaleHeight(22),
+        },
+        android: {
+          lineHeight: scaleHeight(20),
+        },
+      }),
+    },
+    collectionInfo: {
+      flex: 1,
+    },
+    collectionTitle: {
+      ...getFont(EFontWeight.Medium),
+      fontSize: scaleHeight(16),
+      color: Colors.TextColor.MainColor,
+    },
+    collectionTitle__dark: {
+      ...getFont(EFontWeight.Medium),
+      fontSize: scaleHeight(16),
+      color: "#FFFFFF",
+    },
+    collectionCount: {
+      ...getFont(EFontWeight.Regular),
+      fontSize: scaleHeight(14),
+      color: Colors.TextColor.SecondaryColor,
+      marginLeft: scaleWidth(4),
+    },
+    collectionCount__dark: {
+      ...getFont(EFontWeight.Regular),
+      fontSize: scaleHeight(14),
+      color: "#8F8F8F",
+      marginLeft: scaleWidth(4),
+    },
+    separator: {
+      height: 1,
+      backgroundColor: Colors.OtherColor.InputGrayBorder,
+    },
+    separator__dark: {
+      height: 1,
+      backgroundColor: "#262626",
+    },
+    section: {
+      marginBottom: scaleHeight(24),
+    },
+    sectionTitle: {
+      ...getFont(EFontWeight.SemiBold),
+      fontSize: scaleHeight(14),
+      color: Colors.TextColor.SecondaryColor,
+      marginBottom: scaleHeight(8),
+      // textTransform: "uppercase",
+    },
+    sectionTitle__dark: {
+      ...getFont(EFontWeight.SemiBold),
+      fontSize: scaleHeight(14),
+      color: "#8EACB7",
+      marginBottom: scaleHeight(8),
+      // textTransform: "uppercase",
+    },
+    listContentContainer: {
+      paddingBottom: scaleHeight(24),
+    },
+    emojiContainer: {
+      width: scaleWidth(32),
+      height: scaleHeight(32),
+      justifyContent: "center",
+      alignItems: "center",
     }
   });
 
   return (
-    <SafeAreaView style={isDark ? styles.container__dark : styles.container}>
+    <SafeAreaView style={isDark ? localStyles.container__dark : localStyles.container}>
       <Animated.View style={[animViewStyle]}>
-        <View style={styles.header}>
-          <View style={styles.headerInfo}>
-            <Text style={isDark ? styles.title__dark : styles.title}>Collections</Text>
-            <Text style={isDark ? styles.text__dark : styles.text}>Browse your collections</Text>
+        <View style={localStyles.header}>
+          <View style={localStyles.headerInfo}>
+            <Text style={isDark ? localStyles.title__dark : localStyles.title}>Collections</Text>
+            <Text style={isDark ? localStyles.text__dark : localStyles.text}>Browse your collections</Text>
           </View>
 
-          <View style={styles.addButton}>
+          <View style={localStyles.addButton}>
             <TouchableOpacity
               onPress={onAddCollectionPress}
-              style={[styles.addButton, localStyles.addButtonWrapper]}
+              style={[localStyles.addButton, localStyles.addButtonWrapper]}
             >
-              <AntDesign name="plus" size={24} color="white" />
+              <AntDesign name="plus" size={22} color="white" />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.searchContainer}>
-          <View style={isDark ? styles.searchWrapper__dark : styles.searchWrapper}>
+        <View style={localStyles.searchContainer}>
+          <View style={isDark ? localStyles.searchWrapper__dark : localStyles.searchWrapper}>
             <AntDesign
               name="search1"
               size={16}
               color={isDark ? "#8F8F8F" : "#666"}
-              style={styles.searchIcon}
+              style={localStyles.searchIcon}
             />
             <TextInput
               value={searchQuery}
               onChangeText={setSearchQuery}
               placeholder="Search collections..."
               placeholderTextColor={isDark ? "#8F8F8F" : "#666"}
-              style={isDark ? styles.searchInput__dark : styles.searchInput}
+              style={isDark ? localStyles.searchInput__dark : localStyles.searchInput}
             />
           </View>
         </View>
@@ -293,7 +489,7 @@ export default function CollectionsScreen() {
             renderItem={({ item }) => renderSection({ item, colorScheme })}
             keyExtractor={(section) => section.title}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContentContainer}
+            contentContainerStyle={localStyles.listContentContainer}
             extraData={[workspaceId, colorScheme]}
           />
         )}
@@ -314,7 +510,6 @@ export default function CollectionsScreen() {
           }
         />
         </View>
-   
       )}
     </SafeAreaView>
   );
