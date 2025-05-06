@@ -169,6 +169,13 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 20,
   },
+  content_dark: {
+    backgroundColor: "#171717",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 8,
+    paddingBottom: 20,
+  },
   indicator: {
     width: 50,
     height: 4,
