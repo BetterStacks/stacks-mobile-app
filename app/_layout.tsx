@@ -63,6 +63,7 @@ export default function RootLayout() {
 							}}
 						/>
 						<Stack.Screen name="dashboard" options={{ headerShown: false }} />
+						<Stack.Screen name="web-view" options={{ headerShown: false }} />
 						<Stack.Screen name="+not-found" />
 					</Stack>
 					<StatusBar style="auto" />

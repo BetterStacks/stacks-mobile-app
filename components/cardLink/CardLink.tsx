@@ -6,6 +6,7 @@ import Animated, {Easing, useAnimatedStyle, withDelay, withTiming,} from "react-
 import {styles} from "./CardLinkStyles";
 import {StacksList} from "./StacksList/StacksList";
 import Entypo from '@expo/vector-icons/Entypo';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
 import EditLinkView from "../BottomDrawer/EditLinkView";
@@ -93,6 +94,18 @@ export const CardLink: React.FC<Props> = ({
   const handleReaderClose = useCallback(() => {
     setReaderVisible(false);
   }, []);
+
+  const handleOpenWebView = useCallback((e: any) => {
+    e.stopPropagation();
+    // Navigate to the web view screen with the link's URL
+    router.push({
+      pathname: '/web-view',
+      params: { 
+        url: encodeURIComponent(link.target_url),
+        title: encodeURIComponent(link.title || 'Web View')
+      }
+    });
+  }, [link, router]);
 
   // Animation
   const rStyle = useAnimatedStyle(() => {
@@ -195,6 +208,18 @@ export const CardLink: React.FC<Props> = ({
               source={require("@/assets/gif/CardImagePlaceholder.gif")}
             />
           )}
+          
+          {/* Add Book Icon Button for WebView */}
+          <TouchableOpacity
+            style={[
+              styles.webViewButton,
+              isDark ? styles.webViewButton__dark : {}
+            ]}
+            onPress={handleOpenWebView}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="book-outline" size={16} color={isDark ? "#FFFFFF" : "#333333"} />
+          </TouchableOpacity>
         </View>
 
         <View style={isDark ? styles.content__dark : styles.content}>
