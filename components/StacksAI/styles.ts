@@ -1,10 +1,14 @@
-import { StyleSheet } from "react-native";
-import { Colors } from "@/components/design/colors";
+import {StyleSheet} from "react-native";
+import {Colors} from "@/components/design/colors";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  container__dark: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
   },
   header: {
     flexDirection: 'row',
@@ -15,6 +19,16 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
     backgroundColor: '#fff',
+  },
+  header__dark: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#262626',
+    backgroundColor: '#0A0A0A',
   },
   headerLogo: {
     width: 24,
@@ -44,6 +58,11 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#333",
   },
+  headerTitleText__dark: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
   headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -53,6 +72,15 @@ export const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 10,
     backgroundColor: '#f7f7f7',
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerButton__dark: {
+    padding: 8,
+    borderRadius: 10,
+    backgroundColor: '#262626',
     width: 36,
     height: 36,
     alignItems: 'center',
@@ -93,9 +121,32 @@ export const styles = StyleSheet.create({
     shadowColor: 'rgba(0,0,0,0.08)',
     paddingVertical: 9,
   },
+  userMessage__dark: {
+    backgroundColor: '#293F4E',
+    alignSelf: 'flex-end',
+    borderBottomRightRadius: 6,
+    marginTop: 8,
+    marginBottom: 16,
+    shadowColor: 'rgba(0,0,0,0.08)',
+    paddingVertical: 9,
+  },
   aiMessage: {
     alignSelf: 'flex-start',
     backgroundColor: 'transparent',
+    borderBottomLeftRadius: 0,
+    marginLeft: 0,
+    maxWidth: '92%',
+    marginTop: 4,
+    shadowOpacity: 0,
+    elevation: 0,
+    borderWidth: 0,
+    padding: 10,
+    paddingTop: 0,
+    paddingLeft: 0,
+  },
+  aiMessage__dark: {
+    backgroundColor: '#171717',
+    alignSelf: 'flex-start',
     borderBottomLeftRadius: 0,
     marginLeft: 0,
     maxWidth: '92%',
@@ -122,6 +173,14 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  assistantAvatarContainer__dark: {
+    marginRight: 10,
+    marginTop: 2,
+    width: 28,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   assistantAvatar: {
     width: 28,
     height: 28,
@@ -139,6 +198,9 @@ export const styles = StyleSheet.create({
   userMessageText: {
     color: '#333',  // Dark text for light background
   },
+  userMessageText__dark: {
+    color: '#E5E5E5',
+  },
   inputContainer: {
     flexDirection: 'row',
     padding: 16,
@@ -146,6 +208,16 @@ export const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
     backgroundColor: '#fff',
+    alignItems: 'center',
+    width: '100%',
+  },
+  inputContainer__dark: {
+    flexDirection: 'row',
+    padding: 16,
+    paddingRight: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#262626',
+    backgroundColor: '#0A0A0A',
     alignItems: 'center',
     width: '100%',
   },
@@ -160,6 +232,19 @@ export const styles = StyleSheet.create({
     maxHeight: 120,
     minHeight: 48,
     color: '#333',
+    marginRight: 0,
+  },
+  input__dark: {
+    flex: 1,
+    backgroundColor: '#262626',
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    paddingRight: 52,
+    fontSize: 16,
+    maxHeight: 120,
+    minHeight: 48,
+    color: '#E5E5E5',
     marginRight: 0,
   },
   sendButton: {
@@ -183,6 +268,11 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
+  sendButtonDisabled__dark: {
+    backgroundColor: '#444',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   loadingBubbles: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -194,6 +284,14 @@ export const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     backgroundColor: '#888',
+    margin: 2,
+    opacity: 0.6,
+  },
+  bubble__dark: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#555',
     margin: 2,
     opacity: 0.6,
   },
@@ -222,9 +320,22 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 2,
   },
+  thinkingTextContainer__dark: {
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: 4,
+    padding: 2,
+  },
   thinkingText: {
     fontSize: 16,
     color: '#888',
+    fontWeight: '500',
+    lineHeight: 22,
+    fontStyle: 'italic',
+  },
+  thinkingText__dark: {
+    fontSize: 16,
+    color: '#A0B3BC',
     fontWeight: '500',
     lineHeight: 22,
     fontStyle: 'italic',
@@ -253,6 +364,14 @@ export const styles = StyleSheet.create({
     height: '90%',
     paddingBottom: 0,
   },
+  drawerContainer__dark: {
+    backgroundColor: '#0A0A0A',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+    height: '90%',
+    paddingBottom: 0,
+  },
   drawerContent: {
     flex: 1,
     display: 'flex',
@@ -269,10 +388,23 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  drawerTitle__dark: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#E5E5E5',
+  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+  },
+  searchContainer__dark: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#262626',
     borderRadius: 12,
     paddingHorizontal: 12,
     marginBottom: 16,
@@ -286,12 +418,23 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  searchInput__dark: {
+    flex: 1,
+    height: 48,
+    fontSize: 16,
+    color: '#E5E5E5',
+  },
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   emptyText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+  },
+  emptyText__dark: {
     fontSize: 16,
     color: '#888',
     textAlign: 'center',
@@ -311,8 +454,19 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f8f8f8',
     alignItems: 'center',
   },
+  linkItem__dark: {
+    flexDirection: 'row',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: '#171717',
+    alignItems: 'center',
+  },
   selectedLinkItem: {
     backgroundColor: '#edf7ff',
+  },
+  selectedLinkItem__dark: {
+    backgroundColor: '#293F4E',
   },
   linkContent: {
     flex: 1,
@@ -324,9 +478,19 @@ export const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 4,
   },
+  linkTitle__dark: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#E5E5E5',
+    marginBottom: 4,
+  },
   linkDescription: {
     fontSize: 13,
     color: '#666',
+  },
+  linkDescription__dark: {
+    fontSize: 13,
+    color: '#A0B3BC',
   },
   checkboxContainer: {
     width: 24,
@@ -338,11 +502,30 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
+  checkboxContainer__dark: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#555',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0A0A0A',
+  },
   addButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
     backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  addButton__dark: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#262626',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
@@ -464,10 +647,25 @@ export const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
+  emptyStateTitle__dark: {
+    fontSize: 24,
+    fontWeight: '600',
+    marginBottom: 12,
+    color: '#E5E5E5',
+    textAlign: 'center',
+  },
   emptyStateDescription: {
     fontSize: 16,
     marginBottom: 32,
     color: '#666',
+    textAlign: 'center',
+    lineHeight: 22,
+    maxWidth: 300,
+  },
+  emptyStateDescription__dark: {
+    fontSize: 16,
+    marginBottom: 32,
+    color: '#A0B3BC',
     textAlign: 'center',
     lineHeight: 22,
     maxWidth: 300,
@@ -487,12 +685,28 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  suggestionButton__dark: {
+    backgroundColor: '#171717',
+    padding: 14,
+    borderRadius: 10,
+    width: '100%',
+    marginBottom: 8,
+    borderWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   suggestionIcon: {
     marginRight: 10,
   },
   suggestionText: {
     fontSize: 15,
     color: '#555',
+    fontWeight: '400',
+    flex: 1,
+  },
+  suggestionText__dark: {
+    fontSize: 15,
+    color: '#A0B3BC',
     fontWeight: '400',
     flex: 1,
   },

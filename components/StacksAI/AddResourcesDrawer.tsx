@@ -1,18 +1,20 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, FlatList } from 'react-native';
-import { useQuery } from '@apollo/client';
-import { AntDesign } from '@expo/vector-icons';
-import { QUERY_SEARCH_LINKS } from '@/lib/api/graphql/queries';
-import { styles } from './styles';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {ColorSchemeName, FlatList, Text, TextInput, View} from 'react-native';
+import {useQuery} from '@apollo/client';
+import {AntDesign} from '@expo/vector-icons';
+import {QUERY_SEARCH_LINKS} from '@/lib/api/graphql/queries';
+import {styles} from './styles';
 import LinkItem from './LinkItem';
-import { LinkContext } from '@/lib/ai';
+import {LinkContext} from '@/lib/ai';
 
 type AddResourcesDrawerProps = {
   onLinksSelected: (links: LinkContext[]) => void;
   selectedLinks: LinkContext[];
+  colorScheme?: ColorSchemeName;
 };
 
-const AddResourcesDrawer = ({ onLinksSelected, selectedLinks }: AddResourcesDrawerProps) => {
+const AddResourcesDrawer = ({ onLinksSelected, selectedLinks, colorScheme }: AddResourcesDrawerProps) => {
+  const isDark = colorScheme === 'dark';
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<TextInput>(null);
 
@@ -55,17 +57,17 @@ const AddResourcesDrawer = ({ onLinksSelected, selectedLinks }: AddResourcesDraw
   );
 
   return (
-    <View style={styles.drawerContainer}>
+    <View style={isDark ? styles.drawerContainer__dark : styles.drawerContainer}>
       <View style={styles.drawerContent}>
-        <Text style={styles.drawerTitle}>Add resources to context</Text>
+        <Text style={isDark ? styles.drawerTitle__dark : styles.drawerTitle}>Add resources to context</Text>
 
-        <View style={styles.searchContainer}>
-          <AntDesign name="search1" size={18} color="#6B7280" style={styles.searchIcon} />
+        <View style={isDark ? styles.searchContainer__dark : styles.searchContainer}>
+          <AntDesign name="search1" size={18} color={isDark ? "#A0B3BC" : "#6B7280"} style={styles.searchIcon} />
           <TextInput
             ref={inputRef}
-            style={styles.searchInput}
+            style={isDark ? styles.searchInput__dark : styles.searchInput}
             placeholder="Search your links..."
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor={isDark ? "#777" : "#9CA3AF"}
             value={searchQuery}
             onChangeText={handleSearch}
             returnKeyType="search"
@@ -76,7 +78,7 @@ const AddResourcesDrawer = ({ onLinksSelected, selectedLinks }: AddResourcesDraw
 
         {loading ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>Loading...</Text>
+            <Text style={isDark ? styles.emptyText__dark : styles.emptyText}>Loading...</Text>
           </View>
         ) : linksData?.links?.length ? (
           <FlatList
@@ -87,6 +89,7 @@ const AddResourcesDrawer = ({ onLinksSelected, selectedLinks }: AddResourcesDraw
                 link={item}
                 isSelected={selectedLinks.some(l => l.title === item.title)}
                 onToggle={() => toggleLinkSelection(item)}
+                colorScheme={colorScheme}
               />
             )}
             style={styles.linksList}
@@ -95,7 +98,7 @@ const AddResourcesDrawer = ({ onLinksSelected, selectedLinks }: AddResourcesDraw
           />
         ) : (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
+            <Text style={isDark ? styles.emptyText__dark : styles.emptyText}>
               {searchQuery ? "No links found" : "Start typing to search links"}
             </Text>
           </View>

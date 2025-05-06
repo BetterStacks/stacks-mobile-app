@@ -1,41 +1,37 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
-  View,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-  Image
+  useColorScheme,
+  View
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import {SafeAreaView} from "react-native-safe-area-context";
+import Animated, {useAnimatedStyle, useSharedValue} from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { Feather } from "@expo/vector-icons";
-import { useQuery } from "@apollo/client";
-import { QUERY_USER } from "@/lib/api/graphql/queries";
+import {useQuery} from "@apollo/client";
+import {QUERY_USER} from "@/lib/api/graphql/queries";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 
 import {
-  NoAPIKeyView,
   AddResourcesDrawer,
-  ViewContextDrawer,
-  MessageItem,
   EmptyState,
-  styles
+  MessageItem,
+  NoAPIKeyView,
+  styles,
+  ViewContextDrawer
 } from "@/components/StacksAI";
 
 
-import {
-  Message,
-  MessageHistory,
-  LinkContext,
-  getChatCompletion
-} from "@/lib/ai";
+import {getChatCompletion, LinkContext, Message, MessageHistory} from "@/lib/ai";
 
 export default function StacksAIScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const { data: userData } = useQuery(QUERY_USER);
   const hasAPIKey = userData?.user?.ai_tokens?.length > 0;
   const aiToken = userData?.user?.ai_tokens?.[0];
@@ -177,33 +173,39 @@ export default function StacksAIScreen() {
   // No API Key View
   if (!hasAPIKey) {
     return (
-      <SafeAreaView style={styles.container}>
-        <NoAPIKeyView />
+      <SafeAreaView style={isDark ? styles.container__dark : styles.container}>
+        <NoAPIKeyView colorScheme={colorScheme} />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={isDark ? styles.container__dark : styles.container}>
+      <View style={isDark ? styles.header__dark : styles.header}>
         <View style={styles.headerTitle}>
-          <AntDesign name="message1" size={16} color="#555" style={{marginRight: 7}} />
-          <Text style={styles.headerTitleText}>Stacks AI</Text>
+          <AntDesign name="message1" size={16} color={isDark ? "#A0B3BC" : "#555"} style={{marginRight: 7}} />
+          <Text style={isDark ? styles.headerTitleText__dark : styles.headerTitleText}>Stacks AI</Text>
         </View>
         <View style={styles.headerActions}>
           {selectedLinks.length > 0 && (
             <TouchableOpacity 
-              style={[styles.headerButton, styles.contextButton]} 
+              style={[
+                isDark ? styles.headerButton__dark : styles.headerButton, 
+                styles.contextButton
+              ]} 
               onPress={handleShowViewContext}
             >
-              <AntDesign name="paperclip" size={18} color="#333" />
+              <AntDesign name="paperclip" size={18} color={isDark ? "#A0B3BC" : "#333"} />
               <View style={styles.badgeContainer}>
                 <Text style={styles.badgeText}>{selectedLinks.length}</Text>
               </View>
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.headerButton} onPress={handleNewChat}>
-            <AntDesign name="plus" size={18} color="#333" />
+          <TouchableOpacity 
+            style={isDark ? styles.headerButton__dark : styles.headerButton} 
+            onPress={handleNewChat}
+          >
+            <AntDesign name="plus" size={18} color={isDark ? "#A0B3BC" : "#333"} />
           </TouchableOpacity>
         </View>
       </View>
@@ -226,14 +228,15 @@ export default function StacksAIScreen() {
             setIsLoading={setIsLoading}
             setCurrentStreamingMessage={setCurrentStreamingMessage}
             setMessages={setMessages}
+            colorScheme={colorScheme}
           />
         ) : (
           <>
             {messages.map(message => (
-              <MessageItem key={message.id} message={message} />
+              <MessageItem key={message.id} message={message} colorScheme={colorScheme} />
             ))}
             {currentStreamingMessage && (
-              <MessageItem message={currentStreamingMessage} />
+              <MessageItem message={currentStreamingMessage} colorScheme={colorScheme} />
             )}
           </>
         )}
@@ -242,20 +245,20 @@ export default function StacksAIScreen() {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}>
-        <Animated.View style={[styles.inputContainer, inputStyle]}>
+        <Animated.View style={[isDark ? styles.inputContainer__dark : styles.inputContainer, inputStyle]}>
           <TouchableOpacity
-            style={styles.addButton}
+            style={isDark ? styles.addButton__dark : styles.addButton}
             onPress={handleShowResources}>
-            <AntDesign name="plus" size={20} color="#777" />
+            <AntDesign name="plus" size={20} color={isDark ? "#A0B3BC" : "#777"} />
           </TouchableOpacity>
 
           <View style={{ flex: 1, position: 'relative' }}>
             <TextInput
-              style={[styles.input, styles.inputWithButton]}
+              style={[isDark ? styles.input__dark : styles.input, styles.inputWithButton]}
               value={inputText}
               onChangeText={setInputText}
               placeholder={isLoading ? "Please wait..." : "Ask anything..."}
-              placeholderTextColor="#888"
+              placeholderTextColor={isDark ? "#777" : "#888"}
               multiline
               returnKeyType="send"
               onSubmitEditing={handleSend}
@@ -266,7 +269,7 @@ export default function StacksAIScreen() {
             <TouchableOpacity
               style={[
                 styles.sendButton,
-                (!inputText || isLoading) && styles.sendButtonDisabled,
+                (!inputText || isLoading) && (isDark ? styles.sendButtonDisabled__dark : styles.sendButtonDisabled),
               ]}
               onPress={handleSend}
               disabled={!inputText || isLoading}>
@@ -276,7 +279,7 @@ export default function StacksAIScreen() {
                 color={
                   inputText && !isLoading
                     ? "#fff"
-                    : "#888"
+                    : isDark ? "#555" : "#888"
                 }
               />
             </TouchableOpacity>
@@ -292,6 +295,7 @@ export default function StacksAIScreen() {
             <AddResourcesDrawer
               onLinksSelected={setSelectedLinks}
               selectedLinks={selectedLinks}
+              colorScheme={colorScheme}
             />
           }
         />
@@ -305,6 +309,7 @@ export default function StacksAIScreen() {
             <ViewContextDrawer
               links={selectedLinks}
               onClose={handleCloseViewContextDrawer}
+              colorScheme={colorScheme}
             />
           }
         />

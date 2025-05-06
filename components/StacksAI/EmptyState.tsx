@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import { styles } from './styles';
-import { AIToken, MessageHistory, LinkContext, Message } from '@/lib/ai';
-import { getChatCompletion } from '@/lib/ai';
+import {ColorSchemeName, Image, Text, TouchableOpacity, View} from 'react-native';
+import {AntDesign} from '@expo/vector-icons';
+import {styles} from './styles';
+import {AIToken, getChatCompletion, LinkContext, Message} from '@/lib/ai';
 
 type EmptyStateProps = {
   aiToken: AIToken;
@@ -11,6 +10,7 @@ type EmptyStateProps = {
   setIsLoading: (loading: boolean) => void;
   setCurrentStreamingMessage: (message: any) => void;
   setMessages: (updater: (prev: Message[]) => Message[]) => void;
+  colorScheme?: ColorSchemeName;
 };
 
 const EmptyState = ({ 
@@ -18,8 +18,10 @@ const EmptyState = ({
   selectedLinks, 
   setIsLoading,
   setCurrentStreamingMessage,
-  setMessages
+  setMessages,
+  colorScheme
 }: EmptyStateProps) => {
+  const isDark = colorScheme === 'dark';
   const suggestions = [
     { text: "What are some productivity tips?", icon: "bulb1" as const },
     { text: "How can I improve my focus?", icon: "eyeo" as const },
@@ -94,20 +96,20 @@ const EmptyState = ({
           resizeMode="contain"
         />
       </View>
-      <Text style={styles.emptyStateTitle}>
+      <Text style={isDark ? styles.emptyStateTitle__dark : styles.emptyStateTitle}>
         How can I help you today?
       </Text>
-      <Text style={styles.emptyStateDescription}>
+      <Text style={isDark ? styles.emptyStateDescription__dark : styles.emptyStateDescription}>
         Ask me anything or try one of these suggestions.
       </Text>
       <View style={styles.suggestionsContainer}>
         {suggestions.map((suggestion, index) => (
           <TouchableOpacity
             key={index}
-            style={styles.suggestionButton}
+            style={isDark ? styles.suggestionButton__dark : styles.suggestionButton}
             onPress={() => handleSuggestionClick(suggestion.text)}>
-            <AntDesign name={suggestion.icon} size={16} color="#888" style={styles.suggestionIcon} />
-            <Text style={styles.suggestionText}>{suggestion.text}</Text>
+            <AntDesign name={suggestion.icon} size={16} color={isDark ? "#777" : "#888"} style={styles.suggestionIcon} />
+            <Text style={isDark ? styles.suggestionText__dark : styles.suggestionText}>{suggestion.text}</Text>
           </TouchableOpacity>
         ))}
       </View>

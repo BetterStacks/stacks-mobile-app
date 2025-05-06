@@ -1,16 +1,21 @@
-import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
+import React, {useEffect} from 'react';
+import {ColorSchemeName, Text, View} from 'react-native';
 import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-  Easing,
-  interpolate,
+	Easing,
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withRepeat,
+	withTiming,
 } from 'react-native-reanimated';
-import { styles } from './styles';
+import {styles} from './styles';
 
-const ThinkingAnimation = () => {
+type ThinkingAnimationProps = {
+  colorScheme?: ColorSchemeName;
+};
+
+const ThinkingAnimation = ({ colorScheme }: ThinkingAnimationProps) => {
+  const isDark = colorScheme === 'dark';
   const shimmerValue = useSharedValue(0);
   
   useEffect(() => {
@@ -34,15 +39,15 @@ const ThinkingAnimation = () => {
       right: 0,
       top: 0,
       bottom: 0,
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.5)',
       transform: [{ translateX }],
     };
   });
 
   return (
     <View style={styles.thinkingContainer}>
-      <View style={styles.thinkingTextContainer}>
-        <Text style={styles.thinkingText}>Thinking...</Text>
+      <View style={isDark ? styles.thinkingTextContainer__dark : styles.thinkingTextContainer}>
+        <Text style={isDark ? styles.thinkingText__dark : styles.thinkingText}>Thinking...</Text>
         <Animated.View style={shimmerStyle} />
       </View>
     </View>

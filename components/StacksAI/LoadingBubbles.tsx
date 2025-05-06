@@ -1,13 +1,19 @@
 import React from 'react';
-import { View } from 'react-native';
-import { styles } from './styles';
+import {ColorSchemeName, View} from 'react-native';
+import {styles} from './styles';
 
-const LoadingBubbles = () => {
+type LoadingBubblesProps = {
+  colorScheme?: ColorSchemeName;
+};
+
+const LoadingBubbles = ({ colorScheme }: LoadingBubblesProps) => {
+  const isDark = colorScheme === 'dark';
+  
   return (
     <View style={styles.loadingBubbles}>
-      <View style={[styles.bubble, styles.bubble1]} />
-      <View style={[styles.bubble, styles.bubble2]} />
-      <View style={[styles.bubble, styles.bubble3]} />
+      <View style={[isDark ? styles.bubble__dark : styles.bubble, styles.bubble1]} />
+      <View style={[isDark ? styles.bubble__dark : styles.bubble, styles.bubble2]} />
+      <View style={[isDark ? styles.bubble__dark : styles.bubble, styles.bubble3]} />
     </View>
   );
 };
