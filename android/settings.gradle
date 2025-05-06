@@ -1,5 +1,11 @@
 pluginManagement {
     includeBuild(new File(["node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().toString())
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://pkgs.expo.dev/' } // Add Expo's Maven repository
+        gradlePluginPortal() // Ensure Gradle Plugin Portal is included
+    }
 }
 plugins { id("com.facebook.react.settings") }
 
@@ -24,6 +30,11 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
 rootProject.name = 'Stacks'
 
 dependencyResolutionManagement {
+  repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://pkgs.expo.dev/' }
+    }
   versionCatalogs {
     reactAndroidLibs {
       from(files(new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), "../gradle/libs.versions.toml")))
