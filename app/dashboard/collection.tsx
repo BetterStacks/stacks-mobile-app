@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { Stack, router } from 'expo-router';
-import { ParticularCollectionScreen } from '@/components/collections/ParticularCollectionScreen';
-import { useLocalSearchParams } from 'expo-router';
-import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
-import { AntDesign, Feather } from '@expo/vector-icons';
-import { getEmojiFromCode } from '@/lib/utils';
+import React, {useState} from 'react';
+import {router, Stack, useLocalSearchParams} from 'expo-router';
+import {ParticularCollectionScreen} from '@/components/collections/ParticularCollectionScreen';
+import {StyleSheet, Text, TouchableOpacity, useColorScheme, View} from 'react-native';
+import {AntDesign, Feather} from '@expo/vector-icons';
+import {getEmojiFromCode} from '@/lib/utils';
 import BottomDrawer from '@/components/BottomDrawer/BottomDrawer';
 import EditCollectionView from '@/components/BottomDrawer/EditCollectionView';
-import { setIsSuccessModalVisible, setSuccessModalMessage } from '@/lib/apollo/store/handlers';
 
 export default function CollectionScreen() {
   const params = useLocalSearchParams<{ title: string, emoji: string, id: string }>();
   const [currentTitle, setCurrentTitle] = useState(params.title || 'Collection');
   const [isEditDrawerVisible, setIsEditDrawerVisible] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   
   const handleEditPress = () => {
     setIsEditDrawerVisible(true);
@@ -42,11 +42,11 @@ export default function CollectionScreen() {
           headerTitle: () => (
             <View style={styles.headerTitle}>
               {params.emoji && (
-                <Text style={styles.emoji}>
+                <Text style={isDark ? styles.emoji_dark : styles.emoji}>
                   {getEmojiFromCode(params.emoji)}
                 </Text>
               )}
-              <Text style={styles.title}>{currentTitle}</Text>
+              <Text style={isDark ? styles.title_dark : styles.title}>{currentTitle}</Text>
             </View>
           ),
           headerLeft: () => (
@@ -54,7 +54,7 @@ export default function CollectionScreen() {
               onPress={() => router.back()} 
               style={{ marginLeft: 10, marginRight: 16 }}
             >
-              <AntDesign name="arrowleft" size={24} color="black" />
+              <AntDesign name="arrowleft" size={24} color={isDark ? "#FFFFFF" : "black"} />
             </TouchableOpacity>
           ),
           headerRight: () => (
@@ -62,9 +62,15 @@ export default function CollectionScreen() {
               onPress={handleEditPress} 
               style={{ marginRight: 16 }}
             >
-              <Feather name="edit-2" size={20} color="black" />
+              <Feather name="edit-2" size={20} color={isDark ? "#FFFFFF" : "black"} />
             </TouchableOpacity>
           ),
+          headerStyle: {
+            backgroundColor: isDark ? "#171717" : "white",
+          },
+          headerTitleStyle: {
+            color: isDark ? "#FFFFFF" : "black",
+          },
         }} 
       />
       <ParticularCollectionScreen />
@@ -95,9 +101,21 @@ const styles = StyleSheet.create({
   emoji: {
     fontSize: 16,
     marginRight: 8,
+    color: '#000000',
+  },
+  emoji_dark: {
+    fontSize: 16,
+    marginRight: 8,
+    color: '#F0F0F0',
   },
   title: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#1C4A5A',
+  },
+  title_dark: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 }); 

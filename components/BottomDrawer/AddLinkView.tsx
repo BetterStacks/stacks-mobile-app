@@ -1,25 +1,23 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
   ActivityIndicator,
   Keyboard,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
-import { useMutation, useQuery } from "@apollo/client";
+import {useMutation, useQuery} from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SELECTED_WORKSPACE_ID_KEY } from "@/lib/constants";
-import { QUERY_COLLECTIONS } from "@/lib/api/graphql/queries";
-import { MUTATION_ADD_LINK } from "@/lib/api/graphql/mutations";
-import {
-  setIsSuccessModalVisible,
-  setSuccessModalMessage,
-} from "@/lib/apollo/store/handlers";
+import {SELECTED_WORKSPACE_ID_KEY} from "@/lib/constants";
+import {QUERY_COLLECTIONS} from "@/lib/api/graphql/queries";
+import {MUTATION_ADD_LINK} from "@/lib/api/graphql/mutations";
+import {setIsSuccessModalVisible, setSuccessModalMessage,} from "@/lib/apollo/store/handlers";
 import client from "@/lib/apollo/client";
-import { CollectionSelector } from "../CollectionSelector";
-import { Toast } from "toastify-react-native";
+import {CollectionSelector} from "../CollectionSelector";
+import {Toast} from "toastify-react-native";
 
 // import { FolderPlus, ChevronRight, X } from "lucide-react-native";
 
@@ -31,6 +29,7 @@ type Props = {
 };
 
 const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props) => {
+  const colorScheme = useColorScheme();
   // const navigation = useNavigation<TCollectionsStackNavigationProp>();
   const [url, setUrl] = useState("");
   const [selectedCollections, setSelectedCollections] = useState<string[]>(
@@ -158,12 +157,13 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Add a new link</Text>
+    <View style={colorScheme === 'dark' ? styles.container_dark : styles.container}>
+      <Text style={colorScheme === 'dark' ? styles.title_dark : styles.title}>Add a new link</Text>
       <TextInput
         ref={inputRef}
-        style={styles.input}
+        style={colorScheme === 'dark' ? styles.input_dark : styles.input}
         placeholder="Enter URL of link"
+        placeholderTextColor={colorScheme === 'dark' ? "#8F8F8F" : undefined}
         value={url}
         onChangeText={setUrl}
         onFocus={handleInputFocus}
@@ -179,6 +179,7 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
         onRemoveCollection={handleRemoveCollection}
         isExpanded={isCollectionsExpanded}
         onExpandToggle={handleCollectionButtonPress}
+        colorScheme={colorScheme}
       />
 
       <View style={styles.buttonContainer}>
@@ -198,7 +199,7 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
           onPress={onBack}
           disabled={loading}
         >
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={colorScheme === 'dark' ? styles.cancelButtonText_dark : styles.cancelButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -208,12 +209,25 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  container_dark: {
+    padding: 16,
+    backgroundColor: "#171717",
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
     textAlign: "center",
     marginBottom: 20,
+    color: "#1C4A5A",
+  },
+  title_dark: {
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#FFFFFF",
   },
   input: {
     borderWidth: 1,
@@ -222,6 +236,16 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     marginBottom: 16,
+  },
+  input_dark: {
+    borderWidth: 1,
+    borderColor: "#262626",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 16,
+    backgroundColor: "#262626",
+    color: "#FFFFFF",
   },
   buttonContainer: {
     marginTop: "auto",
@@ -248,6 +272,10 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: "#1C4A5A",
+    fontSize: 16,
+  },
+  cancelButtonText_dark: {
+    color: "#8EACB7",
     fontSize: 16,
   },
 });

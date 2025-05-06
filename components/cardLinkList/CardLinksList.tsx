@@ -1,17 +1,19 @@
 import {Link} from "@/lib/types/Link";
 import React, {JSXElementConstructor, ReactElement, useCallback, useEffect, useState,} from "react";
 import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Modal,
-  RefreshControl,
-  StyleProp,
-  Text,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-  ViewToken,
+	ActivityIndicator,
+	ColorSchemeName,
+	FlatList,
+	Image,
+	Modal,
+	RefreshControl,
+	StyleProp,
+	Text,
+	TouchableOpacity,
+	useColorScheme,
+	View,
+	ViewStyle,
+	ViewToken,
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import {useSharedValue} from "react-native-reanimated";
@@ -31,24 +33,29 @@ type Props = {
   isRefreshing?: boolean;
   header?: ReactElement<any, string | JSXElementConstructor<any>>;
   showList?: boolean;
+  colorScheme?: ColorSchemeName;
 };
 
 type FooterProps = {
   isLoadMoreAvailable: boolean;
   currentPage: number;
+  colorScheme?: ColorSchemeName;
 };
 
 const ListFooter: React.FC<FooterProps> = ({
   isLoadMoreAvailable,
   currentPage,
+  colorScheme,
 }) => {
   if (isLoadMoreAvailable) {
-    return <ActivityIndicator style={styles.indicator} />;
+    return <ActivityIndicator style={styles.indicator} color={colorScheme === 'dark' ? "#8EACB7" : undefined} />;
   }
 
   if (currentPage > 1) {
     return (
-      <Text style={styles.noLinksText}>You have reached the end of result</Text>
+      <Text style={colorScheme === 'dark' ? styles.noLinksText__dark : styles.noLinksText}>
+        You have reached the end of result
+      </Text>
     );
   }
 
@@ -65,7 +72,12 @@ export const CardLinksList: React.FC<Props> = ({
   isRefreshing = false,
   header,
   showList,
+  colorScheme: propColorScheme,
 }) => {
+  const deviceColorScheme = useColorScheme();
+  const colorScheme = propColorScheme || deviceColorScheme;
+  const isDark = colorScheme === 'dark';
+  
   const viewableItems = useSharedValue<ViewToken[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pdfViewerVisible, setPdfViewerVisible] = useState("");
@@ -91,13 +103,17 @@ export const CardLinksList: React.FC<Props> = ({
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         style={style}
-        contentContainerStyle={styles.container}
+        contentContainerStyle={isDark ? styles.container__dark : styles.container}
         onViewableItemsChanged={onViewableItemsChanged}
         onEndReached={onEndReached}
         data={showList ? links : null}
         bounces
         refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          <RefreshControl 
+            refreshing={isRefreshing} 
+            onRefresh={onRefresh}
+            tintColor={isDark ? "#8EACB7" : undefined}
+          />
         }
         ListHeaderComponent={header}
         ListFooterComponent={
@@ -105,6 +121,7 @@ export const CardLinksList: React.FC<Props> = ({
             <ListFooter
               isLoadMoreAvailable={isLoading}
               currentPage={currentPage!}
+              colorScheme={colorScheme}
             />
           ) : null
         }
@@ -116,6 +133,7 @@ export const CardLinksList: React.FC<Props> = ({
             setPdfViewerVisible={setPdfViewerVisible}
             setVideoPlayerUri={setVideoPlayerUri}
             setImageUri={setImageUri}
+            colorScheme={colorScheme}
           />
         )}
       />
@@ -126,11 +144,11 @@ export const CardLinksList: React.FC<Props> = ({
             setImageUri("");
           }}
         >
-          {getIconWithColor(EIconName.CloseModal)}
+          {getIconWithColor(EIconName.CloseModal, {}, "")}
         </TouchableOpacity>
-        <View style={styles.imgWrapper}>
+        <View style={isDark ? styles.imgWrapper__dark : styles.imgWrapper}>
           <View style={styles.loadingSpinerWrapper}>
-            <ActivityIndicator size={"large"} />
+            <ActivityIndicator size={"large"} color={isDark ? "#8EACB7" : undefined} />
           </View>
           <Image
             style={styles.image}
@@ -152,7 +170,7 @@ export const CardLinksList: React.FC<Props> = ({
             setVideoPlayerUri("");
           }}
         >
-          {getIconWithColor(EIconName.CloseModal)}
+          {getIconWithColor(EIconName.CloseModal, {}, "", {})}
         </TouchableOpacity>
         {/* <Video
           source={{
@@ -181,7 +199,12 @@ export const BottomSheetList: React.FC<Props> = ({
   onEndReached,
   isLoadMoreAvailable,
   currentPage,
+  colorScheme: propColorScheme,
 }) => {
+  const deviceColorScheme = useColorScheme();
+  const colorScheme = propColorScheme || deviceColorScheme;
+  const isDark = colorScheme === 'dark';
+  
   const viewableItems = useSharedValue<ViewToken[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -202,16 +225,25 @@ export const BottomSheetList: React.FC<Props> = ({
     <FlatList
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.container}
+      contentContainerStyle={isDark ? styles.container__dark : styles.container}
       data={links}
       style={{ height: metrics.screenHeight * 0.75 }}
       onViewableItemsChanged={onViewableItemsChanged}
       onEndReached={onEndReached}
       ListFooterComponent={
-        <ListFooter isLoadMoreAvailable={isLoading} currentPage={currentPage!} />
+        <ListFooter 
+          isLoadMoreAvailable={isLoading} 
+          currentPage={currentPage!}
+          colorScheme={colorScheme}
+        />
       }
       renderItem={({ item }) => (
-        <CardLink link={item} key={item.id} viewableItems={viewableItems} />
+        <CardLink 
+          link={item} 
+          key={item.id} 
+          viewableItems={viewableItems} 
+          colorScheme={colorScheme}
+        />
       )}
     />
   );

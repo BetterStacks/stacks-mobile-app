@@ -1,25 +1,26 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from "react-native";
-import React, { useState, useEffect, useCallback } from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { QUERY_QUICK_NOTES } from "@/lib/api/graphql/queries";
-import { MUTATION_CREATE_QUICK_NOTE, MUTATION_DELETE_QUICK_NOTE } from "@/lib/api/graphql/mutations";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors as colors } from "@/components/design/colors";
-import { router, Stack } from "expo-router";
+import {ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
+import React, {useCallback, useEffect, useState} from "react";
+import {useMutation, useQuery} from "@apollo/client";
+import {QUERY_QUICK_NOTES} from "@/lib/api/graphql/queries";
+import {MUTATION_CREATE_QUICK_NOTE, MUTATION_DELETE_QUICK_NOTE} from "@/lib/api/graphql/mutations";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {Colors as colors} from "@/components/design/colors";
+import {router, Stack} from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { StatusBar } from "expo-status-bar";
+import {StatusBar} from "expo-status-bar";
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
-  runOnJS,
 } from "react-native-reanimated";
-import { Swipeable } from "react-native-gesture-handler";
-import { Toast } from "toastify-react-native";
+import {Swipeable} from "react-native-gesture-handler";
+import {Toast} from "toastify-react-native";
 
 export default function QuickNotesScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
   const { loading, error, data, refetch } = useQuery(QUERY_QUICK_NOTES);
   const [createQuickNote] = useMutation(MUTATION_CREATE_QUICK_NOTE);
   const [deleteQuickNote] = useMutation(MUTATION_DELETE_QUICK_NOTE);
@@ -172,7 +173,7 @@ export default function QuickNotesScreen() {
         }}
       >
         <TouchableOpacity 
-          style={styles.noteItem}
+          style={isDark ? styles.noteItem_dark : styles.noteItem}
           onPress={() => {
             closeAllSwipeables();
             router.push({
@@ -182,21 +183,21 @@ export default function QuickNotesScreen() {
           }}
         >
           <View style={styles.noteHeader}>
-            <View style={styles.iconContainer}>
+            <View style={isDark ? styles.iconContainer_dark : styles.iconContainer}>
               <AntDesign name="file1" size={16} color={colors.TextColor.LignMainColor} />
             </View>
-            <Text style={styles.noteTitle} numberOfLines={1} ellipsizeMode="tail">
+            <Text style={isDark ? styles.noteTitle_dark : styles.noteTitle} numberOfLines={1} ellipsizeMode="tail">
               {title}
             </Text>
           </View>
           
           {preview && (
-            <Text style={styles.notePreview} numberOfLines={2} ellipsizeMode="tail">
+            <Text style={isDark ? styles.notePreview_dark : styles.notePreview} numberOfLines={2} ellipsizeMode="tail">
               {preview}
             </Text>
           )}
           
-          <Text style={styles.noteDate}>{formattedDate}</Text>
+          <Text style={isDark ? styles.noteDate_dark : styles.noteDate}>{formattedDate}</Text>
         </TouchableOpacity>
       </Swipeable>
     );
@@ -205,15 +206,16 @@ export default function QuickNotesScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <SafeAreaView style={isDark ? styles.container_dark : styles.container}>
+        <View style={isDark ? styles.header_dark : styles.header}>
           <TouchableOpacity 
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <AntDesign name="arrowleft" size={24} color="#000" />
+            <AntDesign name="arrowleft" size={24} color={isDark ? "#FFFFFF" : "#000"} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Quick Notes</Text>
+          <Text style={isDark ? styles.headerTitle_dark : styles.headerTitle}>Quick Notes</Text>
         </View>
 
         {loading ? (
@@ -222,7 +224,7 @@ export default function QuickNotesScreen() {
           </View>
         ) : error ? (
           <View style={styles.centered}>
-            <Text>Error loading notes</Text>
+            <Text style={isDark ? { color: "#FFFFFF" } : undefined}>Error loading notes</Text>
           </View>
         ) : (
           <Animated.FlatList
@@ -235,8 +237,8 @@ export default function QuickNotesScreen() {
             scrollEventThrottle={16}
             ListEmptyComponent={
               <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>No quick notes yet</Text>
-                <Text style={styles.emptyStateSubtext}>Create your first note!</Text>
+                <Text style={isDark ? styles.emptyStateText_dark : styles.emptyStateText}>No quick notes yet</Text>
+                <Text style={isDark ? styles.emptyStateSubtext_dark : styles.emptyStateSubtext}>Create your first note!</Text>
               </View>
             }
           />
@@ -260,6 +262,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F9FA"
   },
+  container_dark: {
+    flex: 1,
+    backgroundColor: "#0A0A0A"
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -267,12 +273,25 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#EEEEEE"
   },
+  header_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#262626"
+  },
   backButton: {
     marginRight: 16
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "600"
+    fontWeight: "600",
+    color: "#1C4A5A"
+  },
+  headerTitle_dark: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#FFFFFF"
   },
   listContent: {
     padding: 16
@@ -282,9 +301,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 18,
     marginBottom: 16,
-    // Simple, uniform border
     borderWidth: 1,
     borderColor: 'rgba(230, 230, 230, 0.9)',
+  },
+  noteItem_dark: {
+    backgroundColor: "#171717",
+    borderRadius: 12,
+    padding: 18,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#262626',
   },
   noteHeader: {
     flexDirection: 'row',
@@ -300,11 +326,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
   },
+  iconContainer_dark: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 130, 140, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
   noteTitle: {
     flex: 1,
     fontSize: 16,
     fontWeight: "600",
     color: "#333333",
+    letterSpacing: 0.2,
+  },
+  noteTitle_dark: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
     letterSpacing: 0.2,
   },
   notePreview: {
@@ -314,9 +356,22 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     paddingLeft: 44, // Align with title
   },
+  notePreview_dark: {
+    fontSize: 14,
+    color: "#A0B3BC",
+    marginBottom: 12,
+    lineHeight: 20,
+    paddingLeft: 44, // Align with title
+  },
   noteDate: {
     fontSize: 12,
     color: "#AAAAAA",
+    fontWeight: "400",
+    paddingLeft: 44, // Align with title and preview
+  },
+  noteDate_dark: {
+    fontSize: 12,
+    color: "#707070",
     fontWeight: "400",
     paddingLeft: 44, // Align with title and preview
   },
@@ -349,11 +404,22 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 18,
     fontWeight: "500",
-    marginBottom: 8
+    marginBottom: 8,
+    color: "#333333"
+  },
+  emptyStateText_dark: {
+    fontSize: 18,
+    fontWeight: "500",
+    marginBottom: 8,
+    color: "#FFFFFF"
   },
   emptyStateSubtext: {
     fontSize: 14,
     color: "#757575"
+  },
+  emptyStateSubtext_dark: {
+    fontSize: 14,
+    color: "#A0B3BC"
   },
   fab: {
     position: "absolute",

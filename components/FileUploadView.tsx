@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  Platform,
-} from "react-native";
-import { useMutation } from "@apollo/client";
+import React, {useEffect, useState} from "react";
+import {ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, useColorScheme, View,} from "react-native";
+import {useMutation} from "@apollo/client";
 import * as DocumentPicker from "expo-document-picker";
-import { Upload, File, X } from "lucide-react-native";
+import {File, Upload, X} from "lucide-react-native";
 import * as FileSystem from "expo-file-system";
-import { MUTATION_UPLOAD_USER_FILES } from "@/lib/api/graphql/mutations";
+import {MUTATION_UPLOAD_USER_FILES} from "@/lib/api/graphql/mutations";
 import client from "@/lib/apollo/client";
-import { Toast } from "toastify-react-native";
+import {Toast} from "toastify-react-native";
 
 type FileObject = {
   uri: string;
@@ -31,6 +24,7 @@ type Props = {
 const FILE_SIZE_LIMIT = 20 * 1024 * 1024; // 20MB limit
 
 const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
+  const colorScheme = useColorScheme();
   const [files, setFiles] = useState<FileObject[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isCompressing, setIsCompressing] = useState<boolean>(false);
@@ -214,31 +208,31 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Upload Files</Text>
+    <View style={colorScheme === 'dark' ? styles.container_dark : styles.container}>
+      <Text style={colorScheme === 'dark' ? styles.title_dark : styles.title}>Upload Files</Text>
 
       <TouchableOpacity
-        style={styles.uploadArea}
+        style={colorScheme === 'dark' ? styles.uploadArea_dark : styles.uploadArea}
         onPress={handleFilePick}
         disabled={loading || isCompressing}
       >
-        <View style={styles.uploadIconContainer}>
-          <Upload size={24} color="#1C4A5A" />
+        <View style={colorScheme === 'dark' ? styles.uploadIconContainer_dark : styles.uploadIconContainer}>
+          <Upload size={24} color={colorScheme === 'dark' ? "#8EACB7" : "#1C4A5A"} />
         </View>
-        <Text style={styles.uploadText}>Click to select files</Text>
-        <Text style={styles.uploadSubtext}>Documents, photos, or videos</Text>
+        <Text style={colorScheme === 'dark' ? styles.uploadText_dark : styles.uploadText}>Click to select files</Text>
+        <Text style={colorScheme === 'dark' ? styles.uploadSubtext_dark : styles.uploadSubtext}>Documents, photos, or videos</Text>
       </TouchableOpacity>
 
       {files.length > 0 && (
-        <View style={styles.selectedFiles}>
-          <Text style={styles.selectedTitle}>
+        <View style={colorScheme === 'dark' ? styles.selectedFiles_dark : styles.selectedFiles}>
+          <Text style={colorScheme === 'dark' ? styles.selectedTitle_dark : styles.selectedTitle}>
             Selected Files ({files.length})
           </Text>
           {files.map((file, index) => (
-            <View style={styles.fileItem} key={index}>
+            <View style={colorScheme === 'dark' ? styles.fileItem_dark : styles.fileItem} key={index}>
               <View style={styles.fileItemLeft}>
-                <File size={16} color="#666666" />
-                <Text style={styles.fileName} numberOfLines={1}>
+                <File size={16} color={colorScheme === 'dark' ? "#A0A0A0" : "#666666"} />
+                <Text style={colorScheme === 'dark' ? styles.fileName_dark : styles.fileName} numberOfLines={1}>
                   {file.name}
                 </Text>
               </View>
@@ -248,7 +242,7 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
                 style={styles.removeButton}
                 disabled={loading || isCompressing}
               >
-                <X size={16} color="#666666" />
+                <X size={16} color={colorScheme === 'dark' ? "#A0A0A0" : "#666666"} />
               </TouchableOpacity>
             </View>
           ))}
@@ -257,15 +251,15 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
 
       {(loading || isCompressing) && (
         <View style={styles.progressContainer}>
-          <View style={styles.progressBarContainer}>
+          <View style={colorScheme === 'dark' ? styles.progressBarContainer_dark : styles.progressBarContainer}>
             <View 
               style={[
-                styles.progressBar, 
+                colorScheme === 'dark' ? styles.progressBar_dark : styles.progressBar, 
                 { width: `${uploadProgress}%` }
               ]} 
             />
           </View>
-          <Text style={styles.statusText}>{getStatusText()}</Text>
+          <Text style={colorScheme === 'dark' ? styles.statusText_dark : styles.statusText}>{getStatusText()}</Text>
         </View>
       )}
 
@@ -290,7 +284,7 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
           onPress={onBack}
           disabled={loading || isCompressing}
         >
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={colorScheme === 'dark' ? styles.cancelButtonText_dark : styles.cancelButtonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -301,15 +295,35 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
   },
+  container_dark: {
+    padding: 16,
+  },
   title: {
     fontSize: 18,
     fontWeight: "600",
     textAlign: "center",
     marginBottom: 20,
   },
+  title_dark: {
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#FFFFFF",
+  },
   uploadArea: {
     borderWidth: 2,
     borderColor: "#E5E5E5",
+    borderStyle: "dashed",
+    borderRadius: 12,
+    padding: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 24,
+  },
+  uploadArea_dark: {
+    borderWidth: 2,
+    borderColor: "#262626",
     borderStyle: "dashed",
     borderRadius: 12,
     padding: 24,
@@ -326,8 +340,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 12,
   },
+  uploadIconContainer_dark: {
+    width: 48,
+    height: 48,
+    backgroundColor: "#1A2A30",
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
   uploadText: {
     color: "#666666",
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  uploadText_dark: {
+    color: "#A0A0A0",
     fontSize: 16,
     marginBottom: 4,
   },
@@ -335,8 +363,18 @@ const styles = StyleSheet.create({
     color: "#999999",
     fontSize: 14,
   },
+  uploadSubtext_dark: {
+    color: "#808080",
+    fontSize: 14,
+  },
   selectedFiles: {
     backgroundColor: "#F5F5F5",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 24,
+  },
+  selectedFiles_dark: {
+    backgroundColor: "#1A1A1A",
     borderRadius: 8,
     padding: 12,
     marginBottom: 24,
@@ -347,11 +385,26 @@ const styles = StyleSheet.create({
     color: "#1C4A5A",
     marginBottom: 8,
   },
+  selectedTitle_dark: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#8EACB7",
+    marginBottom: 8,
+  },
   fileItem: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "white",
+    padding: 12,
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+  fileItem_dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#262626",
     padding: 12,
     borderRadius: 6,
     marginBottom: 8,
@@ -364,6 +417,12 @@ const styles = StyleSheet.create({
   },
   fileName: {
     color: "#000000",
+    fontSize: 14,
+    marginLeft: 8,
+    flex: 1,
+  },
+  fileName_dark: {
+    color: "#FFFFFF",
     fontSize: 14,
     marginLeft: 8,
     flex: 1,
@@ -398,6 +457,10 @@ const styles = StyleSheet.create({
     color: "#1C4A5A",
     fontSize: 16,
   },
+  cancelButtonText_dark: {
+    color: "#8EACB7",
+    fontSize: 16,
+  },
   progressContainer: {
     marginBottom: 16,
   },
@@ -408,13 +471,30 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 8,
   },
+  progressBarContainer_dark: {
+    height: 8,
+    backgroundColor: "#333333",
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
   progressBar: {
     height: '100%',
     backgroundColor: "#1C4A5A",
     borderRadius: 4,
   },
+  progressBar_dark: {
+    height: '100%',
+    backgroundColor: "#8EACB7",
+    borderRadius: 4,
+  },
   statusText: {
     color: "#666666",
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  statusText_dark: {
+    color: "#A0A0A0",
     fontSize: 14,
     textAlign: 'center',
   },

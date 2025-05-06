@@ -11,9 +11,20 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingVertical: scaleHeight(13),
   },
+  container__dark: {
+    width: "100%",
+    borderBottomColor: "#262626",
+    borderBottomWidth: 1,
+    paddingVertical: scaleHeight(13),
+  },
   content: {
     gap: scaleHeight(6),
     backgroundColor: Colors.tailwindColors.neutral["0"],
+    padding: 16,
+  },
+  content__dark: {
+    gap: scaleHeight(6),
+    backgroundColor: "#171717",
     padding: 16,
   },
   contentContainer: {
@@ -22,11 +33,24 @@ export const styles = StyleSheet.create({
     borderColor: Colors.tailwindColors.neutral["300"],
     borderRadius: 12,
   },
+  contentContainer__dark: {
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#262626",
+    borderRadius: 12,
+  },
   linkTitle: {
     ...getFont(EFontWeight.Medium),
     fontSize: scaleHeight(16),
     lineHeight: scaleHeight(21),
     color: Colors.TextColor.DarkHeadingColor,
+    maxHeight: scaleWidth(244),
+  },
+  linkTitle__dark: {
+    ...getFont(EFontWeight.Medium),
+    fontSize: scaleHeight(16),
+    lineHeight: scaleHeight(21),
+    color: "#FFFFFF",
     maxHeight: scaleWidth(244),
   },
   urlBox: {
@@ -39,6 +63,10 @@ export const styles = StyleSheet.create({
     fontSize: scaleHeight(12),
     color: Colors.tailwindColors.neutral["500"],
   },
+  url__dark: {
+    fontSize: scaleHeight(12),
+    color: "#8F8F8F",
+  },
   noteContainer: {
     marginTop: 12,
     flexDirection: "row",
@@ -48,6 +76,12 @@ export const styles = StyleSheet.create({
   linkDescription: {
     ...getFont(EFontWeight.Medium),
     color: Colors.tailwindColors.neutral["500"],
+    // width: scaleWidth(244),
+    fontSize: scaleHeight(12),
+  },
+  linkDescription__dark: {
+    ...getFont(EFontWeight.Medium),
+    color: "#8F8F8F",
     // width: scaleWidth(244),
     fontSize: scaleHeight(12),
   },
@@ -62,8 +96,17 @@ export const styles = StyleSheet.create({
     fontSize: scaleHeight(12),
     color: Colors.tailwindColors.neutral["500"],
   },
+  elapsedTime__dark: {
+    ...getFont(EFontWeight.Regular),
+    fontSize: scaleHeight(12),
+    color: "#8F8F8F",
+  },
   imageContainer: {
     backgroundColor: Colors.tailwindColors.neutral["0"],
+    paddingTop: 8,
+  },
+  imageContainer__dark: {
+    backgroundColor: "#171717",
     paddingTop: 8,
   },
   image: {
@@ -84,6 +127,12 @@ export const styles = StyleSheet.create({
     fontSize: scaleHeight(10),
     lineHeight: scaleHeight(24),
   },
+  detailsText__dark: {
+    color: "#8EACB7",
+    ...getFont(EFontWeight.Regular),
+    fontSize: scaleHeight(10),
+    lineHeight: scaleHeight(24),
+  },
   avatarContainer: {
     width: 20,
     height: 20,
@@ -91,6 +140,14 @@ export const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: Colors.OtherColor.BorderGrayColor,
+  },
+  avatarContainer__dark: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#262626",
   },
   avatar: {
     width: 20,
@@ -100,6 +157,15 @@ export const styles = StyleSheet.create({
     height: scaleHeight(24),
     paddingHorizontal: scaleWidth(5),
     backgroundColor: Colors.ButtonsColor.GrayBackButton,
+    flexDirection: "row",
+    gap: scaleWidth(7),
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  detailsOpenButton__dark: {
+    height: scaleHeight(24),
+    paddingHorizontal: scaleWidth(5),
+    backgroundColor: "#333333",
     flexDirection: "row",
     gap: scaleWidth(7),
     alignItems: "center",
@@ -117,6 +183,14 @@ export const styles = StyleSheet.create({
     alignSelf: "flex-end",
     gap: 8,
   },
+  bottomStyles__dark: {
+    backgroundColor: "#171717",
+    height: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-end",
+    gap: 8,
+  },
   readerButton: {
     position: "absolute",
     top: 26,
@@ -127,7 +201,16 @@ export const styles = StyleSheet.create({
     padding: 6,
     boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
   },
-
+  readerButton__dark: {
+    position: "absolute",
+    top: 26,
+    right: 13,
+    zIndex: 1,
+    backgroundColor: "rgba(50, 50, 50, 0.9)",
+    borderRadius: 6,
+    padding: 6,
+    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+  },
   readerContainer: {
     flex: 1,
     backgroundColor: Colors.tailwindColors.neutral["50"],

@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  StatusBar,
-  ScrollView,
+	Dimensions,
+	Image,
+	ScrollView,
+	StatusBar,
+	StyleSheet,
+	Text as ThemedText,
+	TouchableOpacity,
+	useColorScheme,
+	View,
 } from "react-native";
-import { router } from "expo-router";
-import { Text as ThemedText } from "react-native";
+import {router} from "expo-router";
 import TokenCheck from "@/components/TokenCheck";
 
 const { width } = Dimensions.get("window");
@@ -18,6 +19,8 @@ export default function OnboardingScreen() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const autoAdvanceTimer = useRef<NodeJS.Timeout | null>(null);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const slides = [
     {
@@ -145,8 +148,8 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+    <View style={isDark ? styles.container_dark : styles.container}>
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={isDark ? "#0A0A0A" : "#FFFFFF"} />
 
       {/* CHECK FOR THE PRESENCE OF TOKEN */}
       <TokenCheck />
@@ -172,10 +175,10 @@ export default function OnboardingScreen() {
                 </View>
 
                 <View style={styles.slideTextContainer}>
-                  <ThemedText style={styles.slideTitle}>
+                  <ThemedText style={isDark ? styles.slideTitle_dark : styles.slideTitle}>
                     {slide.title}
                   </ThemedText>
-                  <ThemedText style={styles.slideDescription}>
+                  <ThemedText style={isDark ? styles.slideDescription_dark : styles.slideDescription}>
                     {slide.description}
                   </ThemedText>
                 </View>
@@ -191,7 +194,9 @@ export default function OnboardingScreen() {
               onPress={() => goToSlide(index)}
               style={[
                 styles.dot,
-                index === currentSlide ? styles.activeDot : styles.inactiveDot,
+                index === currentSlide 
+                  ? (isDark ? styles.activeDot_dark : styles.activeDot) 
+                  : (isDark ? styles.inactiveDot_dark : styles.inactiveDot),
               ]}
             />
           ))}
@@ -199,11 +204,17 @@ export default function OnboardingScreen() {
       </View>
 
       <View style={styles.actionsContainer}>
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <ThemedText style={styles.loginButtonText}>Login</ThemedText>
+        <TouchableOpacity 
+          style={isDark ? styles.loginButton_dark : styles.loginButton} 
+          onPress={handleLogin}
+        >
+          <ThemedText style={isDark ? styles.loginButtonText_dark : styles.loginButtonText}>Login</ThemedText>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
+        <TouchableOpacity 
+          style={isDark ? styles.signupButton_dark : styles.signupButton} 
+          onPress={handleSignup}
+        >
           <ThemedText style={styles.signupButtonText}>Signup</ThemedText>
         </TouchableOpacity>
       </View>
@@ -215,6 +226,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+  },
+  container_dark: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
   },
   slidesContainer: {
     flex: 1,
@@ -255,6 +270,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#000000",
   },
+  slideTitle_dark: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 16,
+    textAlign: "center",
+    color: "#FFFFFF",
+  },
   slideDescription: {
     fontSize: 16,
     textAlign: "center",
@@ -262,6 +284,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     opacity: 0.8,
     color: "#333333",
+  },
+  slideDescription_dark: {
+    fontSize: 16,
+    textAlign: "center",
+    lineHeight: 24,
+    paddingHorizontal: 20,
+    opacity: 0.8,
+    color: "#8EACB7",
   },
   dotsContainer: {
     flexDirection: "row",
@@ -278,8 +308,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#325C6A",
     width: 20,
   },
+  activeDot_dark: {
+    backgroundColor: "#4793E0",
+    width: 20,
+  },
   inactiveDot: {
     backgroundColor: "#E0E0E0",
+  },
+  inactiveDot_dark: {
+    backgroundColor: "#262626",
   },
   actionsContainer: {
     paddingHorizontal: 36,
@@ -295,10 +332,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E0E0E0",
   },
+  loginButton_dark: {
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+    backgroundColor: "#171717",
+    borderWidth: 1,
+    borderColor: "#262626",
+  },
   loginButtonText: {
     fontWeight: "600",
     fontSize: 16,
     color: "#000000",
+  },
+  loginButtonText_dark: {
+    fontWeight: "600",
+    fontSize: 16,
+    color: "#FFFFFF",
   },
   signupButton: {
     paddingVertical: 16,
@@ -306,6 +358,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#325C6A",
+  },
+  signupButton_dark: {
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#1C4A5A",
   },
   signupButtonText: {
     color: "#FFFFFF",

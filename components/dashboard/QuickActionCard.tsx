@@ -1,22 +1,24 @@
-import { styles } from "@/components/dashboard/HomeScreenStyles";
-import { Text, TouchableOpacity, View } from "react-native";
+import {styles} from "@/components/dashboard/HomeScreenStyles";
+import {ColorSchemeName, Text, TouchableOpacity, View} from "react-native";
 
 export const QuickActionCard = ({
   emoji,
   title,
-  // count,
+  count,
   onPress,
+  colorScheme,
 }: {
   emoji: string;
   title: string;
   count: number;
   onPress?: () => void;
+  colorScheme?: ColorSchemeName;
 }) => (
-  <TouchableOpacity style={styles.quickActionCard} onPress={onPress}>
+  <TouchableOpacity style={colorScheme === 'light' ? styles.quickActionCard : styles.quickActionCard__dark} onPress={onPress}>
     <View style={styles.quickActionLeftContent}>
-      <Text style={styles.emoji}>{emoji}</Text>
-      <Text style={styles.quickActionTitle}>{title}</Text>
+      <Text style={colorScheme === 'light' ? styles.emoji : styles.emoji__dark}>{emoji}</Text>
+      <Text style={colorScheme === 'light' ? styles.quickActionTitle : styles.quickActionTitle__dark}>{title}</Text>
     </View>
-    {/* <Text style={styles.quickActionCount}>{count}</Text> */}
+    {/* <Text style={colorScheme === 'light' ? styles.quickActionCount : styles.quickActionCount__dark}>{count}</Text> */}
   </TouchableOpacity>
 );

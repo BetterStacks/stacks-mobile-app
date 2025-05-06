@@ -1,4 +1,4 @@
-import {ActivityIndicator, StyleSheet, TextInput, View} from "react-native";
+import {ActivityIndicator, StyleSheet, TextInput, useColorScheme, View} from "react-native";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {useLazyQuery} from "@apollo/client";
@@ -11,6 +11,8 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {CardLinksList} from "@/components/cardLinkList/CardLinksList";
 
 const SearchScreen = () => {
+	const colorScheme = useColorScheme();
+	const isDark = colorScheme === 'dark';
 	const [searchQuery, setSearchQuery] = useState("");
 	const inputRef = useRef<TextInput>(null);
 	const [loadLinks, { loading: linksLoading, data: linksData }] =
@@ -65,17 +67,17 @@ const SearchScreen = () => {
 	});
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<View style={styles.searchWrapper}>
+		<SafeAreaView style={isDark ? styles.container_dark : styles.container}>
+			<View style={isDark ? styles.searchWrapper_dark : styles.searchWrapper}>
 				<CommonInput
 					ref={inputRef}
 					placeholder="Search links, notes, highlights..."
-					additionalInputStyles={styles.inputStyles}
+					additionalInputStyles={isDark ? styles.inputStyles_dark : styles.inputStyles}
 					onChangeText={onChangeText}
 					value={searchQuery}
 					isIconNotTouchable={true}
-					iconName={<AntDesign name="search1" size={20} color={Colors.TextColor.SecondaryColor} />}
-					placeholderTextColor={Colors.TextColor.SecondaryColor}
+					iconName={<AntDesign name="search1" size={20} color={isDark ? "#8EACB7" : Colors.TextColor.SecondaryColor} />}
+					placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.SecondaryColor}
 					autoFocus={true}
 					returnKeyType="search"
 					clearButtonMode="while-editing"
@@ -83,11 +85,15 @@ const SearchScreen = () => {
 			</View>
 
 			{linksLoading ? (
-				<ActivityIndicator />
+				<ActivityIndicator color={isDark ? "#8EACB7" : Colors.TextColor.LignMainColor} />
 			) : (
 				linksData && (
 					<View style={styles.linksContainer}>
-						<CardLinksList links={linksData.links} showList={!linksLoading} />
+						<CardLinksList 
+							links={linksData.links} 
+							showList={!linksLoading} 
+							colorScheme={colorScheme}
+						/>
 					</View>
 				)
 			)}
@@ -103,6 +109,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#F8F9FA",
 	},
+	container_dark: {
+		flex: 1,
+		backgroundColor: "#0A0A0A",
+	},
 	searchWrapper: {
 		paddingHorizontal: 16,
 		paddingVertical: 12,
@@ -110,12 +120,27 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderBottomColor: '#E5E5E5',
 	},
+	searchWrapper_dark: {
+		paddingHorizontal: 16,
+		paddingVertical: 12,
+		backgroundColor: '#171717',
+		borderBottomWidth: 1,
+		borderBottomColor: '#262626',
+	},
 	inputStyles: {
 		backgroundColor: '#F8F9FA',
 		borderWidth: 1,
 		borderColor: '#E5E5E5',
 		borderRadius: 8,
 		minHeight: 48,
+	},
+	inputStyles_dark: {
+		backgroundColor: '#262626',
+		borderWidth: 1,
+		borderColor: '#262626',
+		borderRadius: 8,
+		minHeight: 48,
+		color: '#FFFFFF',
 	},
 	linksContainer: {
 		paddingHorizontal: 16,
