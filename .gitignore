@@ -57,3 +57,8 @@ google-services.json
 ios/stacksmobile/GoogleService-Info.plist
 
 android/gradle.properties
+
+# Expo
+.expo
+dist/
+web-build/
