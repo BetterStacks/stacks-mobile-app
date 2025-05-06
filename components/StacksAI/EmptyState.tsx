@@ -89,7 +89,7 @@ const EmptyState = ({
 
   return (
     <View style={styles.emptyState}>
-      <View style={styles.logoContainer}>
+      <View style={isDark ? styles.logoContainer__dark : styles.logoContainer}>
         <Image 
           source={require('@/assets/png/stacks-logo.png')}
           style={styles.logo}

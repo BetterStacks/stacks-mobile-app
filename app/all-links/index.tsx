@@ -533,7 +533,8 @@ export default function AllLinksScreen() {
           },
           headerStyle: {
             backgroundColor: isDark ? "#171717" : undefined
-          }
+          },
+          headerTintColor: isDark ? "#FFFFFF" : undefined
         }}
       />
       <Animated.View style={[isDark ? styles.container__dark : styles.container, animViewStyle]}>

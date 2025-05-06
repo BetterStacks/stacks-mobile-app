@@ -191,7 +191,7 @@ export default function StacksAIScreen() {
             <TouchableOpacity 
               style={[
                 isDark ? styles.headerButton__dark : styles.headerButton, 
-                styles.contextButton
+                isDark ? styles.contextButton__dark : styles.contextButton
               ]} 
               onPress={handleShowViewContext}
             >

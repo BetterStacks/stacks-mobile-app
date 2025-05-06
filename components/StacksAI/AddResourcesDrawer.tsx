@@ -59,7 +59,7 @@ const AddResourcesDrawer = ({ onLinksSelected, selectedLinks, colorScheme }: Add
   return (
     <View style={isDark ? styles.drawerContainer__dark : styles.drawerContainer}>
       <View style={styles.drawerContent}>
-        <Text style={isDark ? styles.drawerTitle__dark : styles.drawerTitle}>Add resources to context</Text>
+        <Text style={[isDark ? styles.drawerTitle__dark : styles.drawerTitle, { marginBottom: 16, marginTop: 8 }]}>Add resources to context</Text>
 
         <View style={isDark ? styles.searchContainer__dark : styles.searchContainer}>
           <AntDesign name="search1" size={18} color={isDark ? "#A0B3BC" : "#6B7280"} style={styles.searchIcon} />

@@ -89,6 +89,9 @@ export const styles = StyleSheet.create({
   contextButton: {
     backgroundColor: '#f0f7ff',
   },
+  contextButton__dark: {
+    backgroundColor: '#1E3A4A',
+  },
   messagesContainer: {
     flex: 1,
   },
@@ -122,7 +125,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 9,
   },
   userMessage__dark: {
-    backgroundColor: '#293F4E',
+    backgroundColor: '#2A2A2A',
     alignSelf: 'flex-end',
     borderBottomRightRadius: 6,
     marginTop: 8,
@@ -145,7 +148,7 @@ export const styles = StyleSheet.create({
     paddingLeft: 0,
   },
   aiMessage__dark: {
-    backgroundColor: '#171717',
+    backgroundColor: 'transparent',
     alignSelf: 'flex-start',
     borderBottomLeftRadius: 0,
     marginLeft: 0,
@@ -633,6 +636,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f8f8f8',
+    borderRadius: 20,
+    padding: 20,
+  },
+  logoContainer__dark: {
+    width: 100,
+    height: 100,
+    marginBottom: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#171717',
     borderRadius: 20,
     padding: 20,
   },
