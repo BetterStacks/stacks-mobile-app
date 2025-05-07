@@ -39,7 +39,7 @@ export default function RecallScreen() {
         },
     );
 
-    const linksData: Link[] = recallLinks?.recall_links?.slice(0, 6) || [];
+    const linksData: Link[] = recallLinks?.recall_links || [];
     
     const handleRefetch = async () => {
         try {
@@ -65,7 +65,7 @@ export default function RecallScreen() {
     useEffect(() => {
         if (noMoreCards) {
             // Text animation - shorter duration
-            textOpacityAnim.value = withTiming(1, {
+            textOpacityAnim.value = withTiming(0.9, {
                 duration: 400,
                 easing: Easing.bezier(0.25, 0.1, 0.25, 1),
             });
@@ -208,16 +208,16 @@ const styles = StyleSheet.create({
     noCardsText: {
         color: Colors.TextColor.MainBlackColor,
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: '500',
         marginBottom: 16,
-        textAlign: 'center',
+        textAlign: 'center'
     },
     noCardsText__dark: {
         color: '#FFFFFF',
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: '500',
         marginBottom: 16,
-        textAlign: 'center',
+        textAlign: 'center'
     },
     refetchButton: {
         backgroundColor: '#E5E5E5',
