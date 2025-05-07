@@ -33,7 +33,7 @@
         "expo-linking": "~7.0.5",
         "expo-router": "~4.0.19",
         "expo-share-intent": "^3.2.2",
-        "expo-speech": "^13.1.6",
+        "expo-speech": "^13.0.1",
         "expo-splash-screen": "~0.29.22",
         "expo-status-bar": "~2.0.1",
         "expo-symbols": "~0.2.2",
@@ -1181,7 +1181,7 @@
 
     "expo-share-intent": ["expo-share-intent@3.2.2", "", { "dependencies": { "@expo/config-plugins": "^9.0.9", "expo-constants": "^17.0.2", "expo-linking": "~7.0.2" }, "peerDependencies": { "expo": "^52", "react": "*", "react-native": "*" } }, "sha512-HXSX9jJ9wgmynB7H8c5vDdz4OnWNWoN42Q85NX4q/KCyof8cS8/E/mtPRLIVHLr+0l5Zdnswt4OJ3GZKaqM5Rg=="],
 
-    "expo-speech": ["expo-speech@13.1.6", "", { "peerDependencies": { "expo": "*" } }, "sha512-6iaFde1ct6EyzaGhrR1fWMjGHLxo2xLHcmVDCg4tl7RlPieiLrphW5mHQgFjJUWyyc1pguBwb8tHDJaciB2M2Q=="],
+    "expo-speech": ["expo-speech@13.1.7", "", { "peerDependencies": { "expo": "*" } }, "sha512-RMMgK6IIPQD9uLhmY2Q9v+2j3wmTGqB/qZ7sdy5//5TLCzFwAq1vlpy5A2psVsctoWVxUO4EmlaNai0ahQmKRg=="],
 
     "expo-splash-screen": ["expo-splash-screen@0.29.22", "", { "dependencies": { "@expo/prebuild-config": "^8.0.27" }, "peerDependencies": { "expo": "*" } }, "sha512-f+bPpF06bqiuW1Fbrd3nxeaSsmTVTBEKEYe3epYt4IE6y4Ulli3qEUamMLlRQiDGuIXPU6zQlscpy2mdBUI5cA=="],
 

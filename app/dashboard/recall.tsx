@@ -1,18 +1,29 @@
-import {StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {useSharedValue} from 'react-native-reanimated';
+import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import Card from '@/components/recall/Card';
 import {SystemBars} from 'react-native-edge-to-edge';
 import {useQuery} from "@apollo/client";
 import {QUERY_RECALL_LINKS} from "@/lib/api/graphql/queries";
 import {Link} from '@/lib/types/Link';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import {Colors} from "@/components/design/colors";
 
 export default function RecallScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [completedLinks, setCompletedLinks] = useState(0);
     const animatedValue = useSharedValue(0);
     const MAX = 5;
+
+    // Text animation values
+    const textOpacityAnim = useSharedValue(0);
+    const textTranslateYAnim = useSharedValue(50);
+    
+    // Button animation values
+    const buttonOpacityAnim = useSharedValue(0);
+    const buttonTranslateYAnim = useSharedValue(50);
 
     const { data: recallLinks, loading: recallLinksLoading, refetch: refetchRecallLinks } = useQuery(
         QUERY_RECALL_LINKS,
@@ -26,33 +37,117 @@ export default function RecallScreen() {
         },
     );
 
-    const linksData: Link[] = recallLinks?.recall_links || [];
+    const linksData: Link[] = recallLinks?.recall_links?.slice(0, 6) || [];
+    
+    const handleRefetch = async () => {
+        try {
+            // Reset animations
+            textOpacityAnim.value = 0;
+            textTranslateYAnim.value = 50;
+            buttonOpacityAnim.value = 0;
+            buttonTranslateYAnim.value = 50;
+            
+            await refetchRecallLinks();
+            // Reset the current index to show the cards from the beginning
+            setCurrentIndex(0);
+            // Keep track of completed links for the message
+            setCompletedLinks(prev => prev + linksData.length);
+        } catch (error) {
+            console.error("Error refetching links:", error);
+        }
+    };
+
+    const noMoreCards = linksData.length > 0 && currentIndex >= linksData.length;
+    
+    // Start animations when there are no more cards
+    useEffect(() => {
+        if (noMoreCards) {
+            // Text animation - shorter duration
+            textOpacityAnim.value = withTiming(1, {
+                duration: 400,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            });
+            
+            textTranslateYAnim.value = withTiming(0, {
+                duration: 400,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            });
+            
+            // Button animation - longer duration
+            buttonOpacityAnim.value = withTiming(1, {
+                duration: 600,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            });
+            
+            buttonTranslateYAnim.value = withTiming(0, {
+                duration: 600,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            });
+        }
+    }, [noMoreCards]);
+    
+    // Animated styles for the text
+    const animatedTextStyle = useAnimatedStyle(() => {
+        return {
+            opacity: textOpacityAnim.value,
+            transform: [{ translateY: textTranslateYAnim.value }]
+        };
+    });
+    
+    // Animated styles for the button
+    const animatedButtonStyle = useAnimatedStyle(() => {
+        return {
+            opacity: buttonOpacityAnim.value,
+            transform: [{ translateY: buttonTranslateYAnim.value }]
+        };
+    });
 
     return (
         <GestureHandlerRootView style={{flex: 1}}>
             <SafeAreaView style={styles.container}>
                 {/* If you're not using react-native-edge-to-edge, you can remove SystemBars */}
                 <SystemBars style={'light'} />
+                <View style={styles.header}>
+                    <Text style={styles.title}>Resurface forgotten links</Text>
+                    <Text style={styles.subtitle}>Glide through a series of links, revisit the favorites, and gently let go of the rest.</Text>
+                </View>
+
                 <View style={styles.cardContainer}>
-                    {linksData.map((item: Link, index: number) => {
-                        if (index > currentIndex + MAX || index < currentIndex) {
-                            return null;
-                        }
-                        return (
-                            <Card
-                                newData={linksData}
-                                setNewData={() => {}} 
-                                maxVisibleItems={MAX}
-                                item={item}
-                                index={index}
-                                dataLength={linksData.length}
-                                animatedValue={animatedValue}
-                                currentIndex={currentIndex}
-                                setCurrentIndex={setCurrentIndex}
-                                key={index}
-                            />
-                        );
-                    })}
+                    {noMoreCards ? (
+                        <View style={styles.noCardsContainer}>
+                            <Animated.Text style={[styles.noCardsText, animatedTextStyle]}>
+                                You've recalled {linksData.length + completedLinks} links
+                            </Animated.Text>
+                            <Animated.View style={animatedButtonStyle}>
+                                <Pressable 
+                                    style={styles.refetchButton} 
+                                    onPress={handleRefetch}
+                                >
+                                    <MaterialIcons name="refresh" size={24} color="#fff" />
+                                </Pressable>
+                            </Animated.View>
+                        </View>
+                    ) : (
+                        linksData.map((item: Link, index: number) => {
+                            if (index > currentIndex + MAX || index < currentIndex) {
+                                return null;
+                            }
+                            return (
+                                <Card
+                                    newData={linksData}
+                                    setNewData={() => {}} 
+                                    maxVisibleItems={MAX}
+                                    item={item}
+                                    index={index}
+                                    dataLength={linksData.length}
+                                    animatedValue={animatedValue}
+                                    currentIndex={currentIndex}
+                                    setCurrentIndex={setCurrentIndex}
+                                    key={index}
+                                />
+                            );
+                        })
+                    )}
                 </View>
             </SafeAreaView>
         </GestureHandlerRootView>
@@ -62,11 +157,50 @@ export default function RecallScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#111111',
+        backgroundColor: '#ffffff',
+    },
+    header: {
+        marginTop: 48
+    },
+    title: {
+        textAlign: 'center',
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: Colors.TextColor.MainBlackColor,
+        marginBottom: 8,
+    },
+    subtitle: {
+        textAlign: 'center',
+        fontSize: 16,
+        color: Colors.TextColor.MainBlackColor,
+        lineHeight: 24,
+        letterSpacing: 0.25,
     },
     cardContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
+    noCardsContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    noCardsText: {
+        color: Colors.TextColor.MainBlackColor,
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 16,
+        textAlign: 'center',
+    },
+    refetchButton: {
+        backgroundColor: '#171717',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        borderWidth: 1,
+        borderColor: '#262626',
+    }
 });

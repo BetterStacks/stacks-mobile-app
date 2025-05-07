@@ -1,6 +1,6 @@
 import {Link} from "@/lib/types/Link";
 import React, {useCallback, useState} from "react";
-import {ColorSchemeName, Image, Linking, Text, TouchableOpacity, useColorScheme, View, ViewToken,} from "react-native";
+import {ColorSchemeName, Image, Linking, Pressable, Text, useColorScheme, View, ViewToken,} from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Animated, {Easing, useAnimatedStyle, withDelay, withTiming,} from "react-native-reanimated";
 import {styles} from "./CardLinkStyles";
@@ -29,6 +29,7 @@ type Props = {
   setImageUri?: (a: string) => void;
   colorScheme?: ColorSchemeName;
   showBorder?: boolean;
+  disableTouchEffect?: boolean;
 };
 
 const videoTypes = ["mp4", "mov", "wmv", "avi", "mkv", "webm"];
@@ -43,6 +44,7 @@ export const CardLink: React.FC<Props> = ({
   setImageUri = () => null,
   colorScheme: propColorScheme,
   showBorder = true,
+  disableTouchEffect = false,
 }) => {
   const deviceColorScheme = useColorScheme();
   const colorScheme = propColorScheme || deviceColorScheme;
@@ -197,8 +199,11 @@ export const CardLink: React.FC<Props> = ({
 
   return (
     <Animated.View style={containerStyle}>
-      <TouchableOpacity
-        style={isDark ? styles.contentContainer__dark : styles.contentContainer}
+      <Pressable
+        style={({pressed}) => [
+          isDark ? styles.contentContainer__dark : styles.contentContainer,
+          pressed && !disableTouchEffect && {opacity: 0.2}
+        ]}
         onPress={handleOpenLink}
         onLongPress={handleLongPress}
         delayLongPress={500}
@@ -219,7 +224,7 @@ export const CardLink: React.FC<Props> = ({
           )}
           
           {/* Add Book Icon Button for WebView */}
-          <TouchableOpacity
+          <Pressable
             style={[
               styles.webViewButton,
               isDark ? styles.webViewButton__dark : {}
@@ -228,7 +233,7 @@ export const CardLink: React.FC<Props> = ({
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Ionicons name="book-outline" size={16} color={isDark ? "#FFFFFF" : "#333333"} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         <View style={isDark ? styles.content__dark : styles.content}>
@@ -243,13 +248,13 @@ export const CardLink: React.FC<Props> = ({
                   <Text numberOfLines={2} style={[isDark ? styles.linkTitle__dark : styles.linkTitle, { flex: 1, marginRight: 10 }]}>
                     {link.title}
                   </Text>
-                  <TouchableOpacity
+                  <Pressable
                     onPress={handleLongPress}
                     hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
                     style={{ alignSelf: 'flex-start', marginTop: 3 }}
                   >
                     <Entypo name="dots-three-vertical" size={16} color="#888" />
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
 
                 <View style={styles.urlBox}>
@@ -315,7 +320,7 @@ export const CardLink: React.FC<Props> = ({
             </View>
           </View> */}
         </View>
-      </TouchableOpacity>
+      </Pressable>
       {/* <TouchableOpacity
         style={styles.readerButton}
         onPress={handleReaderPress}

@@ -131,6 +131,7 @@ const Card = ({
 					link={item} 
 					viewableItems={viewableItems}
 					showBorder={false}
+					disableTouchEffect={true}
 				/>
 			</Animated.View>
 		</GestureDetector>
