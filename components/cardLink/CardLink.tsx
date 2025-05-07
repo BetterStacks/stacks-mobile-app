@@ -28,6 +28,7 @@ type Props = {
   setVideoPlayerUri?: (a: string) => void;
   setImageUri?: (a: string) => void;
   colorScheme?: ColorSchemeName;
+  showBorder?: boolean;
 };
 
 const videoTypes = ["mp4", "mov", "wmv", "avi", "mkv", "webm"];
@@ -41,6 +42,7 @@ export const CardLink: React.FC<Props> = ({
   setVideoPlayerUri = () => null,
   setImageUri = () => null,
   colorScheme: propColorScheme,
+  showBorder = true,
 }) => {
   const deviceColorScheme = useColorScheme();
   const colorScheme = propColorScheme || deviceColorScheme;
@@ -186,8 +188,15 @@ export const CardLink: React.FC<Props> = ({
 
   const isUserPage = link.is_user_page
 
+  // Create container style based on showBorder prop
+  const containerStyle = [
+    isDark ? styles.container__dark : styles.container,
+    !showBorder && { borderBottomWidth: 0 },
+    rStyle
+  ];
+
   return (
-    <Animated.View style={[isDark ? styles.container__dark : styles.container, rStyle]}>
+    <Animated.View style={containerStyle}>
       <TouchableOpacity
         style={isDark ? styles.contentContainer__dark : styles.contentContainer}
         onPress={handleOpenLink}
@@ -278,10 +287,6 @@ export const CardLink: React.FC<Props> = ({
                       </Text>
                     </View>
                 )}
-
-                <Text style={isDark ? styles.linkDescription__dark : styles.linkDescription}>
-                  {isUserPage ? `Is Page ${link.user_page.id}` : 'Is not Page'}
-                </Text>
               </>
             )}
           </View>
