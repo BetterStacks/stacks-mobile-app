@@ -572,3 +572,37 @@ export const QUERY_QUICK_NOTES = gql`
     }
   }
 `;
+
+export const QUERY_RECALL_LINKS = gql`
+	query Recall_links($perPage: Int, $page: Int) {
+		recall_links(perPage: $perPage, page: $page) {
+			id
+			target_url
+			description
+			title
+			image_url
+			latitude
+			longitude
+			created_at
+			stacks
+			views
+			broken
+			sharing_preference
+			rating {
+			  ratings_count
+			  average_rating
+			}
+			favicon_url
+			notes
+			collections {
+			  id
+			  name: title
+			}
+			user_repositories {
+			  id
+			  name
+			  repository_type
+			}
+		}
+	}
+`
