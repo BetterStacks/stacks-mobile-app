@@ -1,7 +1,9 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {
 	ActivityIndicator,
+	Alert,
 	Image,
+	Modal,
 	StyleSheet,
 	Text,
 	TextInput,
@@ -17,13 +19,14 @@ import {Link} from "@/lib/types/Link";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {SELECTED_WORKSPACE_ID_KEY} from "@/lib/constants";
 import {QUERY_COLLECTIONS} from "@/lib/api/graphql/queries";
-import {MUTATION_UPDATE_LINK} from "@/lib/api/graphql/mutations";
+import {MUTATION_DELETE_LINK, MUTATION_UPDATE_LINK} from "@/lib/api/graphql/mutations";
 import {parseAnnotationSelectedText} from "@/lib/utils";
 import {CollectionSelector} from "../CollectionSelector";
 import {Colors} from "../design/colors";
 import {scaleHeight, scaleWidth} from "../design/scale";
 import {getFont} from "../design/fonts/fonts";
 import {EFontWeight} from "../design/fonts/types";
+import {Toast} from "toastify-react-native";
 
 type Props = {
   onBack: () => void;
@@ -52,6 +55,7 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
 
   const [isCollectionsExpanded, setIsCollectionsExpanded] = useState(false);
   const [repositoryId, setRepositoryId] = useState<string | null>(null);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const hasChanges = useMemo(() => {
     const originalCollections = link.collections?.map((c) => c.id) || [];
@@ -87,6 +91,25 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
         });
       }
     },
+    onError: (error) => {
+      Toast.error(error.message || "Failed to update link");
+    }
+  });
+
+  const [deleteLink, { loading: deleteLoading }] = useMutation(MUTATION_DELETE_LINK, {
+    onCompleted: () => {
+      if (onSuccess) {
+        onSuccess({
+          title: "Link deleted successfully!",
+          description: "The link has been removed",
+        });
+      }
+      Toast.success("Link deleted successfully!");
+      onClose();
+    },
+    onError: (error) => {
+      Toast.error(error.message || "Failed to delete link");
+    }
   });
 
   const handleSave = async () => {
@@ -110,6 +133,63 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
       });
     } catch (error) {
       console.error("Error updating link:", error);
+    }
+  };
+
+  const handleDelete = () => {
+    setIsDeleteModalVisible(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteLink({
+        variables: {
+          link_id: link.id,
+        },
+        refetchQueries: [
+          "QUERY_LINKS",
+          "QUERY_STACKS",
+          "QUERY_DOMAIN_LINKS",
+          "QUERY_DOMAIN_LINKS_BY_STACKID",
+          "QUERY_STACK_LINKS",
+        ],
+        update: (cache) => {
+          // Remove the deleted link from Apollo cache for different queries
+          cache.modify({
+            fields: {
+              links: (existingLinks = [], { readField }) => {
+                return existingLinks.filter(
+                  // @ts-ignore
+                  linkRef => readField('id', linkRef) !== link.id
+                );
+              },
+              stack_links: (existingLinks = [], { readField }) => {
+                return existingLinks.filter(
+                  // @ts-ignore
+                  linkRef => readField('id', linkRef) !== link.id
+                );
+              },
+              // For domain links
+              domain_links: (existingDomains = []) => {
+                return existingDomains;
+              },
+              // For domain links by stack id
+              domain_links_by_stackid: (existingDomains = []) => {
+                return existingDomains;
+              }
+            }
+          });
+          
+          // Invalidate queries to force refetch
+          cache.evict({ fieldName: 'links' });
+          cache.evict({ fieldName: 'stack_links' });
+          cache.gc();
+        }
+      });
+    } catch (error) {
+      console.error("Error deleting link:", error);
+    } finally {
+      setIsDeleteModalVisible(false);
     }
   };
 
@@ -289,12 +369,12 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
       </View>
       */}
 
-      {hasChanges && (
-        <View style={styles.buttonContainer}>
+      <View style={styles.buttonContainer}>
+        {hasChanges && (
           <TouchableOpacity
             style={[styles.saveButton, loading && styles.saveButtonDisabled]}
             onPress={handleSave}
-            disabled={loading}
+            disabled={loading || deleteLoading}
           >
             {loading ? (
               <ActivityIndicator color="white" />
@@ -302,15 +382,68 @@ const EditLinkView = ({ onBack, onClose, link, onSuccess }: Props) => {
               <Text style={styles.saveButtonText}>Save</Text>
             )}
           </TouchableOpacity>
+        )}
+        
+        <View style={styles.actionsRow}>
           <TouchableOpacity
             style={styles.cancelButton}
             onPress={onBack}
-            disabled={loading}
+            disabled={loading || deleteLoading}
           >
-            <Text style={isDark ? styles.cancelButtonText_dark : styles.cancelButtonText}>Cancel</Text>
+            <Text style={isDark ? styles.cancelButtonText_dark : styles.cancelButtonText}>
+              Cancel
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={handleDelete}
+            disabled={loading || deleteLoading}
+          >
+            {deleteLoading ? (
+              <ActivityIndicator size="small" color={isDark ? "#CF6679" : "#E53935"} />
+            ) : (
+              <View style={styles.deleteButtonContent}>
+                <AntDesign name="delete" size={14} color={isDark ? "#CF6679" : "#E53935"} />
+                <Text style={isDark ? styles.deleteButtonText_dark : styles.deleteButtonText}>
+                  Delete
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
-      )}
+      </View>
+
+      {/* Custom Delete Modal */}
+      <Modal
+        visible={isDeleteModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsDeleteModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={isDark ? styles.modalView_dark : styles.modalView}>
+            <Text style={isDark ? styles.modalTitle_dark : styles.modalTitle}>Delete Link</Text>
+            <Text style={isDark ? styles.modalMessage_dark : styles.modalMessage}>
+              Are you sure you want to delete this link? This action cannot be undone.
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, isDark ? styles.cancelModalButton_dark : styles.cancelModalButton]}
+                onPress={() => setIsDeleteModalVisible(false)}
+              >
+                <Text style={isDark ? styles.cancelModalButtonText_dark : styles.cancelModalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.deleteModalButton]}
+                onPress={confirmDelete}
+              >
+                <Text style={styles.deleteModalButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -374,18 +507,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+  actionsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  deleteButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  deleteButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  deleteButtonText: {
+    color: Colors.tailwindColors.neutral["700"],
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  deleteButtonText_dark: {
+    color: Colors.tailwindColors.neutral["300"],
+    fontSize: 14,
+    fontWeight: "500",
+  },
   cancelButton: {
-    padding: 16,
+    padding: 8,
     borderRadius: 8,
     alignItems: "center",
   },
   cancelButtonText: {
-    color: Colors.TextColor.MainColor,
-    fontSize: 16,
+    color: Colors.tailwindColors.neutral["500"],
+    fontSize: 14,
+    fontWeight: "500",
   },
   cancelButtonText_dark: {
-    color: "#8EACB7",
-    fontSize: 16,
+    color: Colors.tailwindColors.neutral["400"],
+    fontSize: 14,
+    fontWeight: "500",
   },
   tagsWrapper: {
     flexDirection: "row",
@@ -619,6 +779,104 @@ const styles = StyleSheet.create({
     ...getFont(EFontWeight.Medium),
     fontSize: scaleHeight(13),
     color: Colors.TextColor.MainColor,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 24,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '85%',
+  },
+  modalView_dark: {
+    margin: 20,
+    backgroundColor: '#262626',
+    borderRadius: 12,
+    padding: 24,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '85%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+    color: Colors.TextColor.DarkHeadingColor,
+  },
+  modalTitle_dark: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+    color: '#FFFFFF',
+  },
+  modalMessage: {
+    marginBottom: 24,
+    fontSize: 16,
+    textAlign: 'center',
+    color: Colors.tailwindColors.neutral["600"],
+  },
+  modalMessage_dark: {
+    marginBottom: 24,
+    fontSize: 16,
+    textAlign: 'center',
+    color: Colors.tailwindColors.neutral["300"],
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  modalButton: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  cancelModalButton: {
+    backgroundColor: Colors.tailwindColors.neutral["100"],
+  },
+  cancelModalButton_dark: {
+    backgroundColor: Colors.tailwindColors.neutral["700"],
+  },
+  cancelModalButtonText: {
+    color: Colors.tailwindColors.neutral["700"],
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  cancelModalButtonText_dark: {
+    color: Colors.tailwindColors.neutral["300"],
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  deleteModalButton: {
+    backgroundColor: '#E53935',
+  },
+  deleteModalButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
