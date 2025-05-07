@@ -1,4 +1,4 @@
-import {StyleSheet, useWindowDimensions, ViewToken} from 'react-native';
+import {ColorSchemeName, StyleSheet, useWindowDimensions, ViewToken} from 'react-native';
 import React from 'react';
 import Animated, {
 	interpolate,
@@ -13,8 +13,6 @@ import {Link} from '@/lib/types/Link';
 import {CardLink} from '@/components/cardLink/CardLink';
 
 type Props = {
-	newData: Link[];
-	setNewData: React.Dispatch<React.SetStateAction<Link[]>>;
 	maxVisibleItems: number;
 	item: Link;
 	index: number;
@@ -22,11 +20,10 @@ type Props = {
 	animatedValue: SharedValue<number>;
 	currentIndex: number;
 	setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+	colorScheme?: ColorSchemeName;
 };
 
 const Card = ({
-				  newData,
-				  setNewData,
 				  maxVisibleItems,
 				  item,
 				  index,
@@ -34,6 +31,7 @@ const Card = ({
 				  animatedValue,
 				  currentIndex,
 				  setCurrentIndex,
+				  colorScheme,
 			  }: Props) => {
 	const {width} = useWindowDimensions();
 	const translateX = useSharedValue(0);
@@ -132,6 +130,7 @@ const Card = ({
 					viewableItems={viewableItems}
 					showBorder={false}
 					disableTouchEffect={true}
+					colorScheme={colorScheme}
 				/>
 			</Animated.View>
 		</GestureDetector>

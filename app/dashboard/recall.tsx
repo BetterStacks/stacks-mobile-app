@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, useColorScheme, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -12,6 +12,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {Colors} from "@/components/design/colors";
 
 export default function RecallScreen() {
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
     const [currentIndex, setCurrentIndex] = useState(0);
     const [completedLinks, setCompletedLinks] = useState(0);
     const animatedValue = useSharedValue(0);
@@ -104,26 +106,26 @@ export default function RecallScreen() {
 
     return (
         <GestureHandlerRootView style={{flex: 1}}>
-            <SafeAreaView style={styles.container}>
+            <SafeAreaView style={isDark ? styles.container__dark : styles.container}>
                 {/* If you're not using react-native-edge-to-edge, you can remove SystemBars */}
-                <SystemBars style={'light'} />
+                <SystemBars style={isDark ? 'dark' : 'light'} />
                 <View style={styles.header}>
-                    <Text style={styles.title}>Resurface forgotten links</Text>
-                    <Text style={styles.subtitle}>Glide through a series of links, revisit the favorites, and gently let go of the rest.</Text>
+                    <Text style={isDark ? styles.title__dark : styles.title}>Resurface forgotten links</Text>
+                    <Text style={isDark ? styles.subtitle__dark : styles.subtitle}>Glide through a series of links, revisit the favorites, and gently let go of the rest.</Text>
                 </View>
 
                 <View style={styles.cardContainer}>
                     {noMoreCards ? (
                         <View style={styles.noCardsContainer}>
-                            <Animated.Text style={[styles.noCardsText, animatedTextStyle]}>
+                            <Animated.Text style={[isDark ? styles.noCardsText__dark : styles.noCardsText, animatedTextStyle]}>
                                 You've recalled {linksData.length + completedLinks} links
                             </Animated.Text>
                             <Animated.View style={animatedButtonStyle}>
                                 <Pressable 
-                                    style={styles.refetchButton} 
+                                    style={isDark ? styles.refetchButton__dark : styles.refetchButton} 
                                     onPress={handleRefetch}
                                 >
-                                    <MaterialIcons name="refresh" size={24} color="#fff" />
+                                    <MaterialIcons name="refresh" size={24} color={isDark ? '#fff' : "#1a1a1a"} />
                                 </Pressable>
                             </Animated.View>
                         </View>
@@ -134,8 +136,6 @@ export default function RecallScreen() {
                             }
                             return (
                                 <Card
-                                    newData={linksData}
-                                    setNewData={() => {}} 
                                     maxVisibleItems={MAX}
                                     item={item}
                                     index={index}
@@ -144,6 +144,7 @@ export default function RecallScreen() {
                                     currentIndex={currentIndex}
                                     setCurrentIndex={setCurrentIndex}
                                     key={index}
+                                    colorScheme={colorScheme}
                                 />
                             );
                         })
@@ -159,6 +160,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#ffffff',
     },
+    container__dark: {
+        flex: 1,
+        backgroundColor: '#0A0A0A',
+    },
     header: {
         marginTop: 48
     },
@@ -169,12 +174,27 @@ const styles = StyleSheet.create({
         color: Colors.TextColor.MainBlackColor,
         marginBottom: 8,
     },
+    title__dark: {
+        textAlign: 'center',
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        marginBottom: 8,
+    },
     subtitle: {
         textAlign: 'center',
         fontSize: 16,
         color: Colors.TextColor.MainBlackColor,
         lineHeight: 24,
         letterSpacing: 0.25,
+    },
+    subtitle__dark: {
+        textAlign: 'center',
+        fontSize: 16,
+        color: '#ffffff',
+        lineHeight: 24,
+        letterSpacing: 0.25,
+        opacity: 0.60,
     },
     cardContainer: {
         flex: 1,
@@ -192,7 +212,25 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         textAlign: 'center',
     },
+    noCardsText__dark: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 16,
+        textAlign: 'center',
+    },
     refetchButton: {
+        backgroundColor: '#E5E5E5',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        borderWidth: 1,
+        borderColor: '#D4D4D4',
+    },
+    refetchButton__dark: {
         backgroundColor: '#171717',
         flexDirection: 'row',
         alignItems: 'center',
