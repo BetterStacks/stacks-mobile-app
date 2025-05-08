@@ -11,13 +11,13 @@ const MAPPING = {
 	// See SF Symbols in the SF Symbols app on Mac.
 	'house.fill': 'home',
 	'folder.fill': 'folder',
-	'search.fill': 'search',
+	'search.fill': 'search-sharp',
 	'aperture.fill': 'aperture',
 	'notifications.fill': 'notifications',
 	'person.fill': 'person',
 	'chevron.left.forwardslash.chevron.right': 'code',
 	'chevron.right': 'chevron-forward',
-	'sparkles': 'sparkles',
+	'sparkles': 'sparkles-sharp',
 } as Partial<
 	Record<
 		string,

@@ -54,7 +54,7 @@ export default function DashboardLayout() {
 				options={{
 					title: "Search",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol name={"search.fill"} color={color} />
+						<IconSymbol name="search.fill" color={color} />
 					),
 				}}
 			/>
