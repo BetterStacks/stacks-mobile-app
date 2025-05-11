@@ -50,7 +50,8 @@
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       "@react-native-google-signin/google-signin",
-      "react-native-video"
+      "react-native-video",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true

@@ -472,3 +472,18 @@ export const MUTATION_DELETE_QUICK_NOTE = gql`
     delete_quick_note(input: { quick_note_id: $quick_note_id })
   }
 `;
+
+export const MUTATION_ADD_VOICE_NOTE = gql`
+  mutation Add_voice_note($file: Upload!) {
+    add_voice_note(input: { file: $file }) {
+      blurhash
+      category
+      file_url
+      filename
+      id
+      metadata
+      preview_url
+      thumbnail_url
+    }
+  }
+`;
