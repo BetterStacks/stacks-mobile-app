@@ -574,6 +574,48 @@ export const QUERY_QUICK_NOTES = gql`
   }
 `;
 
+export const QUERY_STACK_DETAILS = gql`
+  query QUERY_STACK_DETAILS($id: ID!, $page: Int, $perPage: Int) {
+    stack(id: $id) {
+      id
+      links_count
+      name
+      slug
+      links(page: $page, perPage: $perPage) {
+        annotations_count
+        broken
+        created_at
+        description
+        domain
+        favicon_url
+        id
+        image_url
+        is_quick_note
+        is_uploaded_file
+        is_user_page
+        is_voice_note
+        latitude
+        link_content
+        link_type
+        longitude
+        notes
+        price
+        read_time
+        screenshot_url
+        sharing_preference
+        stacks
+        summary
+        tags
+        target_url
+        title
+        updated_at
+        viewing_preference
+        views
+      }
+    }
+  }
+`;
+
 export const QUERY_RECALL_LINKS = gql`
 	query Recall_links($perPage: Int, $page: Int) {
 		recall_links(perPage: $perPage, page: $page) {

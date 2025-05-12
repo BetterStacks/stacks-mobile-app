@@ -55,6 +55,8 @@ export default function QuickNoteEditorScreen() {
       const noteData = data.quick_notes.find((note: QuickNote) => note.id === id);
       if (noteData) {
         setNoteContent(noteData.content);
+        // Set to preview mode when opening an existing note
+        setIsPreviewMode(true);
       }
     }
   }, [data, id]);

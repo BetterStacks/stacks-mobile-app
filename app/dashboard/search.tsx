@@ -1,9 +1,9 @@
-import {ActivityIndicator, StyleSheet, TextInput, useColorScheme, View} from "react-native";
+import {ActivityIndicator, StyleSheet, TextInput, TouchableOpacity, useColorScheme, View} from "react-native";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {useLazyQuery} from "@apollo/client";
 import {interpolate, useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
-import {useIsFocused} from "@react-navigation/native";
+import {useIsFocused, useNavigation} from "@react-navigation/native";
 import {QUERY_LINKS} from "@/lib/api/graphql/queries";
 import CommonInput from "@/components/CommonInput";
 import {Colors} from "@/components/design/colors";
@@ -17,7 +17,7 @@ const SearchScreen = () => {
 	const inputRef = useRef<TextInput>(null);
 	const [loadLinks, { loading: linksLoading, data: linksData }] =
 		useLazyQuery(QUERY_LINKS);
-
+	const navigation = useNavigation();
 	const isFocused = useIsFocused();
 
 	// Focus input when screen mounts and is focused
@@ -69,19 +69,33 @@ const SearchScreen = () => {
 	return (
 		<SafeAreaView style={isDark ? styles.container_dark : styles.container}>
 			<View style={isDark ? styles.searchWrapper_dark : styles.searchWrapper}>
-				<CommonInput
-					ref={inputRef}
-					placeholder="Search links, notes, highlights..."
-					additionalInputStyles={isDark ? styles.inputStyles_dark : styles.inputStyles}
-					onChangeText={onChangeText}
-					value={searchQuery}
-					isIconNotTouchable={true}
-					iconName={<AntDesign name="search1" size={20} color={isDark ? "#8EACB7" : Colors.TextColor.SecondaryColor} />}
-					placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.SecondaryColor}
-					autoFocus={true}
-					returnKeyType="search"
-					clearButtonMode="while-editing"
-				/>
+				<View style={styles.searchRow}>
+					<TouchableOpacity 
+						style={styles.backButton}
+						onPress={() => navigation.goBack()}
+					>
+						<AntDesign 
+							name="arrowleft" 
+							size={22} 
+							color={isDark ? "#8EACB7" : Colors.TextColor.LignMainColor} 
+						/>
+					</TouchableOpacity>
+					<View style={styles.inputContainer}>
+						<CommonInput
+							ref={inputRef}
+							placeholder="Search links, notes, highlights..."
+							additionalInputStyles={isDark ? styles.inputStyles_dark : styles.inputStyles}
+							onChangeText={onChangeText}
+							value={searchQuery}
+							isIconNotTouchable={true}
+							iconName={<AntDesign name="search1" size={20} color={isDark ? "#8EACB7" : Colors.TextColor.SecondaryColor} />}
+							placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.SecondaryColor}
+							autoFocus={true}
+							returnKeyType="search"
+							clearButtonMode="while-editing"
+						/>
+					</View>
+				</View>
 			</View>
 
 			{linksLoading ? (
@@ -145,5 +159,18 @@ const styles = StyleSheet.create({
 	linksContainer: {
 		paddingHorizontal: 16,
 		paddingTop: 16,
+		paddingBottom: 24,
+	},
+	searchRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		width: '100%',
+	},
+	backButton: {
+		padding: 8,
+		marginRight: 8,
+	},
+	inputContainer: {
+		flex: 1,
 	},
 })

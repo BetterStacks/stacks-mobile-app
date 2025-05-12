@@ -19,11 +19,12 @@ type Props = {
   onBack: () => void;
   onClose: () => void;
   onSuccess?: (message: { title: string; description: string }) => void;
+  fileType?: "document" | "media";
 };
 
 const FILE_SIZE_LIMIT = 20 * 1024 * 1024; // 20MB limit
 
-const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
+const FileUploadView = ({ onBack, onClose, onSuccess, fileType = "document" }: Props) => {
   const colorScheme = useColorScheme();
   const [files, setFiles] = useState<FileObject[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -121,8 +122,13 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
 
   const handleFilePick = async () => {
     try {
+      // Select appropriate file types based on fileType prop
+      const fileTypes = fileType === "media" 
+        ? ["image/*", "video/*"] 
+        : ["application/*", "text/*", "audio/*"];
+      
       const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*", // All file types
+        type: fileTypes,
         multiple: true,
         copyToCacheDirectory: true,
       });
@@ -141,15 +147,36 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
         };
       });
 
+      // Filter files by type if needed
+      let filteredFiles = filesArr;
+      
+      if (fileType === "media") {
+        filteredFiles = filesArr.filter(file => 
+          file.type.startsWith('image/') || file.type.startsWith('video/')
+        );
+        
+        if (filteredFiles.length < filesArr.length) {
+          Toast.warn("Some non-media files were removed");
+        }
+      } else if (fileType === "document") {
+        filteredFiles = filesArr.filter(file => 
+          !file.type.startsWith('image/') && !file.type.startsWith('video/')
+        );
+        
+        if (filteredFiles.length < filesArr.length) {
+          Toast.warn("Some media files were removed");
+        }
+      }
+
       // Check for oversized files
-      const oversizedFiles = filesArr.filter(file => file.size && file.size > 50 * 1024 * 1024);
+      const oversizedFiles = filteredFiles.filter(file => file.size && file.size > 50 * 1024 * 1024);
       if (oversizedFiles.length > 0) {
         Toast.warn("Some files exceed the 50MB limit and were removed");
         // Filter out oversized files
-        const validFiles = filesArr.filter(file => !file.size || file.size <= 50 * 1024 * 1024);
+        const validFiles = filteredFiles.filter(file => !file.size || file.size <= 50 * 1024 * 1024);
         setFiles(validFiles);
       } else {
-        setFiles(filesArr);
+        setFiles(filteredFiles);
       }
     } catch (err) {
       // Silent error handling for document picker cancellations
@@ -185,6 +212,7 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
       await uploadFiles({
         variables: {
           files: optimizedFiles,
+          fileType: fileType, // Pass fileType to the mutation for permissions
         },
       });
       
@@ -207,9 +235,18 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
     return null;
   };
 
+  // Get title and text based on fileType
+  const getUploadTitle = () => {
+    return fileType === "media" ? "Upload Media" : "Upload Documents";
+  };
+
+  const getUploadText = () => {
+    return fileType === "media" ? "Photos or videos" : "Documents, PDFs, or audio files";
+  };
+
   return (
     <View style={colorScheme === 'dark' ? styles.container_dark : styles.container}>
-      <Text style={colorScheme === 'dark' ? styles.title_dark : styles.title}>Upload Files</Text>
+      <Text style={colorScheme === 'dark' ? styles.title_dark : styles.title}>{getUploadTitle()}</Text>
 
       <TouchableOpacity
         style={colorScheme === 'dark' ? styles.uploadArea_dark : styles.uploadArea}
@@ -220,7 +257,7 @@ const FileUploadView = ({ onBack, onClose, onSuccess }: Props) => {
           <Upload size={24} color={colorScheme === 'dark' ? "#8EACB7" : "#1C4A5A"} />
         </View>
         <Text style={colorScheme === 'dark' ? styles.uploadText_dark : styles.uploadText}>Click to select files</Text>
-        <Text style={colorScheme === 'dark' ? styles.uploadSubtext_dark : styles.uploadSubtext}>Documents, photos, or videos</Text>
+        <Text style={colorScheme === 'dark' ? styles.uploadSubtext_dark : styles.uploadSubtext}>{getUploadText()}</Text>
       </TouchableOpacity>
 
       {files.length > 0 && (

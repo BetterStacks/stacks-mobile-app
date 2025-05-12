@@ -432,7 +432,7 @@ export default function CollectionsScreen() {
       // textTransform: "uppercase",
     },
     listContentContainer: {
-      paddingBottom: scaleHeight(24),
+      paddingBottom: scaleHeight(120),
     },
     emojiContainer: {
       width: scaleWidth(32),
