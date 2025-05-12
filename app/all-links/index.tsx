@@ -554,12 +554,14 @@ export default function AllLinksScreen() {
               onPress={handleStackPressed}
               selectedStack={selectedStack}
               containerStyles={[styles.carouselContainer, styles.placesStacks]}
+              // @ts-ignore
               colorScheme={colorScheme}
             />
 
             <HomeScreenContent
               contentContainer={[styles.contentContainer, styles.placesContent]}
               selectedStack={selectedStack}
+              // @ts-ignore
               colorScheme={colorScheme}
             />
           </>
@@ -587,6 +589,7 @@ export default function AllLinksScreen() {
                 <HomeScreenContent
                   contentContainer={styles.contentContainer}
                   selectedStack={selectedStack}
+                  // @ts-ignore
                   colorScheme={colorScheme}
                 />
               </>

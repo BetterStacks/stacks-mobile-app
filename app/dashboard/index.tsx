@@ -3,7 +3,7 @@ import {QuickActionCard} from "@/components/dashboard/QuickActionCard";
 import {WorkspaceSelector} from "@/components/dashboard/WorkspaceSelector";
 import {UserAvatar} from "@/components/ui/user-avatar";
 import {Colors as colors} from "@/components/design/colors";
-import {QUERY_QUICK_LINKS, QUERY_USER_REPOSITORIES,} from "@/lib/api/graphql/queries";
+import {QUERY_QUICK_LINKS, QUERY_STACKS, QUERY_USER_REPOSITORIES,} from "@/lib/api/graphql/queries";
 import {SELECTED_WORKSPACE_ID_KEY, SELECTED_WORKSPACE_KEY,} from "@/lib/constants";
 import {useQuery, useReactiveVar} from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -30,6 +30,7 @@ export default function DashboardHomeScreen() {
   const [selectedWorkspace, setSelectedWorkspace] = useState("");
   const { data: repositoriesData } = useQuery(QUERY_USER_REPOSITORIES);
   const { data: quickLinksData } = useQuery(QUERY_QUICK_LINKS);
+  const { data: stacksData } = useQuery(QUERY_STACKS);
 
   let colorScheme = useColorScheme()
 
@@ -243,18 +244,42 @@ export default function DashboardHomeScreen() {
     });
   };
 
+  const handleArticlesPress = () => {
+    // Find the articles stack ID
+    const articlesStack = stacksData?.stacks?.find(
+      (stack: any) => stack.name === "articles"
+    );
+    
+    if (articlesStack) {
+      router.push({
+        pathname: "/smart-collections",
+        params: {
+          stackId: articlesStack.id,
+          title: "Articles"
+        }
+      } as any);
+    } else {
+      Toast.warn("Articles collection not found");
+    }
+  };
+
   const handlePlacesPress = () => {
-    // navigation.navigate(EHomeScreens.AllLinksScreen, {
-    //   title: "Places",
-    //   selectedFilter: "places",
-    // });
-    router.push({
-      pathname: "/all-links",
-      params: {
-        title: "Places",
-        selectedFilter: "places"
-      }
-    });
+    // Find the places stack ID
+    const placesStack = stacksData?.stacks?.find(
+      (stack: any) => stack.name === "places"
+    );
+    
+    if (placesStack) {
+      router.push({
+        pathname: "/smart-collections",
+        params: {
+          stackId: placesStack.id,
+          title: "Places"
+        }
+      } as any);
+    } else {
+      Toast.warn("Places collection not found");
+    }
   };
 
   const categories = [
@@ -268,11 +293,16 @@ export default function DashboardHomeScreen() {
       title: "Media",
       onPress: handleMediaPress,
     },
-    // {
-    //   emoji: "📍",
-    //   title: "Places",
-    //   onPress: handlePlacesPress,
-    // },
+    {
+      emoji: "📍",
+      title: "Places",
+      onPress: handlePlacesPress,
+    },
+    {
+      emoji: "📄",
+      title: "Articles",
+      onPress: handleArticlesPress,
+    },
     {
       emoji: "📝",
       title: "Quick Notes",
