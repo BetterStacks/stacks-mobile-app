@@ -327,4 +327,65 @@ export const styles = StyleSheet.create({
     marginTop: 2,
     color: Colors.tailwindColors.neutral["700"],
   },
+  // Voice note player styles
+  voiceNoteContainer: {
+    marginTop: 8,
+    marginBottom: 4,
+    width: '100%',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  voiceNotePlayer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    width: '100%',
+  },
+  playButton: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: Colors.tailwindColors.neutral["700"],
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  timeText: {
+    fontSize: 13,
+    color: Colors.tailwindColors.neutral["500"],
+    ...getFont(EFontWeight.Medium),
+  },
+  voiceNoteHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  voiceNoteIcon: {
+    marginRight: 8,
+  },
+  voiceNoteHeaderText: {
+    fontSize: 13,
+    color: Colors.tailwindColors.neutral["500"],
+    ...getFont(EFontWeight.Medium),
+  },
+  waveformContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 20,
+    marginTop: 6,
+    marginBottom: 8,
+  },
+  waveformBar: {
+    width: 3,
+    backgroundColor: Colors.tailwindColors.neutral["600"],
+    borderRadius: 1.5,
+    marginHorizontal: 1,
+  },
 });
