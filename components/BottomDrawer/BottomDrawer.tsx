@@ -97,32 +97,32 @@ const BottomDrawer = ({
   const options = [
     {
       icon: <Link size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
-      title: "New Link",
+      title: "Add new link",
       onPress: handleNewLink,
     },
     {
       icon: <FolderPlus size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
-      title: "New Collection",
+      title: "Create new collection",
       onPress: handleNewCollection,
     },
     {
       icon: <File size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
-      title: "New Document",
+      title: "Upload document",
       onPress: handleNewDocument,
     },
     {
       icon: <Image size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
-      title: "New Media",
+      title: "Upload media",
       onPress: handleNewMedia,
     },
     {
       icon: <Mic size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
-      title: "New Voice Note",
+      title: "Record voice note",
       onPress: handleNewVoiceNote,
     },
     {
       icon: <Edit size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
-      title: "New Quick Note",
+      title: "Create quick note",
       onPress: handleNewQuickNote,
     },
   ];
