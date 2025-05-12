@@ -16,6 +16,7 @@ import { MUTATION_ADD_VOICE_NOTE } from '@/lib/api/graphql/mutations';
 import * as FileSystem from 'expo-file-system';
 import client from "@/lib/apollo/client";
 import { Toast } from "toastify-react-native";
+import { getValueFromStorage } from '@/utils/storage/getStorage';
 
 type Props = {
   onBack: () => void;
@@ -39,56 +40,10 @@ const VoiceNoteView = ({ onBack, onClose, onSuccess }: Props) => {
   const [recordingInfo, setRecordingInfo] = useState<RecordInfo | null>(null);
   const [hasPermission, setHasPermission] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   
   const recorderRef = useRef<RecorderRef>(null);
   const scale = useSharedValue(1);
-
-  // Set up the upload mutation
-  const [addVoiceNote, { loading: isSaving }] = useMutation(MUTATION_ADD_VOICE_NOTE, {
-    onCompleted: (data) => {
-      console.log("Voice note uploaded successfully:", data);
-      
-      // First close the modal
-      onClose();
-      
-      // Show success toast
-      Toast.success("Voice note saved successfully");
-      
-      // Also notify parent component
-      onSuccess({
-        title: "Voice Note Saved",
-        description: "Your voice note has been saved successfully",
-      });
-      
-      // Refetch queries to update the UI
-      setTimeout(() => {
-        client.refetchQueries({
-          include: [
-            "QUERY_LINKS",
-            "QUERY_STACKS",
-            "QUERY_DOMAIN_LINKS",
-            "QUERY_DOMAIN_LINKS_BY_STACKID",
-            "QUERY_STACK_LINKS",
-          ],
-        });
-      }, 500);
-    },
-    onError: (error) => {
-      console.error("Error saving voice note:", error);
-      setErrorMessage(`Error saving: ${error.message}`);
-      
-      // Show error toast
-      Toast.error("Failed to save voice note");
-      
-      Alert.alert(
-        "Error Saving Voice Note",
-        error.message || "There was a problem saving your voice note"
-      );
-    },
-    context: {
-      hasUpload: true, // Flag for Apollo client to handle file uploads
-    },
-  });
 
   // Request audio permissions on component mount
   useEffect(() => {
@@ -260,6 +215,7 @@ const VoiceNoteView = ({ onBack, onClose, onSuccess }: Props) => {
     if (!recordingInfo || !recordingInfo.uri) return;
     
     try {
+      setIsSaving(true);
       setErrorMessage(null);
       
       const uri = recordingInfo.uri;
@@ -268,6 +224,17 @@ const VoiceNoteView = ({ onBack, onClose, onSuccess }: Props) => {
       const now = new Date();
       const dateFormatted = now.toISOString().slice(0, 19).replace(/[-:]/g, '').replace('T', '_');
       const filename = `voice_note_${dateFormatted}.m4a`;
+      
+      // Generate a more readable title from the date
+      const readableDate = now.toLocaleDateString(undefined, { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      const title = `Voice Note - ${readableDate}`;
+      const description = `Voice recording - ${formatTimer(recordingInfo.duration || 0, false)} duration`;
       
       // Check if file exists
       const fileInfo = await FileSystem.getInfoAsync(uri);
@@ -285,17 +252,98 @@ const VoiceNoteView = ({ onBack, onClose, onSuccess }: Props) => {
         type: 'audio/m4a',
       };
       
-      // Execute the mutation
-      await addVoiceNote({
+      // Get token for authorization
+      const token = await getValueFromStorage("token");
+      
+      // Create the operations object with the GraphQL query
+      const operations = {
+        query: `
+          mutation AddVoiceNote($file: Upload!, $title: String, $description: String) {
+            add_voice_note(input: { file: $file, title: $title, description: $description })
+          }
+        `,
         variables: {
-          file: fileObject,
+          file: null,
+          title: title,
+          description: description
+        }
+      };
+      
+      // Create FormData for multipart request
+      const formData = new FormData();
+      formData.append('operations', JSON.stringify(operations));
+      
+      // Create the map object
+      const map = { "0": ["variables.file"] };
+      formData.append('map', JSON.stringify(map));
+      
+      // Append the file
+      formData.append('0', fileObject as any);
+      
+      // Make the fetch request
+      const response = await fetch('https://api.betterstacks.com/graphql', {
+        method: 'POST',
+        headers: {
+          'X-Authorization': token || '',
         },
+        body: formData,
       });
+      
+      // Handle the response
+      const responseText = await response.text();
+      console.log("Response:", responseText);
+      
+      try {
+        const result = JSON.parse(responseText);
+        
+        if (result.errors) {
+          throw new Error(result.errors[0]?.message || 'Unknown error');
+        }
+        
+        console.log('Success response:', result);
+        
+        // Handle success
+        setIsSaving(false);
+        
+        // Show success toast
+        Toast.success("Voice note saved successfully");
+        
+        // Notify parent component
+        onSuccess({
+          title: "Voice Note Saved",
+          description: "Your voice note has been saved successfully",
+        });
+        
+        // Close modal
+        onClose();
+        
+        // Refetch queries to update the UI
+        setTimeout(() => {
+          client.refetchQueries({
+            include: [
+              "QUERY_LINKS",
+              "QUERY_STACKS",
+              "QUERY_DOMAIN_LINKS",
+              "QUERY_DOMAIN_LINKS_BY_STACKID",
+              "QUERY_STACK_LINKS",
+            ],
+          });
+        }, 500);
+        
+      } catch (parseErr) {
+        console.error('Error parsing response:', responseText);
+        throw new Error('Invalid server response');
+      }
       
     } catch (err) {
       const error = err as Error;
       console.error("Error in handleSave:", error);
+      setIsSaving(false);
       setErrorMessage(`Error saving: ${error.message}`);
+      
+      // Show error toast
+      Toast.error("Failed to save voice note");
+      
       Alert.alert(
         "Error Saving Voice Note",
         error.message || "There was a problem saving your voice note"
