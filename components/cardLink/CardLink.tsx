@@ -310,7 +310,6 @@ export const CardLink: React.FC<Props> = ({
       // A different note is playing - we need to stop it
       // This is a static flag - the actual stopping will be handled
       // by the component that owns that sound
-      console.log("Stopping another playing note:", currentlyPlayingCard);
       currentlyPlayingCard = null;
       
       // Give a brief moment for the other component to detect the change
@@ -322,7 +321,6 @@ export const CardLink: React.FC<Props> = ({
   useEffect(() => {
     const checkIfShouldStop = () => {
       if (sound && isPlaying && currentlyPlayingCard !== link.id) {
-        console.log("Another note started, stopping this one:", link.id);
         stopAndUnloadSound();
       }
     };
@@ -371,7 +369,6 @@ export const CardLink: React.FC<Props> = ({
                 setPlaybackDuration(status.durationMillis || 0);
                 
                 if (status.didJustFinish) {
-                  console.log("Playback finished naturally for:", link.id);
                   isPlaybackFinished.current = true;
                   
                   // Use setTimeout to ensure this runs after the status update
@@ -429,7 +426,6 @@ export const CardLink: React.FC<Props> = ({
         
         // Handle case where playback reaches the end
         if (status.didJustFinish) {
-          console.log("Detected playback finish in interval for:", link.id);
           isPlaybackFinished.current = true;
           setIsPlaying(false);
           setPlaybackPosition(0);
@@ -442,7 +438,6 @@ export const CardLink: React.FC<Props> = ({
         
         // Also check if we need to stop due to another note playing
         if (isPlaying && currentlyPlayingCard !== link.id) {
-          console.log("Another note is now playing, stopping this one:", link.id);
           stopAndUnloadSound();
         }
       }
