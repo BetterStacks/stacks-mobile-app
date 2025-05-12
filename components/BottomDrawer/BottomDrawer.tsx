@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
-import {Edit, File, FolderPlus, Link, Mic} from "lucide-react-native";
+import {Edit, File, FolderPlus, Link, Mic, Image} from "lucide-react-native";
 import {ReactNativeModal} from "react-native-modal";
 import AddLinkView from "./AddLinkView";
 import {setIsSuccessModalVisible, setSuccessModalMessage,} from "@/lib/apollo/store/handlers";
@@ -26,12 +26,15 @@ const BottomDrawer = ({
   // const navigation = useNavigation<TAfterAuthStackNavigationProp>();
   const [isAddLinkView, setIsAddLinkView] = useState(false);
   const [isFileUploadView, setIsFileUploadView] = useState(false);
+  const [isMediaUploadView, setIsMediaUploadView] = useState(false);
   const [isVoiceNoteView, setIsVoiceNoteView] = useState(false);
+  const [fileType, setFileType] = useState<"document" | "media">("document");
 
   useEffect(() => {
     if (!isVisible) {
       setIsAddLinkView(false);
       setIsFileUploadView(false);
+      setIsMediaUploadView(false);
       setIsVoiceNoteView(false);
     }
   }, [isVisible]);
@@ -58,8 +61,14 @@ const BottomDrawer = ({
     setIsAddLinkView(true);
   };
 
-  const handleNewFile = () => {
+  const handleNewDocument = () => {
+    setFileType("document");
     setIsFileUploadView(true);
+  };
+
+  const handleNewMedia = () => {
+    setFileType("media");
+    setIsMediaUploadView(true);
   };
 
   const handleNewVoiceNote = () => {
@@ -81,6 +90,7 @@ const BottomDrawer = ({
   const handleBack = () => {
     setIsAddLinkView(false);
     setIsFileUploadView(false);
+    setIsMediaUploadView(false);
     setIsVoiceNoteView(false);
   };
 
@@ -97,8 +107,13 @@ const BottomDrawer = ({
     },
     {
       icon: <File size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
-      title: "New File",
-      onPress: handleNewFile,
+      title: "New Document",
+      onPress: handleNewDocument,
+    },
+    {
+      icon: <Image size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
+      title: "New Media",
+      onPress: handleNewMedia,
     },
     {
       icon: <Mic size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
@@ -128,7 +143,7 @@ const BottomDrawer = ({
         <View style={colorScheme === 'dark' ? styles.indicator_dark : styles.indicator} />
         {customContent ? (
           customContent
-        ) : !isAddLinkView && !isFileUploadView && !isVoiceNoteView ? (
+        ) : !isAddLinkView && !isFileUploadView && !isMediaUploadView && !isVoiceNoteView ? (
           <View style={colorScheme === 'dark' ? styles.container_dark : styles.container}>
             {options.map((option, index) => (
               <TouchableOpacity
@@ -151,11 +166,12 @@ const BottomDrawer = ({
             onSuccess={handleSuccess}
             selectedCollectionId={selectedCollectionId}
           />
-        ) : isFileUploadView ? (
+        ) : isFileUploadView || isMediaUploadView ? (
           <FileUploadView
             onBack={handleBack}
             onClose={onClose}
             onSuccess={handleSuccess}
+            fileType={fileType}
           />
         ) : (
           <VoiceNoteView
