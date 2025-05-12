@@ -52,6 +52,7 @@ export type Link = {
     id: string;
   }
   is_quick_note: boolean;
+  is_voice_note: boolean;
   collections: Collection[];
   user_repositories: UserRepository[];
   link_content?: string;

@@ -33,6 +33,7 @@ export const QUERY_LINKS = gql`
       broken
       sharing_preference
       link_content
+      is_voice_note
       annotations {
         created_at
         id

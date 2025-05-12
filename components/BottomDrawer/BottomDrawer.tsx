@@ -1,11 +1,12 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
-import {Edit, File, FolderPlus, Link} from "lucide-react-native";
+import {Edit, File, FolderPlus, Link, Mic} from "lucide-react-native";
 import {ReactNativeModal} from "react-native-modal";
 import AddLinkView from "./AddLinkView";
 import {setIsSuccessModalVisible, setSuccessModalMessage,} from "@/lib/apollo/store/handlers";
 import {router} from "expo-router";
 import FileUploadView from "../FileUploadView";
+import VoiceNoteView from "../VoiceNoteView";
 
 type Props = {
   isVisible: boolean;
@@ -25,11 +26,13 @@ const BottomDrawer = ({
   // const navigation = useNavigation<TAfterAuthStackNavigationProp>();
   const [isAddLinkView, setIsAddLinkView] = useState(false);
   const [isFileUploadView, setIsFileUploadView] = useState(false);
+  const [isVoiceNoteView, setIsVoiceNoteView] = useState(false);
 
   useEffect(() => {
     if (!isVisible) {
       setIsAddLinkView(false);
       setIsFileUploadView(false);
+      setIsVoiceNoteView(false);
     }
   }, [isVisible]);
 
@@ -59,6 +62,10 @@ const BottomDrawer = ({
     setIsFileUploadView(true);
   };
 
+  const handleNewVoiceNote = () => {
+    setIsVoiceNoteView(true);
+  };
+
   const handleNewQuickNote = () => {
     onClose();
     router.push({
@@ -74,6 +81,7 @@ const BottomDrawer = ({
   const handleBack = () => {
     setIsAddLinkView(false);
     setIsFileUploadView(false);
+    setIsVoiceNoteView(false);
   };
 
   const options = [
@@ -91,6 +99,11 @@ const BottomDrawer = ({
       icon: <File size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
       title: "New File",
       onPress: handleNewFile,
+    },
+    {
+      icon: <Mic size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
+      title: "New Voice Note",
+      onPress: handleNewVoiceNote,
     },
     {
       icon: <Edit size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
@@ -115,7 +128,7 @@ const BottomDrawer = ({
         <View style={colorScheme === 'dark' ? styles.indicator_dark : styles.indicator} />
         {customContent ? (
           customContent
-        ) : !isAddLinkView && !isFileUploadView ? (
+        ) : !isAddLinkView && !isFileUploadView && !isVoiceNoteView ? (
           <View style={colorScheme === 'dark' ? styles.container_dark : styles.container}>
             {options.map((option, index) => (
               <TouchableOpacity
@@ -138,8 +151,14 @@ const BottomDrawer = ({
             onSuccess={handleSuccess}
             selectedCollectionId={selectedCollectionId}
           />
-        ) : (
+        ) : isFileUploadView ? (
           <FileUploadView
+            onBack={handleBack}
+            onClose={onClose}
+            onSuccess={handleSuccess}
+          />
+        ) : (
+          <VoiceNoteView
             onBack={handleBack}
             onClose={onClose}
             onSuccess={handleSuccess}
@@ -169,6 +188,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 20,
   },
+  // @ts-ignore
   content_dark: {
     backgroundColor: "#171717",
     borderTopLeftRadius: 20,
