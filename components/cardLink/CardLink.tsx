@@ -1,5 +1,5 @@
 import {Link} from "@/lib/types/Link";
-import React, {useCallback, useState, useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {ColorSchemeName, Image, Linking, Pressable, Text, useColorScheme, View, ViewToken,} from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Animated, {Easing, useAnimatedStyle, withDelay, withTiming,} from "react-native-reanimated";
@@ -8,7 +8,7 @@ import {StacksList} from "./StacksList/StacksList";
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
-import { Audio } from 'expo-av';
+import {Audio} from 'expo-av';
 
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
 import EditLinkView from "../BottomDrawer/EditLinkView";
@@ -35,6 +35,7 @@ type Props = {
   colorScheme?: ColorSchemeName;
   showBorder?: boolean;
   disableTouchEffect?: boolean;
+  uniformHeight?: boolean;
 };
 
 const videoTypes = ["mp4", "mov", "wmv", "avi", "mkv", "webm"];
@@ -50,6 +51,7 @@ export const CardLink: React.FC<Props> = ({
   colorScheme: propColorScheme,
   showBorder = true,
   disableTouchEffect = false,
+  uniformHeight = false,
 }) => {
   const deviceColorScheme = useColorScheme();
   const colorScheme = propColorScheme || deviceColorScheme;
@@ -462,6 +464,18 @@ export const CardLink: React.FC<Props> = ({
     rStyle
   ];
 
+  // Create content container style with uniform height if needed
+  const contentContainerStyle = [
+    isDark ? styles.contentContainer__dark : styles.contentContainer,
+    uniformHeight && { height: 400 } // Set a fixed height when uniformHeight is true
+  ];
+
+  // Create content style with full height if uniform height is enabled
+  const contentStyle = [
+    isDark ? styles.content__dark : styles.content,
+    uniformHeight && { height: '100%' }
+  ];
+
   // Render different content for voice notes
   const renderVoiceNoteContent = () => {
     return (
@@ -597,7 +611,7 @@ export const CardLink: React.FC<Props> = ({
     <Animated.View style={containerStyle}>
       <Pressable
         style={({pressed}) => [
-          isDark ? styles.contentContainer__dark : styles.contentContainer,
+          contentContainerStyle,
           pressed && !disableTouchEffect && {opacity: 0.2}
         ]}
         onPress={link.is_voice_note ? togglePlayback : handleOpenLink}
@@ -636,7 +650,8 @@ export const CardLink: React.FC<Props> = ({
               </Pressable>
             </View>
 
-            <View style={isDark ? styles.content__dark : styles.content}>
+            {/* @ts-ignore */}
+            <View style={contentStyle}>
               <View>
                 {!link.title && !link.description ? (
                   <View style={styles.iconPlaceholder}>

@@ -131,6 +131,7 @@ const Card = ({
 					showBorder={false}
 					disableTouchEffect={true}
 					colorScheme={colorScheme}
+					uniformHeight={true}
 				/>
 			</Animated.View>
 		</GestureDetector>
