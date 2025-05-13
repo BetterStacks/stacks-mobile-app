@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import {gql} from "@apollo/client";
 
 export const MUTATION_SIGNIN = gql`
   mutation (
@@ -478,3 +478,19 @@ export const MUTATION_ADD_VOICE_NOTE = gql`
     add_voice_note(input: { file: $file, title: $title, description: $description })
   }
 `;
+
+export const MUTATION_ADD_USER_PAGE = gql`
+  mutation ($note_content: String!, $title: String!, $description: String, $collection_ids: [ID!], $repository_ids: [ID!]) {
+    add_user_page(
+      input: { 
+        repository_ids: $repository_ids, 
+        collection_ids: $collection_ids,
+        note_content: $note_content, 
+        title: $title,
+        description: $description 
+      }
+    ) {
+      id
+    }
+  }
+`

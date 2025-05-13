@@ -1,12 +1,13 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
-import {Edit, File, FolderPlus, Link, Mic, Image} from "lucide-react-native";
+import {Edit, File, FilePlus, FolderPlus, Image, Link, Mic} from "lucide-react-native";
 import {ReactNativeModal} from "react-native-modal";
 import AddLinkView from "./AddLinkView";
 import {setIsSuccessModalVisible, setSuccessModalMessage,} from "@/lib/apollo/store/handlers";
 import {router} from "expo-router";
 import FileUploadView from "../FileUploadView";
 import VoiceNoteView from "../VoiceNoteView";
+import AddPageView from "@/components/BottomDrawer/AddPageView";
 
 type Props = {
   isVisible: boolean;
@@ -28,6 +29,7 @@ const BottomDrawer = ({
   const [isFileUploadView, setIsFileUploadView] = useState(false);
   const [isMediaUploadView, setIsMediaUploadView] = useState(false);
   const [isVoiceNoteView, setIsVoiceNoteView] = useState(false);
+  const [isAddPageView, setIsAddPageView] = useState(false);
   const [fileType, setFileType] = useState<"document" | "media">("document");
 
   useEffect(() => {
@@ -36,6 +38,7 @@ const BottomDrawer = ({
       setIsFileUploadView(false);
       setIsMediaUploadView(false);
       setIsVoiceNoteView(false);
+      setIsAddPageView(false);
     }
   }, [isVisible]);
 
@@ -87,6 +90,10 @@ const BottomDrawer = ({
     router.push("/collection/create");
   }, [onClose]);
 
+  const handleNewPage = () => {
+    setIsAddPageView(true);
+  }
+
   const handleBack = () => {
     setIsAddLinkView(false);
     setIsFileUploadView(false);
@@ -104,6 +111,11 @@ const BottomDrawer = ({
       icon: <FolderPlus size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
       title: "Create new collection",
       onPress: handleNewCollection,
+    },
+    {
+      icon: <FilePlus size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
+      title: "Create new page",
+      onPress: handleNewPage,
     },
     {
       icon: <File size={24} color={colorScheme === 'dark' ? "#FFFFFF" : "#000000"} />,
@@ -143,7 +155,7 @@ const BottomDrawer = ({
         <View style={colorScheme === 'dark' ? styles.indicator_dark : styles.indicator} />
         {customContent ? (
           customContent
-        ) : !isAddLinkView && !isFileUploadView && !isMediaUploadView && !isVoiceNoteView ? (
+        ) : !isAddLinkView && !isFileUploadView && !isMediaUploadView && !isVoiceNoteView && !isAddPageView ? (
           <View style={colorScheme === 'dark' ? styles.container_dark : styles.container}>
             {options.map((option, index) => (
               <TouchableOpacity
@@ -166,7 +178,12 @@ const BottomDrawer = ({
             onSuccess={handleSuccess}
             selectedCollectionId={selectedCollectionId}
           />
-        ) : isFileUploadView || isMediaUploadView ? (
+        ) : isAddPageView ? (<AddPageView
+            onBack={handleBack}
+            onClose={onClose}
+            onSuccess={handleSuccess}
+            selectedCollectionId={selectedCollectionId}
+        />) : isFileUploadView || isMediaUploadView ? (
           <FileUploadView
             onBack={handleBack}
             onClose={onClose}
@@ -180,6 +197,8 @@ const BottomDrawer = ({
             onSuccess={handleSuccess}
           />
         )}
+
+        {/*{isAddPageView && }*/}
       </View>
     </ReactNativeModal>
   );
