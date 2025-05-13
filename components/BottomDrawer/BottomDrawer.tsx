@@ -99,6 +99,7 @@ const BottomDrawer = ({
     setIsFileUploadView(false);
     setIsMediaUploadView(false);
     setIsVoiceNoteView(false);
+    setIsAddPageView(false);
   };
 
   const options = [
