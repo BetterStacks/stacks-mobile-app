@@ -13,7 +13,8 @@
       "bundleIdentifier": "com.betterstacks",
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "This app requires access to the photo library."
+        "NSPhotoLibraryUsageDescription": "This app requires access to the photo library.",
+        "NSMicrophoneUsageDescription": "This app requires access to microphone to record voice notes"
       }
     },
     "android": {
