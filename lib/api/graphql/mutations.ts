@@ -6,6 +6,7 @@ export const MUTATION_SIGNIN = gql`
     $app_id: String
     $password: String
     $provider: String!
+    $name: String
   ) {
     sign_in_user(
       input: {
@@ -13,6 +14,7 @@ export const MUTATION_SIGNIN = gql`
         password: $password
         email: $email
         app_id: $app_id
+        name: $name
       }
     ) {
       token

@@ -11,7 +11,7 @@
 //     isSmallDevice,
 // } from "react-native-utils-scale";
 // import DeviceInfo from "react-native-device-info";
-import { Platform } from "react-native";
+import {Platform} from "react-native";
 import {scaleHeight, scaleWidth} from "@/components/design/scale";
 
 // const hasAndroidNotch = hasNotch;
@@ -78,8 +78,8 @@ const metrics = {
     salt,
     saltWithPasscode,
     deviceInch: 5.5,
-    isAndroid: true,
-    isIOS: false,
+    isAndroid: Platform.OS === 'android',
+    isIOS: Platform.OS === 'ios',
     isTablet: false,
     scaleWidth: scaleWidth,
     scaleHeight: scaleHeight,

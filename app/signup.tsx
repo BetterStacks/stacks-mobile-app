@@ -38,7 +38,16 @@ const SignupScreen = () => {
 	const colorScheme = useColorScheme();
 	const isDark = colorScheme === 'dark';
 
-	const [signUp, { loading }] = useMutation(MUTATION_SIGNUP);
+	const [signUp, { loading }] = useMutation(MUTATION_SIGNUP, {
+		onCompleted: () => {
+			setTimeout(async () => {
+				await client.refetchQueries({
+					include: ["QUERY_USER"],
+				});
+			}, 1500);
+			router.replace("/dashboard");
+		},
+	});
 
 	const formik = useFormik({
 		initialValues: {
@@ -129,15 +138,18 @@ const SignupScreen = () => {
 			variables: {
 				provider: "apple",
 				app_id: appId,
+				name: appleResponse.name,
+				email: appleResponse.email,
 			},
 		})
 			.then(res => {
-				setToStorage("token", res.data.sign_in_user.token);
-				setUserToken(res.data.sign_in_user.token);
+				setToStorage("token", res.data.sign_up_user.token);
+				setUserToken(res.data.sign_up_user.token);
 
+				console.log("Apple Sign-Up successful");
 				console.log(
 					"Image in profile",
-					res.data.sign_in_user.user.profile_image_url,
+					res.data.sign_up_user.user.profile_image_url,
 				);
 			})
 			.catch(error => {

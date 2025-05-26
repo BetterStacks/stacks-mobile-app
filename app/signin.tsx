@@ -3,17 +3,17 @@ import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {MUTATION_SIGNIN, MUTATION_SIGNUP, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
 import {
-  GestureResponderEvent,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View
+	GestureResponderEvent,
+	Image,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	StatusBar,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	useColorScheme,
+	View
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
@@ -107,7 +107,7 @@ const SignInScreen = () => {
     },
   });
 
-  const onGoogleSignIn = (googleToken: string, googlePic: string) => {
+  const onGoogleSignIn = (googleToken: string, googlePic: string, googleName?: string, googleEmail?: string) => {
     const appId = uuid.v4();
 
     setToStorage("appId", String(appId));
@@ -122,6 +122,8 @@ const SignInScreen = () => {
       variables: {
         provider: "google_oauth2",
         app_id: appId,
+        name: googleName,
+        email: googleEmail,
       },
     })
       .then((res) => {
@@ -151,7 +153,7 @@ const SignInScreen = () => {
   };
 
   const onAppleSignIn = (
-    appleResponse: TNullable<{ token: string; name: string }>,
+    appleResponse: TNullable<{ token: string; name: string; email: string | null }>,
   ) => {
     if (appleResponse === null) {
       return;
@@ -171,12 +173,15 @@ const SignInScreen = () => {
       variables: {
         provider: "apple",
         app_id: appId,
+        name: appleResponse.name,
+        email: appleResponse.email,
       },
     })
       .then((res) => {
         setToStorage("token", res.data.sign_in_user.token);
         setUserToken(res.data.sign_in_user.token);
 
+        console.log("Apple Sign-In successful");
         console.log(
           "Image in profile",
           res.data.sign_in_user.user.profile_image_url,
@@ -184,7 +189,7 @@ const SignInScreen = () => {
       })
       .catch((error) => {
         Toast.error(error.message);
-        return console.log("In signInScreen", error);
+        return console.log("Apple Sign-In error:", error);
       });
   };
 
