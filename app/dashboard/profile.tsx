@@ -1,16 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Appearance,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
+	ActivityIndicator,
+	Alert,
+	Appearance,
+	Image,
+	ScrollView,
+	StyleSheet,
+	Switch,
+	Text,
+	TouchableOpacity,
+	useColorScheme,
+	View,
 } from "react-native";
 import {useQuery} from "@apollo/client";
 import {QUERY_USER} from "@/lib/api/graphql/queries";
@@ -19,6 +19,7 @@ import {useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {Toast} from "toastify-react-native";
+import DeleteAccountModal from "@/components/DeleteAccountModal";
 
 interface Identity {
   provider: string;
@@ -35,6 +36,7 @@ export default function ProfileScreen() {
   const { data, loading, error } = useQuery(QUERY_USER);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -147,8 +149,21 @@ export default function ProfileScreen() {
             <Ionicons name="log-out-outline" size={16} color="#ff3b30" />
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.deleteAccountButton} 
+            onPress={() => setIsDeleteModalVisible(true)}
+          >
+            <Ionicons name="trash-outline" size={16} color="#ff3b30" />
+            <Text style={styles.deleteAccountText}>Delete Account</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <DeleteAccountModal
+        visible={isDeleteModalVisible}
+        onClose={() => setIsDeleteModalVisible(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -471,6 +486,24 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   logoutText: {
+    color: "#ff3b30",
+    fontSize: 14,
+    fontWeight: "500",
+    marginLeft: 6,
+  },
+  deleteAccountButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#ff3b30",
+    borderRadius: 20,
+    marginTop: 10,
+  },
+  deleteAccountText: {
     color: "#ff3b30",
     fontSize: 14,
     fontWeight: "500",
