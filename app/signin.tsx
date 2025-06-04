@@ -1,19 +1,19 @@
 import React, {useCallback} from "react";
 import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
-import {MUTATION_SIGNIN, MUTATION_SIGNUP, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
+import {MUTATION_SIGNIN, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
 import {
-	GestureResponderEvent,
-	Image,
-	KeyboardAvoidingView,
-	Platform,
-	ScrollView,
-	StatusBar,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	useColorScheme,
-	View
+  GestureResponderEvent,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
@@ -86,7 +86,6 @@ const SignInScreen = () => {
   } = formik;
 
   // Apollo queries / mutations
-  const [signUp, { loading: signUpLoading }] = useMutation(MUTATION_SIGNUP);
   const [signIn, { loading: signInLoading }] = useMutation(MUTATION_SIGNIN, {
     onCompleted: () => {
       setTimeout(async () => {
@@ -122,7 +121,6 @@ const SignInScreen = () => {
       variables: {
         provider: "google_oauth2",
         app_id: appId,
-        name: googleName,
         email: googleEmail,
       },
     })
@@ -173,7 +171,6 @@ const SignInScreen = () => {
       variables: {
         provider: "apple",
         app_id: appId,
-        name: appleResponse.name,
         email: appleResponse.email,
       },
     })
@@ -277,7 +274,7 @@ const SignInScreen = () => {
                 onPress={signInWithApple}
               >
                 <Image
-                  style={styles.socialImage}
+                  style={isDark ? styles.socialImageAppleDark : styles.socialImage}
                   source={require("@/assets/png/socialApple.png")}
                   resizeMode={FastImage.resizeMode.contain}
                 />
@@ -331,9 +328,9 @@ const SignInScreen = () => {
               <TouchableOpacity
                 style={isDark ? styles.loginButton_dark : styles.loginButton}
                 onPress={handleLoginPress}
-                disabled={signInLoading || signUpLoading}
+                disabled={signInLoading}
               >
-                {(signInLoading || signUpLoading) ? (
+                {(signInLoading) ? (
                   <Text style={styles.loginButtonText}>Loading...</Text>
                 ) : (
                   <Text style={styles.loginButtonText}>Login</Text>
@@ -449,6 +446,11 @@ const styles = StyleSheet.create({
   socialImage: {
     width: scaleWidth(25),
     height: scaleHeight(25),
+  },
+  socialImageAppleDark: {
+    width: scaleWidth(25),
+    height: scaleHeight(25),
+    tintColor: '#FFFFFF',
   },
   loginButton: {
     backgroundColor: "#1C4A5A",
