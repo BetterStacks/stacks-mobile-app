@@ -38,6 +38,7 @@ import {MainButton, mainButtonStyles} from "@/components/ui/button";
 import {selectStackName} from "@/lib/utils";
 import {Stack, useLocalSearchParams} from "expo-router";
 import AddLinkView from "@/components/BottomDrawer/AddLinkView";
+import FileUploadView from "@/components/FileUploadView";
 import BottomSheet, {BottomSheetView} from "@gorhom/bottom-sheet";
 
 export default function AllLinksScreen() {
@@ -696,11 +697,20 @@ export default function AllLinksScreen() {
           }}
         >
           <BottomSheetView style={{ flex: 1, padding: 16 }}>
-            <AddLinkView
-              onBack={handleCloseBottomSheet}
-              onClose={handleCloseBottomSheet}
-              onSuccess={handleSuccess}
-            />
+            {selectedStack === "Media" ? (
+              <FileUploadView
+                onBack={handleCloseBottomSheet}
+                onClose={handleCloseBottomSheet}
+                onSuccess={handleSuccess}
+                fileType="media"
+              />
+            ) : (
+              <AddLinkView
+                onBack={handleCloseBottomSheet}
+                onClose={handleCloseBottomSheet}
+                onSuccess={handleSuccess}
+              />
+            )}
           </BottomSheetView>
         </BottomSheet>
       )}
