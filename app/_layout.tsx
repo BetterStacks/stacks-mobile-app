@@ -5,7 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
 import {useEffect, useState} from 'react';
 import 'react-native-reanimated';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {useColorScheme} from '@/hooks/useColorScheme';
 import {ApolloProvider} from "@apollo/client";
@@ -50,35 +50,37 @@ export default function RootLayout() {
 
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
-			<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-				<ApolloProvider client={client}>
-					<Stack>
-						<Stack.Screen name="index" options={{ headerShown: false }} />
-						<Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
-						<Stack.Screen
-							name="signin"
-							options={{
-								title: 'Sign In',
-								headerShown: true // or false based on your needs
-							}}
-						/>
-						<Stack.Screen name="dashboard" options={{ headerShown: false }} />
-						<Stack.Screen name="web-view" options={{ headerShown: false }} />
-						<Stack.Screen name="+not-found" />
-					</Stack>
-					<StatusBar style="auto" />
+			<KeyboardProvider>
+				<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+					<ApolloProvider client={client}>
+						<Stack>
+							<Stack.Screen name="index" options={{ headerShown: false }} />
+							<Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
+							<Stack.Screen
+								name="signin"
+								options={{
+									title: 'Sign In',
+									headerShown: true // or false based on your needs
+								}}
+							/>
+							<Stack.Screen name="dashboard" options={{ headerShown: false }} />
+							<Stack.Screen name="web-view" options={{ headerShown: false }} />
+							<Stack.Screen name="+not-found" />
+						</Stack>
+						<StatusBar style="auto" />
 
-					<View>
-						<AddNewLinkModal
-							isNewLinkModalShown={shareModalVisible}
-							setIsNewLinkModalShown={setShareModalVisible}
-							link={link}
-							setLink={setLink}
-						/>
-					</View>
-					<ToastManager />
-				</ApolloProvider>
-			</ThemeProvider>
+						<View>
+							<AddNewLinkModal
+								isNewLinkModalShown={shareModalVisible}
+								setIsNewLinkModalShown={setShareModalVisible}
+								link={link}
+								setLink={setLink}
+							/>
+						</View>
+						<ToastManager />
+					</ApolloProvider>
+				</ThemeProvider>
+			</KeyboardProvider>
 		</GestureHandlerRootView>
 	);
 }

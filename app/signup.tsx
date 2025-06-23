@@ -1,16 +1,5 @@
 import React, {useCallback, useState} from "react";
-import {
-	Image,
-	KeyboardAvoidingView,
-	Platform,
-	ScrollView,
-	StatusBar,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	useColorScheme,
-	View
-} from "react-native";
+import {Image, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
 import {useRouter} from "expo-router";
 import TokenCheck from "@/components/TokenCheck";
 import {useFormik} from "formik";
@@ -31,6 +20,7 @@ import Feather from '@expo/vector-icons/Feather';
 import FastImage from "react-native-fast-image";
 import LogoIcon from "@/svgs/LogoIcon";
 import CommonInput from "@/components/CommonInput";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 
 const SignupScreen = () => {
 	const [isPasswordSecured, setIsPasswordSecured] = useState(true);
@@ -214,138 +204,138 @@ const SignupScreen = () => {
 	const signInWithApple = useAppleSignIn(onAppleSignUp);
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-			style={{ flex: 1 }}
-		>
+		<>
 			<StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
-			<ScrollView 
-				style={isDark ? styles.container_dark : styles.container} 
+			<KeyboardAwareScrollView
+				style={isDark ? styles.container_dark : styles.container}
 				contentContainerStyle={isDark ? styles.contentContainer_dark : styles.contentContainer}
+				showsVerticalScrollIndicator={false}
+				keyboardShouldPersistTaps="handled"
+				extraScrollHeight={20}
+				enableOnAndroid={true}
 			>
-			{/* CHECK FOR THE PRESENCE OF TOKEN */}
-			<TokenCheck />
+				{/* CHECK FOR THE PRESENCE OF TOKEN */}
+				<TokenCheck />
 
-			<View style={styles.mainContainer}>
-				<LogoIcon width={63} height={53} />
-				<Text style={isDark ? styles.title_dark : styles.title}>Create your account</Text>
+				<View style={styles.topContent}>
+					<LogoIcon width={63} height={53} />
+					<Text style={isDark ? styles.title_dark : styles.title}>Create your account</Text>
 
-				<View style={styles.socialsContainer}>
-					<TouchableOpacity 
-						style={isDark ? styles.socialButton_dark : styles.socialButton} 
-						onPress={signUpWithGoogle}
-					>
-						<Image
-							style={styles.socialImage}
-							source={require("@/assets/png/socialGoogle.png")}
-							resizeMode={FastImage.resizeMode.contain}
+					<View style={styles.socialsContainer}>
+						<TouchableOpacity 
+							style={isDark ? styles.socialButton_dark : styles.socialButton} 
+							onPress={signUpWithGoogle}
+						>
+							<Image
+								style={styles.socialImage}
+								source={require("@/assets/png/socialGoogle.png")}
+								resizeMode={FastImage.resizeMode.contain}
+							/>
+							<Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+								Sign up with Google
+							</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity 
+							style={isDark ? styles.socialButton_dark : styles.socialButton}
+							onPress={signInWithApple}
+						>
+							<Image
+								style={styles.socialImage}
+								source={require("@/assets/png/socialApple.png")}
+								resizeMode={FastImage.resizeMode.contain}
+							/>
+							<Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+								Sign up with Apple
+							</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity 
+							style={isDark ? styles.socialButton_dark : styles.socialButton}
+							onPress={signUpWithGoogle}
+						>
+							<Image
+								style={styles.socialImage}
+								source={require("@/assets/png/socialFacebook.png")}
+								resizeMode={FastImage.resizeMode.contain}
+							/>
+							<Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+								Sign up with Facebook
+							</Text>
+						</TouchableOpacity>
+					</View>
+
+					<Text style={isDark ? styles.divider_dark : styles.divider}>or</Text>
+
+					<View style={styles.inputsContainer}>
+						<CommonInput
+							value={values.email}
+							onChangeText={handleChange("email")}
+							placeholder="Enter your email address"
+							keyboardType="email-address" // @ts-ignore
+							touched={touched.email}
+							errors={errors.email}
+							onBlur={handleBlur("email")}
+							placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
+							colorScheme={colorScheme}
 						/>
-						<Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
-							Sign up with Google
-						</Text>
-					</TouchableOpacity>
 
-					<TouchableOpacity 
-						style={isDark ? styles.socialButton_dark : styles.socialButton}
-						onPress={signInWithApple}
-					>
-						<Image
-							style={styles.socialImage}
-							source={require("@/assets/png/socialApple.png")}
-							resizeMode={FastImage.resizeMode.contain}
+						<CommonInput
+							value={values.password}
+							onChangeText={handleChange("password")}
+							placeholder="Enter password"
+							iconName={<Feather name="eye-off" size={20} color={isDark ? "#8EACB7" : "black"} />}
+							secureTextEntry={isPasswordSecured} // @ts-ignore
+							isSecondIconActive={!isPasswordSecured}
+							secondIconName={<Feather name="eye" size={20} color={isDark ? "#8EACB7" : "black"} />}
+							onIconPress={handleSecurePassword}
+							touched={touched.password}
+							errors={errors.password}
+							onBlur={handleBlur("password")}
+							placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
+							colorScheme={colorScheme}
 						/>
-						<Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
-							Sign up with Apple
-						</Text>
-					</TouchableOpacity>
 
-					<TouchableOpacity 
-						style={isDark ? styles.socialButton_dark : styles.socialButton}
-						onPress={signUpWithGoogle}
-					>
-						<Image
-							style={styles.socialImage}
-							source={require("@/assets/png/socialFacebook.png")}
-							resizeMode={FastImage.resizeMode.contain}
+						<CommonInput
+							value={values.confirmedPassword}
+							onChangeText={handleChange("confirmedPassword")}
+							placeholder="Confirm password"
+							iconName={<Feather name="eye-off" size={20} color={isDark ? "#8EACB7" : "black"} />}
+							secureTextEntry={isConfirmedSecured} // @ts-ignore
+							isSecondIconActive={!isConfirmedSecured}
+							secondIconName={<Feather name="eye" size={20} color={isDark ? "#8EACB7" : "black"} />}
+							onIconPress={handleConfirmedSecurePassword}
+							touched={touched.confirmedPassword}
+							errors={errors.confirmedPassword}
+							onBlur={handleBlur("confirmedPassword")}
+							placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
+							colorScheme={colorScheme}
 						/>
-						<Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
-							Sign up with Facebook
-						</Text>
-					</TouchableOpacity>
+
+						<TouchableOpacity 
+							style={isDark ? styles.signupButton_dark : styles.signupButton} // @ts-ignore
+							onPress={handleSubmit}
+							disabled={loading}
+						>
+							{loading ? (
+								<Text style={styles.signupButtonText}>Loading...</Text>
+							) : (
+								<Text style={styles.signupButtonText}>Signup</Text>
+							)}
+						</TouchableOpacity>
+					</View>
 				</View>
 
-				<Text style={isDark ? styles.divider_dark : styles.divider}>or</Text>
-
-				<View style={styles.inputsContainer}>
-					<CommonInput
-						value={values.email}
-						onChangeText={handleChange("email")}
-						placeholder="Enter your email address"
-						keyboardType="email-address" // @ts-ignore
-						touched={touched.email}
-						errors={errors.email}
-						onBlur={handleBlur("email")}
-						placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
-						colorScheme={colorScheme}
-					/>
-
-					<CommonInput
-						value={values.password}
-						onChangeText={handleChange("password")}
-						placeholder="Enter password"
-						iconName={<Feather name="eye-off" size={20} color={isDark ? "#8EACB7" : "black"} />}
-						secureTextEntry={isPasswordSecured} // @ts-ignore
-						isSecondIconActive={!isPasswordSecured}
-						secondIconName={<Feather name="eye" size={20} color={isDark ? "#8EACB7" : "black"} />}
-						onIconPress={handleSecurePassword}
-						touched={touched.password}
-						errors={errors.password}
-						onBlur={handleBlur("password")}
-						placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
-						colorScheme={colorScheme}
-					/>
-
-					<CommonInput
-						value={values.confirmedPassword}
-						onChangeText={handleChange("confirmedPassword")}
-						placeholder="Confirm password"
-						iconName={<Feather name="eye-off" size={20} color={isDark ? "#8EACB7" : "black"} />}
-						secureTextEntry={isConfirmedSecured} // @ts-ignore
-						isSecondIconActive={!isConfirmedSecured}
-						secondIconName={<Feather name="eye" size={20} color={isDark ? "#8EACB7" : "black"} />}
-						onIconPress={handleConfirmedSecurePassword}
-						touched={touched.confirmedPassword}
-						errors={errors.confirmedPassword}
-						onBlur={handleBlur("confirmedPassword")}
-						placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
-						colorScheme={colorScheme}
-					/>
-
-					<TouchableOpacity 
-						style={isDark ? styles.signupButton_dark : styles.signupButton} // @ts-ignore
-						onPress={handleSubmit}
-						disabled={loading}
-					>
-						{loading ? (
-							<Text style={styles.signupButtonText}>Loading...</Text>
-						) : (
-							<Text style={styles.signupButtonText}>Signup</Text>
-						)}
+				<View style={styles.footer}>
+					<Text style={isDark ? styles.footerSubtitle_dark : styles.footerSubtitle}>Already have an account?</Text>
+					<TouchableOpacity onPress={handleSignIn}>
+						<Text style={isDark ? styles.footerTitle_dark : styles.footerTitle}>Sign In</Text>
 					</TouchableOpacity>
 				</View>
-			</View>
-
-			<View style={styles.footer}>
-				<Text style={isDark ? styles.footerSubtitle_dark : styles.footerSubtitle}>Already have an account?</Text>
-				<TouchableOpacity onPress={handleSignIn}>
-					<Text style={isDark ? styles.footerTitle_dark : styles.footerTitle}>Sign In</Text>
-				</TouchableOpacity>
-			</View>
-		</ScrollView>
-		</KeyboardAvoidingView>
+			</KeyboardAwareScrollView>
+		</>
 	);
 }
-
 
 const styles = StyleSheet.create({
 	container: {
@@ -355,19 +345,18 @@ const styles = StyleSheet.create({
 		backgroundColor: "#0A0A0A",
 	},
 	contentContainer: {
-		flex: 1,
+		flexGrow: 1,
 		paddingHorizontal: 16,
+		paddingBottom: 20,
 		backgroundColor: Colors.OtherColor.MainBackgroundColor,
-		justifyContent: "space-between",
 	},
 	contentContainer_dark: {
-		flex: 1,
+		flexGrow: 1,
 		paddingHorizontal: 16,
+		paddingBottom: 20,
 		backgroundColor: "#0A0A0A",
-		justifyContent: "space-between",
 	},
-	mainContainer: {
-		flex: 1,
+	topContent: {
 		alignItems: 'center',
 		paddingTop: 64,
 	},
@@ -463,7 +452,8 @@ const styles = StyleSheet.create({
 	footer: {
 		alignItems: "center",
 		justifyContent: "center",
-		marginBottom: 7,
+		marginTop: 32,
+		marginBottom: 20,
 		flexDirection: "row",
 		gap: 4
 	},
@@ -502,6 +492,5 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 	},
 });
-
 
 export default SignupScreen;

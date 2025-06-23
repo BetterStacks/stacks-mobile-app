@@ -3,17 +3,14 @@ import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {MUTATION_SIGNIN, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
 import {
-  GestureResponderEvent,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View
+	GestureResponderEvent,
+	Image,
+	StatusBar,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	useColorScheme,
+	View
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
@@ -35,6 +32,7 @@ import {useGoogleSignIn} from "@/hooks/useGoogleSignIn";
 import TokenCheck from "@/components/TokenCheck";
 import {router} from "expo-router";
 import {Toast} from "toastify-react-native";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 
 const SignInScreen = () => {
   const colorScheme = useColorScheme();
@@ -240,129 +238,139 @@ const SignInScreen = () => {
   };
 
   return (
-      <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
+    <>
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
+      <KeyboardAwareScrollView
+        style={isDark ? styles.container_dark : styles.container}
+        contentContainerStyle={isDark ? styles.contentContainer_dark : styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        extraKeyboardSpace={20}
       >
-        <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
-        <ScrollView style={isDark ? styles.container_dark : styles.container}>
-          {/* CHECK FOR THE PRESENCE OF TOKEN */}
-          <TokenCheck />
+        {/* CHECK FOR THE PRESENCE OF TOKEN */}
+        <TokenCheck />
 
-          <View style={styles.mainContainer}>
-            <LogoIcon width={63} height={53} />
+        <View style={styles.topContent}>
+          <LogoIcon width={63} height={53} />
 
-            <Text style={isDark ? styles.title_dark : styles.title}>Login to your account</Text>
+          <Text style={isDark ? styles.title_dark : styles.title}>Login to your account</Text>
 
-            <View style={styles.socialsContainer}>
-              <TouchableOpacity
-                style={isDark ? styles.socialButton_dark : styles.socialButton}
-                onPress={signInGoogle}
-              >
-                <Image
-                  style={styles.socialImage}
-                  source={require("@/assets/png/socialGoogle.png")}
-                  resizeMode={FastImage.resizeMode.contain}
-                />
-                <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
-                  Login with Google
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={isDark ? styles.socialButton_dark : styles.socialButton}
-                onPress={signInWithApple}
-              >
-                <Image
-                  style={isDark ? styles.socialImageAppleDark : styles.socialImage}
-                  source={require("@/assets/png/socialApple.png")}
-                  resizeMode={FastImage.resizeMode.contain}
-                />
-                <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
-                  Login with Apple
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={isDark ? styles.socialButton_dark : styles.socialButton}
-                onPress={signInGoogle}
-              >
-                <Image
-                  style={styles.socialImage}
-                  source={require("@/assets/png/socialFacebook.png")}
-                  resizeMode={FastImage.resizeMode.contain}
-                />
-                <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
-                  Login with Facebook
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <Text style={isDark ? styles.divider_dark : styles.divider}>or</Text>
-
-            <View style={styles.inputsContainer}>
-              <CommonInput
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                value={values.email}
-                placeholder="Email"
-                keyboardType="email-address"
-                placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
-                colorScheme={colorScheme}
+          <View style={styles.socialsContainer}>
+            <TouchableOpacity
+              style={isDark ? styles.socialButton_dark : styles.socialButton}
+              onPress={signInGoogle}
+            >
+              <Image
+                style={styles.socialImage}
+                source={require("@/assets/png/socialGoogle.png")}
+                resizeMode={FastImage.resizeMode.contain}
               />
+              <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+                Login with Google
+              </Text>
+            </TouchableOpacity>
 
-              <CommonInput
-                placeholder="Password"
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password}
-                placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
-                secureTextEntry
-                colorScheme={colorScheme}
+            <TouchableOpacity
+              style={isDark ? styles.socialButton_dark : styles.socialButton}
+              onPress={signInWithApple}
+            >
+              <Image
+                style={isDark ? styles.socialImageAppleDark : styles.socialImage}
+                source={require("@/assets/png/socialApple.png")}
+                resizeMode={FastImage.resizeMode.contain}
               />
+              <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+                Login with Apple
+              </Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity style={styles.forgotTouchable}>
-                <Text style={isDark ? styles.forgotText_dark : styles.forgotText}>Forgot Password?</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={isDark ? styles.loginButton_dark : styles.loginButton}
-                onPress={handleLoginPress}
-                disabled={signInLoading}
-              >
-                {(signInLoading) ? (
-                  <Text style={styles.loginButtonText}>Loading...</Text>
-                ) : (
-                  <Text style={styles.loginButtonText}>Login</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.footer}>
-            <Text style={isDark ? styles.footerSubtitle_dark : styles.footerSubtitle}>Don't have an account?</Text>
-            <TouchableOpacity onPress={() => router.push('/signup')}>
-              <Text style={isDark ? styles.footerTitle_dark : styles.footerTitle}>Sign Up</Text>
+            <TouchableOpacity
+              style={isDark ? styles.socialButton_dark : styles.socialButton}
+              onPress={signInGoogle}
+            >
+              <Image
+                style={styles.socialImage}
+                source={require("@/assets/png/socialFacebook.png")}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+              <Text style={isDark ? styles.socialButtonText_dark : styles.socialButtonText}>
+                Login with Facebook
+              </Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+
+          <Text style={isDark ? styles.divider_dark : styles.divider}>or</Text>
+
+          <View style={styles.inputsContainer}>
+            <CommonInput
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+              value={values.email}
+              placeholder="Email"
+              keyboardType="email-address"
+              placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
+              colorScheme={colorScheme}
+            />
+
+            <CommonInput
+              placeholder="Password"
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              value={values.password}
+              placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
+              secureTextEntry
+              colorScheme={colorScheme}
+            />
+
+            <TouchableOpacity style={styles.forgotTouchable}>
+              <Text style={isDark ? styles.forgotText_dark : styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={isDark ? styles.loginButton_dark : styles.loginButton}
+              onPress={handleLoginPress}
+              disabled={signInLoading}
+            >
+              {(signInLoading) ? (
+                <Text style={styles.loginButtonText}>Loading...</Text>
+              ) : (
+                <Text style={styles.loginButtonText}>Login</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.footer}>
+          <Text style={isDark ? styles.footerSubtitle_dark : styles.footerSubtitle}>Don't have an account?</Text>
+          <TouchableOpacity onPress={() => router.push('/signup')}>
+            <Text style={isDark ? styles.footerTitle_dark : styles.footerTitle}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAwareScrollView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: scaleWidth(16),
     backgroundColor: Colors.OtherColor.MainBackgroundColor,
   },
   container_dark: {
     flex: 1,
-    paddingHorizontal: scaleWidth(16),
     backgroundColor: "#0A0A0A",
   },
-  mainContainer: {
-    flex: 1,
+  contentContainer: {
+    flexGrow: 1,
+    paddingHorizontal: scaleWidth(16),
+    paddingBottom: scaleHeight(20),
+  },
+  contentContainer_dark: {
+    flexGrow: 1,
+    paddingHorizontal: scaleWidth(16),
+    paddingBottom: scaleHeight(20),
+  },
+  topContent: {
     alignItems: "center",
     paddingTop: scaleHeight(64),
   },
@@ -376,34 +384,6 @@ const styles = StyleSheet.create({
     marginTop: scaleHeight(24),
     ...getFont(EFontWeight.Bold),
     fontSize: scaleHeight(16),
-    color: "#FFFFFF",
-  },
-  inputsContainer: {
-    gap: scaleHeight(16),
-    width: "100%",
-  },
-  forgotTouchable: {
-    alignSelf: "flex-end",
-  },
-  forgotText: {
-    color: Colors.TextColor.LignMainColor,
-    ...getFont(EFontWeight.Medium),
-    fontSize: scaleHeight(12),
-  },
-  forgotText_dark: {
-    color: "#4793E0",
-    ...getFont(EFontWeight.Medium),
-    fontSize: scaleHeight(12),
-  },
-  divider: {
-    marginVertical: scaleHeight(24),
-    ...getFont(EFontWeight.Bold),
-    fontSize: scaleHeight(14),
-  },
-  divider_dark: {
-    marginVertical: scaleHeight(24),
-    ...getFont(EFontWeight.Bold),
-    fontSize: scaleHeight(14),
     color: "#FFFFFF",
   },
   socialsContainer: {
@@ -452,6 +432,34 @@ const styles = StyleSheet.create({
     height: scaleHeight(25),
     tintColor: '#FFFFFF',
   },
+  inputsContainer: {
+    gap: scaleHeight(16),
+    width: "100%",
+  },
+  forgotTouchable: {
+    alignSelf: "flex-end",
+  },
+  forgotText: {
+    color: Colors.TextColor.LignMainColor,
+    ...getFont(EFontWeight.Medium),
+    fontSize: scaleHeight(12),
+  },
+  forgotText_dark: {
+    color: "#4793E0",
+    ...getFont(EFontWeight.Medium),
+    fontSize: scaleHeight(12),
+  },
+  divider: {
+    marginVertical: scaleHeight(24),
+    ...getFont(EFontWeight.Bold),
+    fontSize: scaleHeight(14),
+  },
+  divider_dark: {
+    marginVertical: scaleHeight(24),
+    ...getFont(EFontWeight.Bold),
+    fontSize: scaleHeight(14),
+    color: "#FFFFFF",
+  },
   loginButton: {
     backgroundColor: "#1C4A5A",
     padding: 16,
@@ -476,7 +484,8 @@ const styles = StyleSheet.create({
   footer: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: scaleHeight(7),
+    marginTop: scaleHeight(32),
+    marginBottom: scaleHeight(20),
     flexDirection: "row",
     gap: 4,
   },
