@@ -44,6 +44,7 @@ const SignupScreen = () => {
 
 	const formik = useFormik({
 		initialValues: {
+			fullName: "",
 			email: "",
 			password: "",
 			confirmedPassword: "",
@@ -54,6 +55,7 @@ const SignupScreen = () => {
 			signUp({
 				variables: {
 					provider: "email",
+					name: formValues.fullName,
 					password: formValues.password,
 					email: formValues.email,
 				},
@@ -269,6 +271,18 @@ const SignupScreen = () => {
 					<Text style={isDark ? styles.divider_dark : styles.divider}>or</Text>
 
 					<View style={styles.inputsContainer}>
+						<CommonInput
+							value={values.fullName}
+							onChangeText={handleChange("fullName")}
+							placeholder="Enter your full name"
+							iconName={<Feather name="user" size={20} color={isDark ? "#8EACB7" : "black"} />}
+							touched={touched.fullName}
+							errors={errors.fullName}
+							onBlur={handleBlur("fullName")}
+							placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
+							colorScheme={colorScheme}
+						/>
+
 						<CommonInput
 							value={values.email}
 							onChangeText={handleChange("email")}
