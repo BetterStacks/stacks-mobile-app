@@ -4,7 +4,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import {useQuery} from "@apollo/client";
 import {QUERY_COLLECTION_LINKS} from "@/lib/api/graphql/queries";
 import {CardLinksList} from "../cardLinkList/CardLinksList";
-import {CommonButton} from "../CommonButton/CommonButton";
+import {MainButton, mainButtonStyles} from "../ui/button";
 import {useLocalSearchParams} from "expo-router";
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
 import {Colors} from "@/components/design/colors";
@@ -80,12 +80,11 @@ export const ParticularCollectionScreen = () => {
               </Text>
 
               <View style={styles.buttonContainer}>
-                <CommonButton
-                  text="+ Add your first link"
-                  onPress={onButtonPress}
-                  additionalButtonStyles={isDark ? styles.buttonAdditionalStyles__dark : styles.buttonAdditionalStyles}
-                  additionalTextStyles={isDark ? styles.buttonTextAdditionalStyles__dark : styles.buttonTextAdditionalStyles}
-                />
+                <MainButton.Primary onPress={onButtonPress}>
+                  <Text style={mainButtonStyles.primary.buttonText}>
+                    + Add your first link
+                  </Text>
+                </MainButton.Primary>
               </View>
             </View>
           )}
