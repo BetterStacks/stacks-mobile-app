@@ -21,6 +21,9 @@ import FastImage from "react-native-fast-image";
 import LogoIcon from "@/svgs/LogoIcon";
 import CommonInput from "@/components/CommonInput";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
+import {scaleHeight} from "@/components/design/scale";
+import {getFont} from "@/components/design/fonts/fonts";
+import {EFontWeight} from "@/components/design/fonts/types";
 
 const SignupScreen = () => {
 	const [isPasswordSecured, setIsPasswordSecured] = useState(true);
@@ -211,8 +214,6 @@ const SignupScreen = () => {
 				contentContainerStyle={isDark ? styles.contentContainer_dark : styles.contentContainer}
 				showsVerticalScrollIndicator={false}
 				keyboardShouldPersistTaps="handled"
-				extraScrollHeight={20}
-				enableOnAndroid={true}
 			>
 				{/* CHECK FOR THE PRESENCE OF TOKEN */}
 				<TokenCheck />
@@ -272,7 +273,8 @@ const SignupScreen = () => {
 							value={values.email}
 							onChangeText={handleChange("email")}
 							placeholder="Enter your email address"
-							keyboardType="email-address" // @ts-ignore
+							keyboardType="email-address"
+							iconName={<Feather name="mail" size={20} color={isDark ? "#8EACB7" : "black"} />}
 							touched={touched.email}
 							errors={errors.email}
 							onBlur={handleBlur("email")}
@@ -361,15 +363,15 @@ const styles = StyleSheet.create({
 		paddingTop: 64,
 	},
 	title: {
-		marginTop: 24,
-		fontWeight: "bold",
-		fontSize: 16,
+		marginTop: scaleHeight(24),
+		...getFont(EFontWeight.Bold),
+		fontSize: scaleHeight(16),
 		color: Colors.TextColor.DarkHeadingColor,
 	},
 	title_dark: {
-		marginTop: 24,
-		fontWeight: "bold",
-		fontSize: 16,
+		marginTop: scaleHeight(24),
+		...getFont(EFontWeight.Bold),
+		fontSize: scaleHeight(16),
 		color: "#FFFFFF",
 	},
 	inputsContainer: {

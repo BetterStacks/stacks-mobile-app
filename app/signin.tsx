@@ -1,16 +1,16 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useState} from "react";
 import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {MUTATION_SIGNIN, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
 import {
-	GestureResponderEvent,
-	Image,
-	StatusBar,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	useColorScheme,
-	View
+  GestureResponderEvent,
+  Image,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
@@ -33,8 +33,10 @@ import TokenCheck from "@/components/TokenCheck";
 import {router} from "expo-router";
 import {Toast} from "toastify-react-native";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
+import Feather from '@expo/vector-icons/Feather';
 
 const SignInScreen = () => {
+  const [isPasswordSecured, setIsPasswordSecured] = useState(true);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -233,6 +235,10 @@ const SignInScreen = () => {
   const signInGoogle = useGoogleSignIn(onGoogleSignIn);
   const signInWithApple = useAppleSignIn(onAppleSignIn);
 
+  const handleSecurePassword = useCallback(() => {
+    setIsPasswordSecured(prev => !prev);
+  }, []);
+
   const handleLoginPress = (event: GestureResponderEvent) => {
     handleSubmit();
   };
@@ -308,8 +314,11 @@ const SignInScreen = () => {
               value={values.email}
               placeholder="Email"
               keyboardType="email-address"
+              iconName={<Feather name="mail" size={20} color={isDark ? "#8EACB7" : "black"} />}
               placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
               colorScheme={colorScheme}
+              touched={touched.email}
+              errors={errors.email}
             />
 
             <CommonInput
@@ -317,9 +326,15 @@ const SignInScreen = () => {
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
               value={values.password}
+              iconName={<Feather name="eye-off" size={20} color={isDark ? "#8EACB7" : "black"} />}
+              secureTextEntry={isPasswordSecured}
+              isSecondIconActive={!isPasswordSecured}
+              secondIconName={<Feather name="eye" size={20} color={isDark ? "#8EACB7" : "black"} />}
+              onIconPress={handleSecurePassword}
               placeholderTextColor={isDark ? "#8F8F8F" : Colors.TextColor.InputPlaceholderColor}
-              secureTextEntry
               colorScheme={colorScheme}
+              touched={touched.password}
+              errors={errors.password}
             />
 
             <TouchableOpacity style={styles.forgotTouchable}>
