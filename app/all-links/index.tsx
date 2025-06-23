@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {Image, Text, useColorScheme, View,} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
@@ -9,19 +9,19 @@ import {usePagination} from "@/hooks/usePagination";
 import {useStacksPagination} from "@/hooks/useStacksPagination";
 import {User} from "@/lib/types/User";
 import {
-	QUERY_DOMAIN_LINKS,
-	QUERY_DOMAIN_LINKS_BY_STACKID,
-	QUERY_LINKS,
-	QUERY_STACK_LINKS,
-	QUERY_STACKS,
-	QUERY_USER,
+  QUERY_DOMAIN_LINKS,
+  QUERY_DOMAIN_LINKS_BY_STACKID,
+  QUERY_LINKS,
+  QUERY_STACK_LINKS,
+  QUERY_STACKS,
+  QUERY_USER,
 } from "@/lib/api/graphql/queries";
 import {
-	setIsNeedRefresh,
-	setIsNewLinkModalShown,
-	setIsSuccessModalVisible,
-	setSuccessModalMessage,
-	setUserInfo,
+  setIsNeedRefresh,
+  setIsNewLinkModalShown,
+  setIsSuccessModalVisible,
+  setSuccessModalMessage,
+  setUserInfo,
 } from "@/lib/apollo/store/handlers";
 import client from "@/lib/apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,13 +34,19 @@ import {StacksCarousel} from "@/components/stacksCarousel/stacksCarousel";
 import {HomeScreenContent} from "@/components/homeScreenContent/HomeScreenContent";
 import {CardLinksList} from "@/components/cardLinkList/CardLinksList";
 import {Loader} from "@/components/Loader";
-import {CommonButton} from "@/components/CommonButton/CommonButton";
+import {MainButton, mainButtonStyles} from "@/components/ui/button";
 import {selectStackName} from "@/lib/utils";
 import {Stack, useLocalSearchParams} from "expo-router";
+import AddLinkView from "@/components/BottomDrawer/AddLinkView";
+import BottomSheet, {BottomSheetView} from "@gorhom/bottom-sheet";
 
 export default function AllLinksScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  
+  // Bottom sheet setup
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ['50%', '75%'], []);
   
   const params = useLocalSearchParams();
   const withAnnotations = params.withAnnotations === "true";
@@ -378,8 +384,14 @@ export default function AllLinksScreen() {
   );
 
   const handleToggleBottomSheet = useCallback(() => {
-    setIsBottomModalVisible((prev) => !prev);
-  }, []);
+    if (isBottomModalVisible) {
+      bottomSheetRef.current?.close();
+      setIsBottomModalVisible(false);
+    } else {
+      setIsBottomModalVisible(true);
+      bottomSheetRef.current?.expand();
+    }
+  }, [isBottomModalVisible]);
 
   const isNoData = useMemo(() => {
     if (isAnyLoading || linksLoading || stackLinksLoading) {
@@ -507,6 +519,7 @@ export default function AllLinksScreen() {
   }, [selectedFilter]);
 
   const handleCloseBottomSheet = useCallback(() => {
+    bottomSheetRef.current?.close();
     setIsBottomModalVisible(false);
   }, []);
 
@@ -523,155 +536,174 @@ export default function AllLinksScreen() {
   );
 
   return (
-    <SafeAreaView style={isDark ? styles.container__dark : styles.container} edges={['bottom', 'left', 'right']}>
-      <Stack.Screen
-        options={{
-          title: screenTitle || selectedStack || "All Links",
-          headerTitleStyle: {
-            fontWeight: "bold",
-            color: isDark ? "#FFFFFF" : undefined
-          },
-          headerStyle: {
-            backgroundColor: isDark ? "#171717" : undefined
-          },
-          headerTintColor: isDark ? "#FFFFFF" : undefined
-        }}
-      />
-      <Animated.View style={[isDark ? styles.container__dark : styles.container, animViewStyle]}>
-        <View style={isDark ? styles.headerContainer__dark : styles.headerContainer}>
-          <View style={styles.headerContent}>
-            <Text style={isDark ? styles.headerDescription__dark : styles.headerDescription}>
-              You are browsing links from{" "}
-            </Text>
-            <Text style={isDark ? styles.workspaceName__dark : styles.workspaceName} numberOfLines={1}>
-              {workspaceName}
-            </Text>
-          </View>
-        </View>
-        {selectedStack === "Places" ? (
-          <>
-            <StacksCarousel
-              onPress={handleStackPressed}
-              selectedStack={selectedStack}
-              containerStyles={[styles.carouselContainer, styles.placesStacks]}
-              // @ts-ignore
-              colorScheme={colorScheme}
-            />
-
-            <HomeScreenContent
-              contentContainer={[styles.contentContainer, styles.placesContent]}
-              selectedStack={selectedStack}
-              // @ts-ignore
-              colorScheme={colorScheme}
-            />
-          </>
-        ) : (
-          <CardLinksList
-            showList={!isAnyLoading && !isNoData && selectedStack !== "Places"}
-            header={
-              <>
-                {/* <StacksCarousel
-                     onPress={handleStackPressed}
-                     selectedStack={selectedStack}
-                     containerStyles={styles.carouselContainer}
-                   /> */}
-                {/* {!isNoData && selectedStack !== "Places" && (
-                  <PopularSitesSection
-                    containerStyles={styles.popularSitesContainer}
-                    selectedDomain={selectedDomain}
-                    data={
-                      (domainsData && domainsData.domain_links_count) ||
-                      (stackDomainsData && stackDomainsData.domain_links_count)
-                    }
-                    onPress={handleDomainChange}
-                  />
-                )} */}
-                <HomeScreenContent
-                  contentContainer={styles.contentContainer}
-                  selectedStack={selectedStack}
-                  // @ts-ignore
-                  colorScheme={colorScheme}
-                />
-              </>
-            }
-            onEndReached={
-              selectedStack &&
-              selectedStack !== "Places" &&
-              selectedStack !== defaultStack
-                ? onStacksEndReached
-                : onEndReached
-            }
-            currentPage={
-              selectedStack &&
-              selectedStack !== "Places" &&
-              selectedStack !== defaultStack
-                ? stacksPage
-                : page
-            }
-            style={styles.linksContainer}
-            isLoadMoreAvailable={
-              selectedStack &&
-              selectedStack !== "Places" &&
-              selectedStack !== defaultStack
-                ? isLoadMoreStacksAvailiable
-                : isLoadMoreAvailable
-            }
-            onRefresh={onRefresh}
-            isRefreshing={isRefreshing}
-            links={
-              selectedStack === defaultStack
-                ? linksData?.links || []
-                : stackLinksData?.stack?.links || []
-            }
-            colorScheme={colorScheme}
-          />
-        )}
-
-        {isAnyLoading && selectedStack !== "Places" && (
-          <View style={styles.loaderContainer}>
-            <Loader />
-          </View>
-        )}
-
-        {/* {selectedStack === "Places" && <PlacesMap />} */}
-
-        {isNoData && selectedStack !== "Places" && !isAnyLoading && (
-          <View style={styles.emptyContent}>
-            <Image
-              source={require("@/assets/png/HomeScreenImage.png")}
-              // resizeMode={FastImage.resizeMode.contain}
-              style={styles.image}
-            />
-
-            <Text style={isDark ? styles.noLinksTitle__dark : styles.noLinksTitle}>
-              You haven't got recently saved items
-            </Text>
-
-            <Text style={isDark ? styles.noLinksText__dark : styles.noLinksText}>
-              You haven't got recently saved items
-            </Text>
-
-            <View style={styles.buttonContainer}>
-              <CommonButton
-                text={`+ Add your first ${selectStackName(selectedStack)}`}
-                onPress={showNewLinkModal}
-                additionalButtonStyles={isDark ? styles.buttonAdditionalStyles__dark : styles.buttonAdditionalStyles}
-                additionalTextStyles={isDark ? styles.buttonTextAdditionalStyles__dark : styles.buttonTextAdditionalStyles}
-              />
+    <>
+      <SafeAreaView style={isDark ? styles.container__dark : styles.container} edges={['bottom', 'left', 'right']}>
+        <Stack.Screen
+          options={{
+            title: screenTitle || selectedStack || "All Links",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              color: isDark ? "#FFFFFF" : undefined
+            },
+            headerStyle: {
+              backgroundColor: isDark ? "#171717" : undefined
+            },
+            headerTintColor: isDark ? "#FFFFFF" : undefined
+          }}
+        />
+        <Animated.View style={[isDark ? styles.container__dark : styles.container, animViewStyle]}>
+          <View style={isDark ? styles.headerContainer__dark : styles.headerContainer}>
+            <View style={styles.headerContent}>
+              <Text style={isDark ? styles.headerDescription__dark : styles.headerDescription}>
+                You are browsing links from{" "}
+              </Text>
+              <Text style={isDark ? styles.workspaceName__dark : styles.workspaceName} numberOfLines={1}>
+                {workspaceName}
+              </Text>
             </View>
           </View>
-        )}
-      </Animated.View>
-      {/* <ContentBottomModal
-        isVisible={isBottomModalVisible}
-        onToggleModal={handleToggleBottomSheet}
-      >
-        <AddLinkView
-          onBack={handleCloseBottomSheet}
+          {selectedStack === "Places" ? (
+            <>
+              <StacksCarousel
+                onPress={handleStackPressed}
+                selectedStack={selectedStack}
+                containerStyles={[styles.carouselContainer, styles.placesStacks]}
+                // @ts-ignore
+                colorScheme={colorScheme}
+              />
+
+              <HomeScreenContent
+                contentContainer={[styles.contentContainer, styles.placesContent]}
+                selectedStack={selectedStack}
+                // @ts-ignore
+                colorScheme={colorScheme}
+              />
+            </>
+          ) : (
+            <>
+              {!isAnyLoading && !isNoData && (
+                <CardLinksList
+                  showList={true}
+                  header={
+                    <>
+                      {/* <StacksCarousel
+                           onPress={handleStackPressed}
+                           selectedStack={selectedStack}
+                           containerStyles={styles.carouselContainer}
+                         /> */}
+                      {/* {!isNoData && selectedStack !== "Places" && (
+                        <PopularSitesSection
+                          containerStyles={styles.popularSitesContainer}
+                          selectedDomain={selectedDomain}
+                          data={
+                            (domainsData && domainsData.domain_links_count) ||
+                            (stackDomainsData && stackDomainsData.domain_links_count)
+                          }
+                          onPress={handleDomainChange}
+                        />
+                      )} */}
+                      <HomeScreenContent
+                        contentContainer={styles.contentContainer}
+                        selectedStack={selectedStack}
+                        // @ts-ignore
+                        colorScheme={colorScheme}
+                      />
+                    </>
+                  }
+                  onEndReached={
+                    selectedStack &&
+                    selectedStack !== "Places" &&
+                    selectedStack !== defaultStack
+                      ? onStacksEndReached
+                      : onEndReached
+                  }
+                  currentPage={
+                    selectedStack &&
+                    selectedStack !== "Places" &&
+                    selectedStack !== defaultStack
+                      ? stacksPage
+                      : page
+                  }
+                  style={styles.linksContainer}
+                  isLoadMoreAvailable={
+                    selectedStack &&
+                    selectedStack !== "Places" &&
+                    selectedStack !== defaultStack
+                      ? isLoadMoreStacksAvailiable
+                      : isLoadMoreAvailable
+                  }
+                  onRefresh={onRefresh}
+                  isRefreshing={isRefreshing}
+                  links={
+                    selectedStack === defaultStack
+                      ? linksData?.links || []
+                      : stackLinksData?.stack?.links || []
+                  }
+                  colorScheme={colorScheme}
+                />
+              )}
+            </>
+          )}
+
+          {isAnyLoading && selectedStack !== "Places" && (
+            <View style={styles.loaderContainer}>
+              <Loader />
+            </View>
+          )}
+
+          {/* {selectedStack === "Places" && <PlacesMap />} */}
+
+          {isNoData && selectedStack !== "Places" && !isAnyLoading && (
+            <View style={styles.emptyContent}>
+              <Image
+                source={require("@/assets/png/HomeScreenImage.png")}
+                // resizeMode={FastImage.resizeMode.contain}
+                style={styles.image}
+              />
+
+              <Text style={isDark ? styles.noLinksTitle__dark : styles.noLinksTitle}>
+                You haven't got recently saved items
+              </Text>
+
+              <Text style={isDark ? styles.noLinksText__dark : styles.noLinksText}>
+                You haven't got recently saved items
+              </Text>
+
+              <View style={styles.buttonContainer}>
+                <MainButton.Primary onPress={handleToggleBottomSheet}>
+                  <Text style={mainButtonStyles.primary.buttonText}>
+                    + Add your first {selectStackName(selectedStack)}
+                  </Text>
+                </MainButton.Primary>
+              </View>
+            </View>
+          )}
+        </Animated.View>
+      </SafeAreaView>
+      
+      {isBottomModalVisible && (
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
           onClose={handleCloseBottomSheet}
-          onSuccess={handleSuccess}
-        />
-      </ContentBottomModal> */}
-    </SafeAreaView>
+          enablePanDownToClose={true}
+          backgroundStyle={{
+            backgroundColor: isDark ? "#171717" : "#FFFFFF",
+          }}
+          handleIndicatorStyle={{
+            backgroundColor: isDark ? "#333333" : "#E5E5E5",
+          }}
+        >
+          <BottomSheetView style={{ flex: 1, padding: 16 }}>
+            <AddLinkView
+              onBack={handleCloseBottomSheet}
+              onClose={handleCloseBottomSheet}
+              onSuccess={handleSuccess}
+            />
+          </BottomSheetView>
+        </BottomSheet>
+      )}
+    </>
   );
 }

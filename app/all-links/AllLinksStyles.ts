@@ -39,9 +39,10 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
   },
   emptyContent: {
-    alignSelf: "center",
-    marginTop: scaleHeight(56),
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: scaleWidth(24),
   },
   noLinksTitle: {
     marginTop: scaleHeight(28),

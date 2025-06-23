@@ -20,6 +20,7 @@
     "@expo/cli": "^0.22.24",
     "@expo/vector-icons": "^14.0.2",
     "@firebase/auth": "^1.10.0",
+    "@gorhom/bottom-sheet": "^5.1.6",
     "@invertase/react-native-apple-authentication": "^2.4.1",
     "@lodev09/expo-recorder": "^0.3.2",
     "@react-native-async-storage/async-storage": "1.23.1",
