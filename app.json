@@ -2,7 +2,7 @@
   "expo": {
     "name": "Stacks",
     "slug": "stacks",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "orientation": "portrait",
     "icon": "./assets/png/stacks-android-icon.png",
     "scheme": "betterstacks",
@@ -17,8 +17,11 @@
         "NSMicrophoneUsageDescription": "This app requires access to microphone to record voice notes"
       },
       "entitlements": {
-        "com.apple.developer.applesignin": ["Default"]
-      }
+        "com.apple.developer.applesignin": [
+          "Default"
+        ]
+      },
+      "appleTeamId": "HMJX9736KN"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +30,10 @@
       },
       "package": "com.betterstacks",
       "googleServicesFile": "./google-services.json",
-      "permissions": []
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "bundler": "metro",
