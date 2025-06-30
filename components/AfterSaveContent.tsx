@@ -10,6 +10,9 @@ import {MUTATION_UPDATE_LINK} from "@/lib/api/graphql/mutations";
 import Entypo from '@expo/vector-icons/Entypo';
 import {getEmojiFromCode} from "@/lib/utils";
 import {CommonButton} from "@/components/CommonButton/CommonButton";
+import {NotesInput} from "@/components/NotesInput";
+import {TagInput} from "@/components/TagInput";
+import {AfterSaveButtons} from "@/components/AfterSaveButtons";
 
 type AfterSaveContentProps = {
 	closeParent: () => void;
@@ -40,6 +43,7 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 	const [tags, setTags] = useState<string[]>([]);
 	const [isCollectionsExpanded, setIsCollectionsExpanded] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [isChoiceRemembered, setIsChoiceRemembered] = useState(false);
 
 	const { data: collectionsData } = useQuery(QUERY_COLLECTIONS, {
 		variables: {
@@ -111,32 +115,36 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 		setSearchQuery(text);
 	}, []);
 
+	const handleRememberChoice = useCallback((value: boolean) => {
+		setIsChoiceRemembered(value);
+	}, []);
+
 	return (
 		<View style={styles.container}>
 			<AfterSaveContentHeader handleCloseModal={handleCloseModal} />
 
 			<View style={styles.content}>
-				{/*<View style={styles.section}>*/}
-				{/*	<Text style={styles.sectionTitle}>Notes</Text>*/}
-				{/*	<NotesInput*/}
-				{/*		placeholder="Add notes..."*/}
-				{/*		onChangeText={handleNotesChange}*/}
-				{/*		value={notes}*/}
-				{/*		multiline*/}
-				{/*		numberOfLines={3}*/}
-				{/*		additionalInputStyles={styles.notesInput}*/}
-				{/*	/>*/}
-				{/*</View>*/}
+				<View style={styles.section}>
+					<Text style={styles.sectionTitle}>Notes</Text>
+					<NotesInput
+						placeholder="Add notes..."
+						onChangeText={handleNotesChange}
+						value={notes}
+						multiline
+						numberOfLines={3}
+						additionalInputStyles={styles.notesInput}
+					/>
+				</View>
 
-				{/*<View style={styles.section}>*/}
-				{/*	<Text style={styles.sectionTitle}>Tags</Text>*/}
-				{/*	<TagInput*/}
-				{/*		tags={tags}*/}
-				{/*		onTagsChange={handleTagsChange}*/}
-				{/*		placeholder="Add tags..."*/}
-				{/*		existingTags={userData?.user?.tags || []}*/}
-				{/*	/>*/}
-				{/*</View>*/}
+				<View style={styles.section}>
+					<Text style={styles.sectionTitle}>Tags</Text>
+					<TagInput
+						tags={tags}
+						onTagsChange={handleTagsChange}
+						placeholder="Add tags..."
+						existingTags={userData?.user?.tags || []}
+					/>
+				</View>
 
 				<View style={styles.section}>
 					<Text style={styles.sectionTitle}>Collections</Text>
@@ -235,6 +243,13 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 						</View>
 					)}
 				</View>
+
+				<AfterSaveButtons
+					isChoiceRemembered={isChoiceRemembered}
+					handleRememberChoice={handleRememberChoice}
+					linkId={newLinkData.id}
+					handleSubmitChanges={handleSubmit}
+				/>
 			</View>
 
 			<View style={styles.footer}>

@@ -5,7 +5,7 @@ import {UserAvatar} from "@/components/ui/user-avatar";
 import {Colors as colors} from "@/components/design/colors";
 import {QUERY_QUICK_LINKS, QUERY_STACKS, QUERY_USER_REPOSITORIES,} from "@/lib/api/graphql/queries";
 import {SELECTED_WORKSPACE_ID_KEY, SELECTED_WORKSPACE_KEY,} from "@/lib/constants";
-import {useQuery, useReactiveVar} from "@apollo/client";
+import {useQuery} from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {useEffect, useState} from "react";
 import {Text, TouchableOpacity, useColorScheme, View} from "react-native";
@@ -19,7 +19,6 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {router} from "expo-router";
 import {useIsFocused} from "@react-navigation/native";
-import {sharedLinkTextVar} from "@/lib/apollo/store";
 import {styles} from "@/components/dashboard/HomeScreenStyles";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 import {StatusBar} from "expo-status-bar";
@@ -324,7 +323,6 @@ export default function DashboardHomeScreen() {
     router.push("/dashboard/search");
   };
 
-  const sharedLinkText = useReactiveVar(sharedLinkTextVar);
   const isFocused = useIsFocused();
 
   // Add this effect to handle shared links

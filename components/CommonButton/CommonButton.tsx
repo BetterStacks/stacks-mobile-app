@@ -1,14 +1,11 @@
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
-import { styles } from "./CommonButtonStyles";
-import { getIconWithColor } from "../design/icons/getIconWithColor";
-import { EIconName } from "../design/icons/_models";
+import {ActivityIndicator, Text, TouchableOpacity, View} from "react-native";
+import {styles} from "./CommonButtonStyles";
 
 type Props = {
   text: string;
   onPress: () => void;
   additionalButtonStyles?: object;
   additionalTextStyles?: object;
-  iconName?: EIconName;
   disabled?: boolean;
   loading?: boolean;
 };
@@ -18,7 +15,6 @@ export const CommonButton: React.FC<Props> = ({
   onPress,
   additionalButtonStyles,
   additionalTextStyles,
-  iconName,
   disabled = false,
   loading,
 }) => {
@@ -32,10 +28,9 @@ export const CommonButton: React.FC<Props> = ({
       ]}
       onPress={loading ? () => {} : onPress}
     >
-      {iconName && getIconWithColor(iconName)}
       <View style={styles.content}>
         {loading ? (
-          <ActivityIndicator style={styles.button} />
+          <ActivityIndicator size="small" color="#FFFFFF" />
         ) : (
           <Text style={[styles.buttonText, additionalTextStyles]}>{text}</Text>
         )}

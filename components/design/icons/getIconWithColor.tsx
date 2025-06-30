@@ -1,5 +1,5 @@
-import { SvgProps } from "react-native-svg";
-import { StyleProp, ViewStyle } from "react-native";
+import {SvgProps} from "react-native-svg";
+import {StyleProp, ViewStyle} from "react-native";
 
 import ArrowIcon from "@/assets/svg/ArrowIcon.svg";
 import EyeOnIcon from "@/assets/svg/EyeOnIcon.svg";
@@ -78,7 +78,7 @@ import CollectionsLucideIcon from "@/assets/svg/lucide/collection.svg";
 import AiLucideIcon from "@/assets/svg/lucide/ai.svg";
 import RecallLucideIcon from "@/assets/svg/lucide/recall.svg";
 import InboxLucideIcon from "@/assets/svg/lucide/inbox.svg";
-import { EIconName } from "@/components/design/icons/_models";
+import {EIconName} from "@/components/design/icons/_models";
 // import { EyeOffIcon } from "/@assets/svg/EyeOffIcon.svg";
 
 const IconsMap: Record<EIconName | string, typeof ArrowIcon> = {
@@ -175,6 +175,11 @@ export const getIconWithColor = (
   props?: SvgProps,
 ) => {
   const Icon = IconsMap[iconName];
+
+  if (!Icon) {
+    console.warn(`Icon "${iconName}" not found in IconsMap`);
+    return null;
+  }
 
   return <Icon color={color} {...props} style={style} />;
 };

@@ -13,6 +13,7 @@ import client from "@/lib/apollo/client";
 import {useShareIntent} from "expo-share-intent";
 import ToastManager from "toastify-react-native";
 import {AddNewLinkModal} from "@/components/AddNewLinkModal";
+import {ReminderModal} from "@/components/ReminderModal";
 import {View} from "react-native";
 import {KeyboardProvider} from "react-native-keyboard-controller";
 
@@ -76,6 +77,7 @@ export default function RootLayout() {
 								link={link}
 								setLink={setLink}
 							/>
+							<ReminderModal />
 						</View>
 						<ToastManager />
 					</ApolloProvider>
