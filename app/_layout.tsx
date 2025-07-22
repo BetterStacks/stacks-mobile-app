@@ -1,6 +1,6 @@
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
-import {Stack} from 'expo-router';
+import {router, Stack} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
 import {useEffect, useState} from 'react';
@@ -41,7 +41,14 @@ export default function RootLayout() {
 		
 		if (hasShareIntent && shareIntent?.type === 'weburl') {
 			setLink(shareIntent.webUrl!);
-			setShareModalVisible(true);
+			
+			// First navigate to dashboard, then show modal
+			router.replace('/dashboard');
+			
+			// Small delay to ensure navigation completes before showing modal
+			setTimeout(() => {
+				setShareModalVisible(true);
+			}, 100);
 		}
 	}, [hasShareIntent, shareIntent]);
 
