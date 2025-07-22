@@ -7,6 +7,7 @@ import * as FileSystem from "expo-file-system";
 import {MUTATION_UPLOAD_USER_FILES} from "@/lib/api/graphql/mutations";
 import client from "@/lib/apollo/client";
 import {Toast} from "toastify-react-native";
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 type FileObject = {
   uri: string;
@@ -40,12 +41,17 @@ const FileUploadView = ({ onBack, onClose, onSuccess, fileType = "document" }: P
   }, []);
 
   const [uploadFiles, { loading, error }] = useMutation(MUTATION_UPLOAD_USER_FILES, {
-    onCompleted: (data) => {
+    onCompleted: async (data) => {
       // First close the modal
       onClose();
       
       // Show success toast directly
       Toast.success(`${files.length} file${files.length !== 1 ? 's' : ''} uploaded successfully`);
+      
+      // Track content addition for review trigger (each file counts as content)
+      for (let i = 0; i < files.length; i++) {
+        await reviewTriggerService.trackContentAddition();
+      }
       
       // Also notify parent component if needed
       if (onSuccess) {

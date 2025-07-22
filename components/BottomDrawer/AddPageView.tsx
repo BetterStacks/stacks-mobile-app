@@ -19,6 +19,7 @@ import client from "@/lib/apollo/client";
 import {CollectionSelector} from "../CollectionSelector";
 import {Toast} from "toastify-react-native";
 import {useRouter} from "expo-router";
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 // import { FolderPlus, ChevronRight, X } from "lucide-react-native";
 
@@ -92,7 +93,7 @@ const AddPageView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
 	});
 
 	const [addPage, { loading }] = useMutation(MUTATION_ADD_USER_PAGE, {
-		onCompleted: (data) => {
+		onCompleted: async (data) => {
 			try {
 				onClose();
 
@@ -103,6 +104,16 @@ const AddPageView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
 
 				// Show toast notification
 				Toast.success("Page created successfully!");
+
+				// Track content addition for review trigger
+				await reviewTriggerService.trackContentAddition();
+
+				// Track collection item addition if collections were selected
+				if (selectedCollections.length > 0) {
+					for (const collectionId of selectedCollections) {
+						await reviewTriggerService.trackCollectionItemAddition(collectionId);
+					}
+				}
 
 				if (onSuccess) {
 					onSuccess(successMessage);

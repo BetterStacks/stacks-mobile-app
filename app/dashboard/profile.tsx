@@ -1,16 +1,16 @@
 import React, {useState} from "react";
 import {
-	ActivityIndicator,
-	Alert,
-	Appearance,
-	Image,
-	ScrollView,
-	StyleSheet,
-	Switch,
-	Text,
-	TouchableOpacity,
-	useColorScheme,
-	View,
+  ActivityIndicator,
+  Alert,
+  Appearance,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
 import {useQuery} from "@apollo/client";
 import {QUERY_USER} from "@/lib/api/graphql/queries";
@@ -508,5 +508,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     marginLeft: 6,
-  },
+  }
 });

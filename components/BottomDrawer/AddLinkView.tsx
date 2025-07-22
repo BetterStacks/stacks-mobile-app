@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
 import {
-  ActivityIndicator,
-  Keyboard,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  useColorScheme,
-  View,
+	ActivityIndicator,
+	Keyboard,
+	StyleSheet,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	useColorScheme,
+	View,
 } from "react-native";
 import {useMutation, useQuery} from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,6 +18,7 @@ import {setIsSuccessModalVisible, setSuccessModalMessage,} from "@/lib/apollo/st
 import client from "@/lib/apollo/client";
 import {CollectionSelector} from "../CollectionSelector";
 import {Toast} from "toastify-react-native";
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 // import { FolderPlus, ChevronRight, X } from "lucide-react-native";
 
@@ -61,7 +62,7 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
   });
 
   const [addLink, { loading }] = useMutation(MUTATION_ADD_LINK, {
-    onCompleted: (_data) => {
+    onCompleted: async(_data) => {
       try {
         onClose();
 
@@ -77,6 +78,16 @@ const AddLinkView = ({ onBack, onClose, onSuccess, selectedCollectionId }: Props
 
         // Show toast notification
         Toast.success("Link saved successfully!");
+
+        // Track content addition for review trigger
+        await reviewTriggerService.trackContentAddition();
+
+        // Track collection item addition if collections were selected
+        if (selectedCollections.length > 0) {
+          for (const collectionId of selectedCollections) {
+            await reviewTriggerService.trackCollectionItemAddition(collectionId);
+          }
+        }
 
         if (onSuccess) {
           onSuccess(successMessage);

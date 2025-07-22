@@ -34,6 +34,7 @@ type Props = {
   header?: ReactElement<any, string | JSXElementConstructor<any>>;
   showList?: boolean;
   colorScheme?: ColorSchemeName;
+  isSearchResults?: boolean;
 };
 
 type FooterProps = {
@@ -73,6 +74,7 @@ export const CardLinksList: React.FC<Props> = ({
   header,
   showList,
   colorScheme: propColorScheme,
+  isSearchResults = false,
 }) => {
   const deviceColorScheme = useColorScheme();
   const colorScheme = propColorScheme || deviceColorScheme;
@@ -134,6 +136,7 @@ export const CardLinksList: React.FC<Props> = ({
             setVideoPlayerUri={setVideoPlayerUri}
             setImageUri={setImageUri}
             colorScheme={colorScheme}
+            isSearchResult={isSearchResults}
           />
         )}
       />

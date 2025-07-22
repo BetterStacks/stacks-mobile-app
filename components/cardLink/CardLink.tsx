@@ -13,6 +13,7 @@ import {Audio} from 'expo-av';
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
 import EditLinkView from "../BottomDrawer/EditLinkView";
 import {useRouter} from "expo-router";
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 // Static variable to track the currently playing note
 let currentlyPlayingCard: string | null = null;
@@ -36,6 +37,7 @@ type Props = {
   showBorder?: boolean;
   disableTouchEffect?: boolean;
   uniformHeight?: boolean;
+  isSearchResult?: boolean;
 };
 
 const videoTypes = ["mp4", "mov", "wmv", "avi", "mkv", "webm"];
@@ -48,6 +50,7 @@ export const CardLink: React.FC<Props> = ({
   setPdfViewerVisible = () => null,
   setVideoPlayerUri = () => null,
   setImageUri = () => null,
+  isSearchResult = false,
   colorScheme: propColorScheme,
   showBorder = true,
   disableTouchEffect = false,
@@ -86,7 +89,12 @@ export const CardLink: React.FC<Props> = ({
   }, []);
   const targetUrl = link.target_url;
 
-  const handleOpenLink = useCallback(() => {
+  const handleOpenLink = useCallback(async () => {
+    // Track search result interaction if this is a search result
+    if (isSearchResult) {
+      await reviewTriggerService.trackSearchResultInteraction();
+    }
+
     // Don't open voice notes with external links
     if (link.is_voice_note) {
       return;
@@ -110,7 +118,7 @@ export const CardLink: React.FC<Props> = ({
       return;
     }
     Linking.openURL(targetUrl);
-  }, [targetUrl, setPdfViewerVisible, setVideoPlayerUri, setImageUri, link.is_voice_note]);
+  }, [targetUrl, setPdfViewerVisible, setVideoPlayerUri, setImageUri, link.is_voice_note, isSearchResult]);
 
   const handleReaderPress = useCallback((e: any) => {
     e.stopPropagation();

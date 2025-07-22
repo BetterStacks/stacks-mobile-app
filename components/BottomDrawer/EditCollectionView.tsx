@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View,} from "react-native";
 import {useMutation} from "@apollo/client";
 import {MUTATION_UPDATE_COLLECTION} from "@/lib/api/graphql/mutations";
 import {Colors} from "../design/colors";
 import {getEmojiFromCode} from "@/lib/utils";
 import {Toast} from "toastify-react-native";
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 type Props = {
   onBack: () => void;
@@ -21,8 +22,31 @@ const EditCollectionView = ({ onBack, onClose, collection, onSuccess }: Props) =
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [title, setTitle] = useState(collection.title);
+  const [organizationSessionId, setOrganizationSessionId] = useState<string | null>(null);
+
+  // Start organization session when component mounts
+  useEffect(() => {
+    const startSession = async () => {
+      const sessionId = await reviewTriggerService.startOrganizationSession();
+      setOrganizationSessionId(sessionId);
+    };
+    startSession();
+
+    // End session when component unmounts
+    return () => {
+      if (organizationSessionId) {
+        reviewTriggerService.endOrganizationSession(organizationSessionId);
+      }
+    };
+  }, []);
+
   const [updateCollection, { loading }] = useMutation(MUTATION_UPDATE_COLLECTION, {
-    onCompleted: (data) => {
+    onCompleted: async (data) => {
+      // Track organization action for review trigger
+      if (organizationSessionId) {
+        await reviewTriggerService.trackOrganizationAction(organizationSessionId);
+      }
+
       onClose();
       // Show toast notification
       Toast.success("Collection updated successfully!");

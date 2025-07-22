@@ -9,6 +9,7 @@ import CommonInput from "@/components/CommonInput";
 import {Colors} from "@/components/design/colors";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {CardLinksList} from "@/components/cardLinkList/CardLinksList";
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 const SearchScreen = () => {
 	const colorScheme = useColorScheme();
@@ -35,15 +36,19 @@ const SearchScreen = () => {
 	}, []);
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
+		const timer = setTimeout(async () => {
 			if (searchQuery.length > 1) {
-				loadLinks({
+				const result = await loadLinks({
 					variables: {
 						page: 1,
 						query: searchQuery,
 						domain: "",
 					},
 				});
+				
+				// Track search interaction for review trigger
+				const hasResults = result?.data?.links && result.data.links.length > 0;
+				await reviewTriggerService.trackSearchInteraction(searchQuery, hasResults);
 			}
 		}, 1000);
 
@@ -107,6 +112,7 @@ const SearchScreen = () => {
 							links={linksData.links} 
 							showList={!linksLoading} 
 							colorScheme={colorScheme}
+							isSearchResults={true}
 						/>
 					</View>
 				)

@@ -1,14 +1,14 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  useColorScheme,
-  View
+	Keyboard,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	useColorScheme,
+	View
 } from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import Animated, {useAnimatedStyle, useSharedValue} from "react-native-reanimated";
@@ -18,16 +18,17 @@ import {QUERY_USER} from "@/lib/api/graphql/queries";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
 
 import {
-  AddResourcesDrawer,
-  EmptyState,
-  MessageItem,
-  NoAPIKeyView,
-  styles,
-  ViewContextDrawer
+	AddResourcesDrawer,
+	EmptyState,
+	MessageItem,
+	NoAPIKeyView,
+	styles,
+	ViewContextDrawer
 } from "@/components/StacksAI";
 
 
 import {getChatCompletion, LinkContext, Message, MessageHistory} from "@/lib/ai";
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 export default function StacksAIScreen() {
   const colorScheme = useColorScheme();
@@ -113,6 +114,9 @@ export default function StacksAIScreen() {
           isUser: false,
         },
       ]);
+
+      // Track successful AI interaction for review trigger
+      await reviewTriggerService.trackAIInteraction();
     } catch (error) {
       console.error("Error getting AI response:", error);
       const errorMessage: Message = {

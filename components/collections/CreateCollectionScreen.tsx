@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {
 	ActivityIndicator,
 	SafeAreaView,
@@ -16,14 +16,32 @@ import {Colors} from "@/components/design/colors";
 import {router} from "expo-router";
 import {AntDesign} from "@expo/vector-icons";
 import {Toast} from "toastify-react-native";
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 export const CreateCollectionScreen = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [title, setTitle] = useState("");
+  const [organizationSessionId, setOrganizationSessionId] = useState<string | null>(null);
   const [createNewCollection, { loading }] = useMutation(
     MUTATION_ADD_NEW_COLLECTION,
   );
+
+  // Start organization session when component mounts
+  useEffect(() => {
+    const startSession = async () => {
+      const sessionId = await reviewTriggerService.startOrganizationSession();
+      setOrganizationSessionId(sessionId);
+    };
+    startSession();
+
+    // End session when component unmounts
+    return () => {
+      if (organizationSessionId) {
+        reviewTriggerService.endOrganizationSession(organizationSessionId);
+      }
+    };
+  }, []);
 
   const handleCreateCollection = useCallback(() => {
     if (title.trim()) {
@@ -32,9 +50,14 @@ export const CreateCollectionScreen = () => {
           collection: title,
         },
       })
-        .then((response) => {
+        .then(async (response) => {
           // Get the new collection ID from the response
           const newCollectionId = response.data.add_new_collection;
+          
+          // Track organization action for review trigger
+          if (organizationSessionId) {
+            await reviewTriggerService.trackOrganizationAction(organizationSessionId);
+          }
           
           // Show success toast
           Toast.success(`Collection "${title}" created successfully!`);
@@ -62,7 +85,7 @@ export const CreateCollectionScreen = () => {
           Toast.error("Failed to create collection");
         });
     }
-  }, [title, createNewCollection]);
+  }, [title, createNewCollection, organizationSessionId]);
 
   return (
     <SafeAreaView style={isDark ? styles.container_dark : styles.container}>

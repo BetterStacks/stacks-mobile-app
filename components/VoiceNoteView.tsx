@@ -1,22 +1,31 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Pressable, useColorScheme, Platform, Alert, ActivityIndicator } from 'react-native';
-import { ArrowLeft, RefreshCw, Play, Pause } from 'lucide-react-native';
-import { Audio, InterruptionModeIOS, InterruptionModeAndroid } from 'expo-av';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+	ActivityIndicator,
+	Alert,
+	Platform,
+	Pressable,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	useColorScheme,
+	View
+} from 'react-native';
+import {ArrowLeft, Pause, Play, RefreshCw} from 'lucide-react-native';
+import {Audio, InterruptionModeAndroid, InterruptionModeIOS} from 'expo-av';
 import * as Haptics from 'expo-haptics';
 import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
+	Extrapolation,
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withSpring,
 } from 'react-native-reanimated';
-import { Recorder, type RecordInfo, type RecorderRef } from '@lodev09/expo-recorder';
-import { useMutation } from '@apollo/client';
-import { MUTATION_ADD_VOICE_NOTE } from '@/lib/api/graphql/mutations';
+import {Recorder, type RecorderRef, type RecordInfo} from '@lodev09/expo-recorder';
 import * as FileSystem from 'expo-file-system';
 import client from "@/lib/apollo/client";
-import { Toast } from "toastify-react-native";
-import { getValueFromStorage } from '@/utils/storage/getStorage';
+import {Toast} from "toastify-react-native";
+import {getValueFromStorage} from '@/utils/storage/getStorage';
+import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 type Props = {
   onBack: () => void;
@@ -307,6 +316,9 @@ const VoiceNoteView = ({ onBack, onClose, onSuccess }: Props) => {
         
         // Show success toast
         Toast.success("Voice note saved successfully");
+        
+        // Track content addition for review trigger
+        await reviewTriggerService.trackContentAddition();
         
         // Notify parent component
         onSuccess({

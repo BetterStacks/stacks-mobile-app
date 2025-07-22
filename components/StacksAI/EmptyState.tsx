@@ -3,6 +3,7 @@ import {ColorSchemeName, Image, Text, TouchableOpacity, View} from 'react-native
 import {AntDesign} from '@expo/vector-icons';
 import {styles} from './styles';
 import {AIToken, getChatCompletion, LinkContext, Message} from '@/lib/ai';
+import {reviewTriggerService} from '@/lib/services/reviewTriggerService';
 
 type EmptyStateProps = {
   aiToken: AIToken;
@@ -71,6 +72,9 @@ const EmptyState = ({
           isUser: false,
         },
       ]);
+
+      // Track successful AI interaction for review trigger
+      await reviewTriggerService.trackAIInteraction();
     } catch (error) {
       console.error("Error getting AI response:", error);
       setMessages(prev => [
