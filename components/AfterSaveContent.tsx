@@ -120,7 +120,7 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			<AfterSaveContentHeader handleCloseModal={handleCloseModal} />
 
 			<View style={styles.content}>
@@ -261,7 +261,7 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 					additionalTextStyles={styles.applyButtonText}
 				/>
 			</View>
-		</View>
+		</ScrollView>
 	);
 };
 

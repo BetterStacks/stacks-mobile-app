@@ -1,5 +1,5 @@
 import Modal from "react-native-modal";
-import {StyleSheet, View} from "react-native";
+import {Dimensions, StyleSheet, View} from "react-native";
 import {useMutation} from "@apollo/client";
 import {useCallback, useEffect, useState} from "react";
 import {MUTATION_ADD_LINK} from "@/lib/api/graphql/mutations";
@@ -142,6 +142,7 @@ export const AddNewLinkModal = ({isNewLinkModalShown, setIsNewLinkModalShown, li
 const styles = StyleSheet.create({
 	container: {
 		maxWidth: 500,
+		maxHeight: Dimensions.get('window').height * 0.9,
 		backgroundColor: Colors.OtherColor.UsualWhite,
 		borderRadius: 6,
 	},
