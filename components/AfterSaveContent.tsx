@@ -422,20 +422,20 @@ const styles = StyleSheet.create({
 	container: {
 		backgroundColor: "#FFFFFF",
 		borderRadius: 16,
-		padding: 20,
+		padding: 14, // was 20
 		width: "100%",
 	},
 	container_dark: {
 		backgroundColor: "#232323",
 		borderRadius: 16,
-		padding: 20,
+		padding: 14, // was 20
 		width: "100%",
 	},
 	header: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		marginBottom: 24,
+		marginBottom: 14, // was 24
 	},
 	headerText: {
 		fontSize: 20,
@@ -451,22 +451,22 @@ const styles = StyleSheet.create({
 		padding: 8,
 	},
 	content: {
-		marginBottom: 20,
+		marginBottom: 10, // was 20
 	},
 	section: {
-		marginBottom: 24,
+		marginBottom: 14, // was 24
 	},
 	sectionTitle: {
 		fontSize: 16,
 		fontWeight: "600",
 		color: "#666666",
-		marginBottom: 12,
+		marginBottom: 7, // was 12
 	},
 	sectionTitle_dark: {
 		fontSize: 16,
 		fontWeight: "600",
 		color: "#999999",
-		marginBottom: 12,
+		marginBottom: 7, // was 12
 	},
 	notesInput: {
 		minHeight: 80,
@@ -569,8 +569,8 @@ const styles = StyleSheet.create({
 		color: "#000000",
 	},
 	footer: {
-		paddingTop: 16,
-		paddingBottom: 8,
+		paddingTop: 8, // was 16
+		paddingBottom: 4, // was 8
 	},
 	applyButton: {
 		backgroundColor: "#1C4A5A",
