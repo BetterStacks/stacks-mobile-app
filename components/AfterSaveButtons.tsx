@@ -2,7 +2,7 @@ import {StyleSheet, useColorScheme, View} from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import {CommonButton} from "./CommonButton/CommonButton";
 import {useCallback} from "react";
-import {setIsReminderModalVisible, setShareModalInfo,} from "@/lib/apollo/store/handlers";
+import {setIsReminderModalVisible} from "@/lib/apollo/store/handlers";
 
 type Props = {
   isChoiceRemembered: boolean;
@@ -27,11 +27,6 @@ export const AfterSaveButtons: React.FC<Props> = ({
     [handleRememberChoice],
   );
 
-  const handleSharePressed = useCallback(() => {
-    // Show share modal - coordination handled in store
-    setShareModalInfo(true, linkId);
-  }, [linkId]);
-
   const handleRemindPressed = useCallback(() => {
     // Show reminder modal - coordination handled in store
     console.log('[ReminderModal] Button pressed, linkId:', linkId);
@@ -46,13 +41,6 @@ export const AfterSaveButtons: React.FC<Props> = ({
           additionalTextStyles={isDark ? styles.buttonText_dark : styles.buttonText}
           text="Set a Reminder"
           onPress={handleRemindPressed}
-        />
-
-        <CommonButton
-          additionalButtonStyles={isDark ? styles.buttonStyle_dark : styles.buttonStyle}
-          additionalTextStyles={isDark ? styles.buttonText_dark : styles.buttonText}
-          text="Share to repository"
-          onPress={handleSharePressed}
         />
       </View>
 
@@ -77,13 +65,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   commonButtonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     marginBottom: 16,
-    gap: 12,
   },
   buttonStyle: {
-    flex: 1,
     backgroundColor: "#F8F9FA",
     borderRadius: 8,
     borderWidth: 1,
@@ -99,7 +83,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   buttonStyle_dark: {
-    flex: 1,
     backgroundColor: "#333333",
     borderRadius: 8,
     borderWidth: 1,
