@@ -1,4 +1,4 @@
-import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
+import {DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
 import {Stack} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -7,6 +7,7 @@ import {useCallback, useEffect} from 'react';
 import 'react-native-reanimated';
 
 import {useColorScheme} from '@/hooks/useColorScheme';
+import {ThemeProvider} from '@/contexts/ThemeContext';
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {KeyboardProvider} from "react-native-keyboard-controller";
 import {ApolloProvider, useReactiveVar} from "@apollo/client";
@@ -22,7 +23,6 @@ import {isReminderModalVisibleVar} from "@/lib/apollo/store";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-	const colorScheme = useColorScheme();
 	const [loaded] = useFonts({
 		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
 	});
@@ -83,43 +83,77 @@ export default function RootLayout() {
 	}
 
 	return (
-		<GestureHandlerRootView style={{ flex: 1 }}>
-			<KeyboardProvider>
-				<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-					<ApolloProvider client={client}>
-						<Stack>
-							<Stack.Screen name="index" options={{ headerShown: false }} />
-							<Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
-							<Stack.Screen
-								name="signin"
-								options={{
-									title: 'Sign In',
-									headerShown: true
-								}}
-							/>
-							<Stack.Screen name="dashboard" options={{ headerShown: false }} />
-							<Stack.Screen name="web-view" options={{ headerShown: false }} />
-							<Stack.Screen name="+not-found" />
-						</Stack>
-						<StatusBar style="auto" />
+		<ThemeProvider>
+			<GestureHandlerRootView style={{ flex: 1 }}>
+				<KeyboardProvider>
+					<AppContent
+						readinessState={readinessState}
+						isAuthenticated={isAuthenticated}
+						shareModalVisible={shareModalVisible}
+						link={link}
+						setShareModalVisible={setShareModalVisible}
+						setLink={setLink}
+						reminderModalState={reminderModalState}
+					/>
+				</KeyboardProvider>
+			</GestureHandlerRootView>
+		</ThemeProvider>
+	);
+}
 
-						<View>
-							{/* Only render one modal at a time to avoid iOS conflicts */}
-							{reminderModalState.isVisible ? (
-								<ReminderModal />
-							) : (
-								<AddNewLinkModal
-									isNewLinkModalShown={shareModalVisible}
-									setIsNewLinkModalShown={setShareModalVisible}
-									link={link}
-									setLink={setLink}
-								/>
-							)}
-						</View>
-						<ToastManager />
-					</ApolloProvider>
-				</ThemeProvider>
-			</KeyboardProvider>
-		</GestureHandlerRootView>
+function AppContent({
+	readinessState,
+	isAuthenticated,
+	shareModalVisible,
+	link,
+	setShareModalVisible,
+	setLink,
+	reminderModalState,
+}: {
+	readinessState: any;
+	isAuthenticated: boolean;
+	shareModalVisible: boolean;
+	link: string;
+	setShareModalVisible: (visible: boolean) => void;
+	setLink: (link: string) => void;
+	reminderModalState: any;
+}) {
+	const colorScheme = useColorScheme();
+
+	return (
+		<NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+			<ApolloProvider client={client}>
+				<Stack>
+					<Stack.Screen name="index" options={{ headerShown: false }} />
+					<Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
+					<Stack.Screen
+						name="signin"
+						options={{
+							title: 'Sign In',
+							headerShown: true
+						}}
+					/>
+					<Stack.Screen name="dashboard" options={{ headerShown: false }} />
+					<Stack.Screen name="web-view" options={{ headerShown: false }} />
+					<Stack.Screen name="+not-found" />
+				</Stack>
+				<StatusBar style="auto" />
+
+				<View>
+					{/* Only render one modal at a time to avoid iOS conflicts */}
+					{reminderModalState.isVisible ? (
+						<ReminderModal />
+					) : (
+						<AddNewLinkModal
+							isNewLinkModalShown={shareModalVisible}
+							setIsNewLinkModalShown={setShareModalVisible}
+							link={link}
+							setLink={setLink}
+						/>
+					)}
+				</View>
+				<ToastManager />
+			</ApolloProvider>
+		</NavigationThemeProvider>
 	);
 }

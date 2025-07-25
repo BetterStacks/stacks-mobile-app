@@ -2,14 +2,12 @@ import React, {useState} from "react";
 import {
   ActivityIndicator,
   Alert,
-  Appearance,
   Image,
   ScrollView,
   StyleSheet,
   Switch,
   Text,
   TouchableOpacity,
-  useColorScheme,
   View,
 } from "react-native";
 import {useQuery} from "@apollo/client";
@@ -20,6 +18,8 @@ import {Ionicons} from "@expo/vector-icons";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {Toast} from "toastify-react-native";
 import DeleteAccountModal from "@/components/DeleteAccountModal";
+import {useColorScheme} from "@/hooks/useColorScheme";
+import {useTheme} from "@/contexts/ThemeContext";
 
 interface Identity {
   provider: string;
@@ -29,14 +29,24 @@ interface Identity {
   label: string;
 }
 
-const THEME_PREFERENCE_KEY = "theme_preference";
-
 export default function ProfileScreen() {
   const router = useRouter();
   const { data, loading, error } = useQuery(QUERY_USER);
   const colorScheme = useColorScheme();
+  const {toggleTheme: toggleThemeContext} = useTheme();
   const isDark = colorScheme === 'dark';
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
+  const handleToggleTheme = async () => {
+    try {
+      await toggleThemeContext();
+      const newTheme = isDark ? 'light' : 'dark';
+      Toast.success(`Switched to ${newTheme} mode`);
+    } catch (error) {
+      console.error('Failed to save theme preference:', error);
+      Toast.error('Failed to change theme');
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -133,16 +143,13 @@ export default function ProfileScreen() {
             <Text style={[isDark ? styles.detailText_dark : styles.detailText, styles.settingLabel]}>
               Dark Mode
             </Text>
-            {/* <Switch
+            <Switch
               value={isDark}
-              onValueChange={toggleTheme}
+              onValueChange={handleToggleTheme}
               trackColor={{ false: "#767577", true: "#1C4A5A" }}
               thumbColor={isDark ? "#4793E0" : "#f4f3f4"}
               ios_backgroundColor="#3e3e3e"
-            /> */}
-            <Switch value={colorScheme=='dark'} onChange={() => {
-              Appearance.setColorScheme(colorScheme=='dark' ? 'light' : 'dark')
-            }} />
+            />
           </View>
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>

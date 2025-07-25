@@ -1,6 +1,6 @@
-import {Appearance} from 'react-native';
+import {useTheme} from '@/contexts/ThemeContext';
 
 export function useColorScheme(): 'light' | 'dark' {
-  // Always return 'light' to force light mode throughout the app
-  return Appearance.getColorScheme() ?? 'light'
+  const {colorScheme} = useTheme();
+  return colorScheme;
 }
