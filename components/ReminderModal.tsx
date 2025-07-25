@@ -12,6 +12,7 @@ import metrics from "./design/metrics";
 
 export const ReminderModal = () => {
   const { isVisible, linkId } = useReactiveVar(isReminderModalVisibleVar);
+  
   const [dateTime, setDateTime] = useState(new Date());
   const [addReminder, { loading }] = useMutation(MUTATION_ADD_REMINDER);
 
@@ -65,7 +66,15 @@ export const ReminderModal = () => {
     <Modal
       isVisible={isVisible}
       onSwipeComplete={handleCloseModal}
-      onBackdropPress={handleCloseModal}>
+      onBackdropPress={handleCloseModal}
+      backdropColor="rgba(0,0,0,0.5)"
+      backdropOpacity={1}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
+      useNativeDriver={false}
+      hideModalContentWhileAnimating={false}
+      avoidKeyboard={true}
+    >
       <View style={styles.wrapper}>
         <View style={styles.content}>
           <TouchableOpacity style={styles.dateRow} onPress={handleTimePress}>

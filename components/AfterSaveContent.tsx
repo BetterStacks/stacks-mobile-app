@@ -112,7 +112,7 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 		});
 
 		closeParent();
-	}, [updateLink, newLinkData.id, notes, tags, selectedCollections]);
+	}, [updateLink, newLinkData.id, notes, tags, selectedCollections, closeParent]);
 
 	const handleCollectionButtonPress = () => {
 		Keyboard.dismiss();

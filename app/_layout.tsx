@@ -5,17 +5,18 @@ import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
 import {useCallback, useEffect} from 'react';
 import 'react-native-reanimated';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {useColorScheme} from '@/hooks/useColorScheme';
-import {ApolloProvider} from "@apollo/client";
+import {GestureHandlerRootView} from "react-native-gesture-handler";
+import {KeyboardProvider} from "react-native-keyboard-controller";
+import {ApolloProvider, useReactiveVar} from "@apollo/client";
 import client from "@/lib/apollo/client";
-import ToastManager from "toastify-react-native";
 import {AddNewLinkModal} from "@/components/AddNewLinkModal";
 import {ReminderModal} from "@/components/ReminderModal";
 import {View} from "react-native";
-import {KeyboardProvider} from "react-native-keyboard-controller";
+import ToastManager from "toastify-react-native";
 import {useShareIntentManager} from "@/hooks/useShareIntentManager";
+import {isReminderModalVisibleVar} from "@/lib/apollo/store";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -36,6 +37,9 @@ export default function RootLayout() {
 		setLink,
 		updateReadinessState,
 	} = useShareIntentManager();
+
+	// Get reminder modal state
+	const reminderModalState = useReactiveVar(isReminderModalVisibleVar);
 
 	// Apollo client readiness check
 	const checkApolloReadiness = useCallback(() => {
@@ -100,13 +104,17 @@ export default function RootLayout() {
 						<StatusBar style="auto" />
 
 						<View>
-							<AddNewLinkModal
-								isNewLinkModalShown={shareModalVisible}
-								setIsNewLinkModalShown={setShareModalVisible}
-								link={link}
-								setLink={setLink}
-							/>
-							<ReminderModal />
+							{/* Only render one modal at a time to avoid iOS conflicts */}
+							{reminderModalState.isVisible ? (
+								<ReminderModal />
+							) : (
+								<AddNewLinkModal
+									isNewLinkModalShown={shareModalVisible}
+									setIsNewLinkModalShown={setShareModalVisible}
+									link={link}
+									setLink={setLink}
+								/>
+							)}
 						</View>
 						<ToastManager />
 					</ApolloProvider>

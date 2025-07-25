@@ -28,20 +28,15 @@ export const AfterSaveButtons: React.FC<Props> = ({
   );
 
   const handleSharePressed = useCallback(() => {
-    handleSubmitChanges();
-
-    setTimeout(() => {
-      setShareModalInfo(true, linkId);
-    }, 500);
-  }, [handleSubmitChanges, linkId]);
+    // Show share modal - coordination handled in store
+    setShareModalInfo(true, linkId);
+  }, [linkId]);
 
   const handleRemindPressed = useCallback(() => {
-    handleSubmitChanges();
-
-    setTimeout(() => {
-      setIsReminderModalVisible(true, linkId);
-    }, 500);
-  }, [handleSubmitChanges, linkId]);
+    // Show reminder modal - coordination handled in store
+    console.log('[ReminderModal] Button pressed, linkId:', linkId);
+    setIsReminderModalVisible(true, linkId);
+  }, [linkId]);
 
   return (
     <View style={styles.container}>
