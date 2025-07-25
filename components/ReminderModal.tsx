@@ -1,5 +1,5 @@
 import Modal from "react-native-modal";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
 import {useCallback, useState} from "react";
 import {useMutation, useReactiveVar} from "@apollo/client";
 import {isReminderModalVisibleVar} from "@/lib/apollo/store";
@@ -12,6 +12,8 @@ import metrics from "./design/metrics";
 
 export const ReminderModal = () => {
   const { isVisible, linkId } = useReactiveVar(isReminderModalVisibleVar);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   
   const [dateTime, setDateTime] = useState(new Date());
   const [addReminder, { loading }] = useMutation(MUTATION_ADD_REMINDER);
@@ -75,10 +77,10 @@ export const ReminderModal = () => {
       hideModalContentWhileAnimating={false}
       avoidKeyboard={true}
     >
-      <View style={styles.wrapper}>
+      <View style={isDark ? styles.wrapper_dark : styles.wrapper}>
         <View style={styles.content}>
           <TouchableOpacity style={styles.dateRow} onPress={handleTimePress}>
-            <Text style={styles.text}>Set your time</Text>
+            <Text style={isDark ? styles.text_dark : styles.text}>Set your time</Text>
             {metrics.isIOS && (
               <DateTimePicker
                 testID="dateTimePicker"
@@ -90,14 +92,14 @@ export const ReminderModal = () => {
             )}
 
             {metrics.isAndroid && (
-              <Text style={styles.text}>{format(dateTime, "HH:mm")}</Text>
+              <Text style={isDark ? styles.text_dark : styles.text}>{format(dateTime, "HH:mm")}</Text>
             )}
           </TouchableOpacity>
 
-          <View style={styles.divider} />
+          <View style={isDark ? styles.divider_dark : styles.divider} />
 
           <TouchableOpacity style={styles.dateRow} onPress={handleDatePress}>
-            <Text style={styles.text}>Set your date</Text>
+            <Text style={isDark ? styles.text_dark : styles.text}>Set your date</Text>
 
             {metrics.isIOS && (
               <DateTimePicker
@@ -110,7 +112,7 @@ export const ReminderModal = () => {
             )}
 
             {metrics.isAndroid && (
-              <Text style={styles.text}>{format(dateTime, "dd/MMM/yyyy")}</Text>
+              <Text style={isDark ? styles.text_dark : styles.text}>{format(dateTime, "dd/MMM/yyyy")}</Text>
             )}
           </TouchableOpacity>
 
@@ -136,6 +138,12 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 20,
   },
+  wrapper_dark: {
+    backgroundColor: "#232323",
+    borderRadius: 16,
+    padding: 0,
+    margin: 20,
+  },
   content: {
     padding: 24,
   },
@@ -150,9 +158,19 @@ const styles = StyleSheet.create({
     color: "#1C4A5A",
     fontWeight: "500",
   },
+  text_dark: {
+    fontSize: 16,
+    color: "#FFFFFF",
+    fontWeight: "500",
+  },
   divider: {
     height: 1,
     backgroundColor: "#E5E5E5",
+    marginVertical: 8,
+  },
+  divider_dark: {
+    height: 1,
+    backgroundColor: "#444444",
     marginVertical: 8,
   },
   buttons: {
