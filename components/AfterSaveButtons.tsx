@@ -1,4 +1,4 @@
-import {StyleSheet, View} from "react-native";
+import {StyleSheet, useColorScheme, View} from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import {CommonButton} from "./CommonButton/CommonButton";
 import {useCallback} from "react";
@@ -17,6 +17,9 @@ export const AfterSaveButtons: React.FC<Props> = ({
   linkId,
   handleSubmitChanges,
 }) => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   const handleCheckboxPress = useCallback(
     (value: boolean) => {
       handleRememberChoice(value);
@@ -44,15 +47,15 @@ export const AfterSaveButtons: React.FC<Props> = ({
     <View style={styles.container}>
       <View style={styles.commonButtonsContainer}>
         <CommonButton
-          additionalButtonStyles={styles.buttonStyle}
-          additionalTextStyles={styles.buttonText}
+          additionalButtonStyles={isDark ? styles.buttonStyle_dark : styles.buttonStyle}
+          additionalTextStyles={isDark ? styles.buttonText_dark : styles.buttonText}
           text="Set a Reminder"
           onPress={handleRemindPressed}
         />
 
         <CommonButton
-          additionalButtonStyles={styles.buttonStyle}
-          additionalTextStyles={styles.buttonText}
+          additionalButtonStyles={isDark ? styles.buttonStyle_dark : styles.buttonStyle}
+          additionalTextStyles={isDark ? styles.buttonText_dark : styles.buttonText}
           text="Share to repository"
           onPress={handleSharePressed}
         />
@@ -62,10 +65,10 @@ export const AfterSaveButtons: React.FC<Props> = ({
         size={16}
         text="Remember your choice"
         style={styles.checkboxContainer}
-        fillColor="#E6E8EA"
-        innerIconStyle={styles.checkboxInnerStyle}
-        iconStyle={styles.checkboxInnerStyle}
-        textStyle={styles.checkboxTextStyle}
+        fillColor={isDark ? "#555555" : "#E6E8EA"}
+        innerIconStyle={isDark ? styles.checkboxInnerStyle_dark : styles.checkboxInnerStyle}
+        iconStyle={isDark ? styles.checkboxInnerStyle_dark : styles.checkboxInnerStyle}
+        textStyle={isDark ? styles.checkboxTextStyle_dark : styles.checkboxTextStyle}
         textContainerStyle={styles.checkboxTextContainerStyle}
         isChecked={isChoiceRemembered}
         onPress={handleCheckboxPress}
@@ -100,6 +103,22 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     textAlign: "center",
   },
+  buttonStyle_dark: {
+    flex: 1,
+    backgroundColor: "#333333",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#444444",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    minHeight: 48,
+  },
+  buttonText_dark: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "500",
+    textAlign: "center",
+  },
   checkboxContainer: {
     marginTop: 8,
     paddingVertical: 8,
@@ -109,9 +128,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E5E5E5",
   },
+  checkboxInnerStyle_dark: {
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#555555",
+  },
   checkboxTextStyle: {
     fontSize: 14,
     color: "#666666",
+    fontWeight: "400",
+    textDecorationLine: "none",
+  },
+  checkboxTextStyle_dark: {
+    fontSize: 14,
+    color: "#999999",
     fontWeight: "400",
     textDecorationLine: "none",
   },

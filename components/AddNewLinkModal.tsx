@@ -1,5 +1,5 @@
 import Modal from "react-native-modal";
-import {Dimensions, StyleSheet, View} from "react-native";
+import {Dimensions, StyleSheet, useColorScheme, View} from "react-native";
 import {useMutation} from "@apollo/client";
 import {useCallback, useEffect, useState} from "react";
 import {MUTATION_ADD_LINK} from "@/lib/api/graphql/mutations";
@@ -7,6 +7,7 @@ import client from "@/lib/apollo/client";
 import {setSharedLinkText} from "@/lib/apollo/store/handlers";
 import CommonInput from "@/components/CommonInput";
 import {Colors} from "@/components/design/colors";
+import {Colors as ConstantColors} from "@/constants/Colors";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {ModalButton} from "@/components/ModalButton";
 import {AfterSaveContent} from "@/components/AfterSaveContent";
@@ -19,6 +20,9 @@ type Props = {
 }
 
 export const AddNewLinkModal = ({isNewLinkModalShown, setIsNewLinkModalShown, link, setLink}: Props) => {
+	const colorScheme = useColorScheme();
+	const isDark = colorScheme === 'dark';
+	
 	// const [isUploadFilesModalVisible, setIsUploadFilesModalVisible] = useState(false);
 	const [isNewLinkFetched, setIsNewLinkFetched] = useState(false);
 	const [isNewLinkTouched, setIsNewLinkTouched] = useState(false);
@@ -98,7 +102,7 @@ export const AddNewLinkModal = ({isNewLinkModalShown, setIsNewLinkModalShown, li
 				onBackdropPress={handleCloseModal}
 				onModalHide={handleHideModal}
 			>
-				<View style={styles.container}>
+				<View style={isDark ? styles.container_dark : styles.container}>
 					{isNewLinkFetched && newLinkData ? (
 						<AfterSaveContent
 							handleCloseModal={handleCloseModal}
@@ -111,13 +115,14 @@ export const AddNewLinkModal = ({isNewLinkModalShown, setIsNewLinkModalShown, li
 								onChangeText={onChangeText}
 								placeholder="Add new link here"
 								value={link}
-								additionalInputStyles={styles.additionalInputStyles}
+								additionalInputStyles={isDark ? styles.additionalInputStyles_dark : styles.additionalInputStyles}
 								placeholderTextColor={
-									Colors.OtherColor.ModalInputPlaceholderTextColor
+									isDark ? "#8A8A8A" : Colors.OtherColor.ModalInputPlaceholderTextColor
 								}
-								iconName={<AntDesign name="link" size={20} color="black" />} // @ts-ignore
+								iconName={<AntDesign name="link" size={20} color={isDark ? "#8A8A8A" : "black"} />} // @ts-ignore
 								errors={newLinkError}
 								touched={isNewLinkTouched}
+								colorScheme={colorScheme}
 							/>
 							<View style={[styles.buttons]}>
 								<ModalButton
@@ -146,6 +151,12 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.OtherColor.UsualWhite,
 		borderRadius: 6,
 	},
+	container_dark: {
+		maxWidth: 500,
+		maxHeight: Dimensions.get('window').height * 0.9,
+		backgroundColor: ConstantColors.dark.background,
+		borderRadius: 6,
+	},
 	additionalStylesForContainer: {
 		paddingHorizontal: 10,
 		paddingTop: 18,
@@ -155,6 +166,11 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		borderWidth: 1,
 		borderColor: Colors.OtherColor.ModalInputBorderColor,
+	},
+	additionalInputStyles_dark: {
+		borderRadius: 12,
+		borderWidth: 1,
+		borderColor: "#404040",
 	},
 	buttons: {
 		flexDirection: "row",

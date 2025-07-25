@@ -1,5 +1,5 @@
 import {useCallback, useState} from "react";
-import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View} from "react-native";
 import {useMutation, useQuery} from "@apollo/client";
 import {Link} from "@/lib/types/Link";
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -24,20 +24,28 @@ const AfterSaveContentHeader = ({
 	handleCloseModal,
 }: {
 	handleCloseModal: () => void;
-}) => (
-	<View style={styles.header}>
-		<Text style={styles.headerText}>Link saved successfully!</Text>
-		<TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
-			<AntDesign name="close" size={20} color="black" />
-		</TouchableOpacity>
-	</View>
-);
+}) => {
+	const colorScheme = useColorScheme();
+	const isDark = colorScheme === 'dark';
+	
+	return (
+		<View style={styles.header}>
+			<Text style={isDark ? styles.headerText_dark : styles.headerText}>Link saved successfully!</Text>
+			<TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
+				<AntDesign name="close" size={20} color={isDark ? "#FFFFFF" : "black"} />
+			</TouchableOpacity>
+		</View>
+	);
+};
 
 export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 	handleCloseModal,
 	newLinkData,
 	closeParent
 }) => {
+	const colorScheme = useColorScheme();
+	const isDark = colorScheme === 'dark';
+	
 	const [notes, setNotes] = useState("");
 	const [selectedCollections, setSelectedCollections] = useState<string[]>([]);
 	const [tags, setTags] = useState<string[]>([]);
@@ -120,24 +128,24 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 	}, []);
 
 	return (
-		<ScrollView style={styles.container}>
+		<ScrollView style={isDark ? styles.container_dark : styles.container}>
 			<AfterSaveContentHeader handleCloseModal={handleCloseModal} />
 
 			<View style={styles.content}>
 				<View style={styles.section}>
-					<Text style={styles.sectionTitle}>Notes</Text>
+					<Text style={isDark ? styles.sectionTitle_dark : styles.sectionTitle}>Notes</Text>
 					<NotesInput
 						placeholder="Add notes..."
 						onChangeText={handleNotesChange}
 						value={notes}
 						multiline
 						numberOfLines={3}
-						additionalInputStyles={styles.notesInput}
+						additionalInputStyles={isDark ? styles.notesInput_dark : styles.notesInput}
 					/>
 				</View>
 
 				<View style={styles.section}>
-					<Text style={styles.sectionTitle}>Tags</Text>
+					<Text style={isDark ? styles.sectionTitle_dark : styles.sectionTitle}>Tags</Text>
 					<TagInput
 						tags={tags}
 						onTagsChange={handleTagsChange}
@@ -147,40 +155,40 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 				</View>
 
 				<View style={styles.section}>
-					<Text style={styles.sectionTitle}>Collections</Text>
+					<Text style={isDark ? styles.sectionTitle_dark : styles.sectionTitle}>Collections</Text>
 					<TouchableOpacity
 						style={[
-							styles.collectionButton,
-							isCollectionsExpanded && styles.collectionButtonExpanded,
+							isDark ? styles.collectionButton_dark : styles.collectionButton,
+							isCollectionsExpanded && (isDark ? styles.collectionButtonExpanded_dark : styles.collectionButtonExpanded),
 						]}
 						onPress={handleCollectionButtonPress}>
 						<View style={styles.collectionButtonContent}>
 							<View style={styles.collectionIconContainer}>
 								<AntDesign name="addfolder" size={20} color="#FFB74D" />
 							</View>
-							<Text style={styles.collectionText}>
+							<Text style={isDark ? styles.collectionText_dark : styles.collectionText}>
 								{selectedCollections.length > 0
 									? "Selected Collections"
 									: "Add to collection"}
 							</Text>
 						</View>
-						<Entypo name="chevron-right" size={20} color="#666666" style={[
+						<Entypo name="chevron-right" size={20} color={isDark ? "#999999" : "#666666"} style={[
 							styles.chevron,
 							isCollectionsExpanded && styles.chevronExpanded,
 						]} />
 					</TouchableOpacity>
 
 					{isCollectionsExpanded && (
-						<View style={styles.collectionsContainer}>
-							<View style={styles.searchContainer}>
-								<View style={styles.searchInputWrapper}>
-									<AntDesign name="search1" size={16} color="#999999" style={styles.searchIcon} />
+						<View style={isDark ? styles.collectionsContainer_dark : styles.collectionsContainer}>
+							<View style={isDark ? styles.searchContainer_dark : styles.searchContainer}>
+								<View style={isDark ? styles.searchInputWrapper_dark : styles.searchInputWrapper}>
+									<AntDesign name="search1" size={16} color={isDark ? "#666666" : "#999999"} style={styles.searchIcon} />
 									<TextInput
-										style={styles.searchInput}
+										style={isDark ? styles.searchInput_dark : styles.searchInput}
 										placeholder="Search collections..."
 										value={searchQuery}
 										onChangeText={handleSearch}
-										placeholderTextColor="#999999"
+										placeholderTextColor={isDark ? "#666666" : "#999999"}
 									/>
 								</View>
 							</View>
@@ -193,13 +201,13 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 										<View
 											key={collection.id}
 											style={[
-												styles.collectionItem,
-												isSelected && styles.selectedCollectionItem,
+												isDark ? styles.collectionItem_dark : styles.collectionItem,
+												isSelected && (isDark ? styles.selectedCollectionItem_dark : styles.selectedCollectionItem),
 											]}>
 											<TouchableOpacity
 												style={[
 													styles.collectionItemTouchable,
-													isSelected && styles.selectedCollectionItemTouchable,
+													isSelected && (isDark ? styles.selectedCollectionItemTouchable_dark : styles.selectedCollectionItemTouchable),
 												]}
 												onPress={() => handleCollectionSelect(collection)}>
 												<View style={styles.collectionItemContent}>
@@ -214,8 +222,8 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 													</View>
 													<Text
 														style={[
-															styles.collectionItemText,
-															isSelected && styles.selectedCollectionItemText,
+															isDark ? styles.collectionItemText_dark : styles.collectionItemText,
+															isSelected && (isDark ? styles.selectedCollectionItemText_dark : styles.selectedCollectionItemText),
 														]}>
 														{collection.title}
 													</Text>
@@ -233,7 +241,7 @@ export const AfterSaveContent: React.FC<AfterSaveContentProps> = ({
 														right: 10,
 													}}
 												>
-													<AntDesign name="close" size={20} color="#666666" />
+													<AntDesign name="close" size={20} color={isDark ? "#999999" : "#666666"} />
 												</TouchableOpacity>
 											)}
 										</View>
@@ -274,6 +282,12 @@ const styles = StyleSheet.create({
 		padding: 20,
 		width: "100%",
 	},
+	container_dark: {
+		backgroundColor: "#232323",
+		borderRadius: 16,
+		padding: 20,
+		width: "100%",
+	},
 	header: {
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -284,6 +298,11 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontWeight: "500",
 		color: "#232323",
+	},
+	headerText_dark: {
+		fontSize: 20,
+		fontWeight: "500",
+		color: "#FFFFFF",
 	},
 	closeButton: {
 		padding: 8,
@@ -300,6 +319,12 @@ const styles = StyleSheet.create({
 		color: "#666666",
 		marginBottom: 12,
 	},
+	sectionTitle_dark: {
+		fontSize: 16,
+		fontWeight: "600",
+		color: "#999999",
+		marginBottom: 12,
+	},
 	notesInput: {
 		minHeight: 80,
 		textAlignVertical: "top",
@@ -308,6 +333,16 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		borderWidth: 1,
 		borderColor: "#E5E5E5",
+		fontSize: 15,
+	},
+	notesInput_dark: {
+		minHeight: 80,
+		textAlignVertical: "top",
+		padding: 8,
+		backgroundColor: "#333333",
+		borderRadius: 8,
+		borderWidth: 1,
+		borderColor: "#444444",
 		fontSize: 15,
 	},
 	collectionButton: {
@@ -452,5 +487,81 @@ const styles = StyleSheet.create({
 	selectedCollectionItemText: {
 		color: '#1C4A5A',
 		fontWeight: '500',
+	},
+	collectionButton_dark: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		padding: 12,
+		borderWidth: 1,
+		borderColor: "#444444",
+		borderRadius: 8,
+		backgroundColor: "#333333",
+	},
+	collectionText_dark: {
+		fontSize: 16,
+		color: "#999999",
+		flex: 1,
+		marginRight: 8,
+	},
+	collectionsContainer_dark: {
+		borderWidth: 1,
+		borderTopWidth: 0,
+		borderColor: "#444444",
+		borderBottomLeftRadius: 8,
+		borderBottomRightRadius: 8,
+		maxHeight: 200,
+		backgroundColor: "#333333",
+	},
+	searchContainer_dark: {
+		padding: 12,
+		borderBottomWidth: 1,
+		borderBottomColor: '#444444',
+	},
+	searchInputWrapper_dark: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: '#444444',
+		borderRadius: 8,
+		borderWidth: 1,
+		borderColor: '#555555',
+		paddingHorizontal: 12,
+		paddingVertical: 8,
+	},
+	searchInput_dark: {
+		flex: 1,
+		height: 24,
+		padding: 0,
+		fontSize: 15,
+		color: '#999999',
+	},
+	collectionButtonExpanded_dark: {
+		borderBottomLeftRadius: 0,
+		borderBottomRightRadius: 0,
+	},
+	collectionItem_dark: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		backgroundColor: '#333333',
+		borderBottomWidth: 1,
+		borderBottomColor: '#444444',
+	},
+	selectedCollectionItem_dark: {
+		backgroundColor: '#444444',
+	},
+	collectionItemTouchable_dark: {
+		flex: 1,
+		padding: 12,
+	},
+	selectedCollectionItemTouchable_dark: {
+		backgroundColor: '#555555',
+	},
+	collectionItemText_dark: {
+		fontSize: 16,
+		color: '#999999',
+	},
+	selectedCollectionItemText_dark: {
+		color: '#D1E4E9',
 	},
 });
