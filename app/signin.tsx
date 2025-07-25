@@ -3,14 +3,14 @@ import {ApolloError, useMutation} from "@apollo/client";
 import client from "@/lib/apollo/client";
 import {MUTATION_SIGNIN, MUTATION_UPLOAD_PROFILE_IMAGE,} from "@/lib/api/graphql/mutations";
 import {
-  GestureResponderEvent,
-  Image,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View
+	GestureResponderEvent,
+	Image,
+	StatusBar,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	useColorScheme,
+	View
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import CommonInput from "@/components/CommonInput";
@@ -34,6 +34,7 @@ import {router} from "expo-router";
 import {Toast} from "toastify-react-native";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import Feather from '@expo/vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignInScreen = () => {
   const [isPasswordSecured, setIsPasswordSecured] = useState(true);
@@ -87,13 +88,40 @@ const SignInScreen = () => {
 
   // Apollo queries / mutations
   const [signIn, { loading: signInLoading }] = useMutation(MUTATION_SIGNIN, {
-    onCompleted: () => {
+    onCompleted: async () => {
       setTimeout(async () => {
         await client.refetchQueries({
           include: ["QUERY_USER"],
         });
       }, 1500);
-      router.replace("/dashboard");
+      
+      // Check for pending shared link after successful authentication
+      try {
+        const pendingLink = await AsyncStorage.getItem('pendingSharedLink');
+        if (pendingLink) {
+          console.log('[ShareIntent] Found pending shared link after signin:', pendingLink);
+          
+          // Clear the pending link
+          await AsyncStorage.removeItem('pendingSharedLink');
+          
+          // Navigate to dashboard
+          router.replace("/dashboard");
+          
+          // Show the share modal after navigation
+          setTimeout(() => {
+            // Use the global state to show the modal
+            // We'll need to create a way to trigger this from here
+            console.log('[ShareIntent] Would show modal for pending link:', pendingLink);
+            // For now, we'll store it in a way the layout can pick it up
+            AsyncStorage.setItem('immediateShareLink', pendingLink);
+          }, 500);
+        } else {
+          router.replace("/dashboard");
+        }
+      } catch (error) {
+        console.error('[ShareIntent] Error handling pending shared link:', error);
+        router.replace("/dashboard");
+      }
     },
   });
   const [uploadProfileImage] = useMutation(MUTATION_UPLOAD_PROFILE_IMAGE, {

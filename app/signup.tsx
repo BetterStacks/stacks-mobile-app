@@ -24,6 +24,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import {scaleHeight} from "@/components/design/scale";
 import {getFont} from "@/components/design/fonts/fonts";
 import {EFontWeight} from "@/components/design/fonts/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignupScreen = () => {
 	const [isPasswordSecured, setIsPasswordSecured] = useState(true);
@@ -32,13 +33,38 @@ const SignupScreen = () => {
 	const isDark = colorScheme === 'dark';
 
 	const [signUp, { loading }] = useMutation(MUTATION_SIGNUP, {
-		onCompleted: () => {
+		onCompleted: async () => {
 			setTimeout(async () => {
 				await client.refetchQueries({
 					include: ["QUERY_USER"],
 				});
 			}, 1500);
-			router.replace("/dashboard");
+			
+			// Check for pending shared link after successful authentication
+			try {
+				const pendingLink = await AsyncStorage.getItem('pendingSharedLink');
+				if (pendingLink) {
+					console.log('[ShareIntent] Found pending shared link after signup:', pendingLink);
+					
+					// Clear the pending link
+					await AsyncStorage.removeItem('pendingSharedLink');
+					
+					// Navigate to dashboard
+					router.replace("/dashboard");
+					
+					// Show the share modal after navigation
+					setTimeout(() => {
+						console.log('[ShareIntent] Would show modal for pending link:', pendingLink);
+						// Store it for the layout to pick up
+						AsyncStorage.setItem('immediateShareLink', pendingLink);
+					}, 500);
+				} else {
+					router.replace("/dashboard");
+				}
+			} catch (error) {
+				console.error('[ShareIntent] Error handling pending shared link:', error);
+				router.replace("/dashboard");
+			}
 		},
 	});
 

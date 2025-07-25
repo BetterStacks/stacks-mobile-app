@@ -1,57 +1,79 @@
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
-import {router, Stack} from 'expo-router';
+import {Stack} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect} from 'react';
 import 'react-native-reanimated';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {useColorScheme} from '@/hooks/useColorScheme';
 import {ApolloProvider} from "@apollo/client";
 import client from "@/lib/apollo/client";
-import {useShareIntent} from "expo-share-intent";
 import ToastManager from "toastify-react-native";
 import {AddNewLinkModal} from "@/components/AddNewLinkModal";
 import {ReminderModal} from "@/components/ReminderModal";
 import {View} from "react-native";
 import {KeyboardProvider} from "react-native-keyboard-controller";
+import {useShareIntentManager} from "@/hooks/useShareIntentManager";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-	const { hasShareIntent, shareIntent, resetShareIntent, error } = useShareIntent()
-	const colorScheme = useColorScheme(); // This will always return 'light' now
+	const colorScheme = useColorScheme();
 	const [loaded] = useFonts({
 		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
 	});
-	const [shareModalVisible, setShareModalVisible] = useState(false);
-	const [link, setLink] = useState('');
 
+	// Use our custom share intent manager hook
+	const {
+		readinessState,
+		isAuthenticated,
+		shareModalVisible,
+		link,
+		setShareModalVisible,
+		setLink,
+		updateReadinessState,
+	} = useShareIntentManager();
+
+	// Apollo client readiness check
+	const checkApolloReadiness = useCallback(() => {
+		try {
+			// Simple check to ensure Apollo client is initialized
+			if (client && client.cache) {
+				updateReadinessState({ apolloReady: true });
+				console.log('[ShareIntent Debug] Apollo client ready');
+			}
+		} catch (error) {
+			console.log('[ShareIntent Debug] Apollo client check failed', error);
+			// Set as ready anyway to not block the app
+			updateReadinessState({ apolloReady: true });
+		}
+	}, [updateReadinessState]);
+
+	// Monitor font loading and other readiness states
 	useEffect(() => {
 		if (loaded) {
+			updateReadinessState({ fontsLoaded: true });
 			SplashScreen.hideAsync();
+			console.log('[ShareIntent Debug] Fonts loaded');
 		}
-	}, [loaded]);
+	}, [loaded, updateReadinessState]);
 
 	useEffect(() => {
-		console.log('hasShareIntent', hasShareIntent);
-		console.log('shareIntent', shareIntent);
+		checkApolloReadiness();
 		
-		if (hasShareIntent && shareIntent?.type === 'weburl') {
-			setLink(shareIntent.webUrl!);
-			
-			// First navigate to dashboard, then show modal
-			router.replace('/dashboard');
-			
-			// Small delay to ensure navigation completes before showing modal
-			setTimeout(() => {
-				setShareModalVisible(true);
-			}, 100);
-		}
-	}, [hasShareIntent, shareIntent]);
+		// Check router readiness with a small delay to ensure it's initialized
+		const routerTimer = setTimeout(() => {
+			updateReadinessState({ routerReady: true });
+			console.log('[ShareIntent Debug] Router ready');
+		}, 100);
 
+		return () => clearTimeout(routerTimer);
+	}, [checkApolloReadiness, updateReadinessState]);
+
+	// Show loading screen until fonts are loaded (minimum requirement)
 	if (!loaded) {
 		return null;
 	}
@@ -68,7 +90,7 @@ export default function RootLayout() {
 								name="signin"
 								options={{
 									title: 'Sign In',
-									headerShown: true // or false based on your needs
+									headerShown: true
 								}}
 							/>
 							<Stack.Screen name="dashboard" options={{ headerShown: false }} />
