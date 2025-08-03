@@ -29,7 +29,9 @@ import {
 
 
 import {getChatCompletion, LinkContext, Message, MessageHistory, FileAttachment} from "@/lib/ai";
+import {generateImage} from "@/lib/ai/imageService";
 import {pickFiles, getFilePreview} from "@/lib/ai/utils/fileProcessing";
+import {isImageGenerationRequest, extractImagePrompt} from "@/lib/ai/utils/imagePromptDetector";
 import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
 
 export default function StacksAIScreen() {
@@ -82,6 +84,7 @@ export default function StacksAIScreen() {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const originalInputText = inputText;
     setInputText("");
     setSelectedAttachments([]);
     setIsLoading(true);
@@ -93,33 +96,53 @@ export default function StacksAIScreen() {
       isUser: false,
     });
 
-    const messageHistory: MessageHistory[] = messages.map(msg => ({
-      role: msg.isUser ? "user" : "assistant",
-      content: msg.text,
-    }));
-
     try {
-      const finalResponse = await getChatCompletion(
-        inputText,
-        aiToken,
-        partialResponse => {
-          setCurrentStreamingMessage(prev =>
-            prev ? { ...prev, text: partialResponse } : null,
-          );
-        },
-        selectedLinks,
-        messageHistory,
-        selectedAttachments,
-      );
+      // Check if this is an image generation request
+      if (isImageGenerationRequest(originalInputText)) {
+        setCurrentStreamingMessage(prev =>
+          prev ? { ...prev, text: "Generating image..." } : null,
+        );
 
-      setMessages(prev => [
-        ...prev,
-        {
+        const imagePrompt = extractImagePrompt(originalInputText);
+        const imageResult = await generateImage(imagePrompt, aiToken);
+
+        const aiMessage: Message = {
           id: streamingMessageId,
-          text: finalResponse,
+          text: `I've generated an image based on your prompt: "${imagePrompt}"`,
           isUser: false,
-        },
-      ]);
+          generatedImage: imageResult.image,
+        };
+
+        setMessages(prev => [...prev, aiMessage]);
+      } else {
+        // Regular chat completion
+        const messageHistory: MessageHistory[] = messages.map(msg => ({
+          role: msg.isUser ? "user" : "assistant",
+          content: msg.text,
+        }));
+
+        const finalResponse = await getChatCompletion(
+          originalInputText,
+          aiToken,
+          partialResponse => {
+            setCurrentStreamingMessage(prev =>
+              prev ? { ...prev, text: partialResponse } : null,
+            );
+          },
+          selectedLinks,
+          messageHistory,
+          selectedAttachments,
+        );
+
+        setMessages(prev => [
+          ...prev,
+          {
+            id: streamingMessageId,
+            text: finalResponse,
+            isUser: false,
+          },
+        ]);
+      }
 
       // Track successful AI interaction for review trigger
       await reviewTriggerService.trackAIInteraction();

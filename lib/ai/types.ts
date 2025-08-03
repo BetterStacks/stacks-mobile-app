@@ -25,9 +25,16 @@ export type FileAttachment = {
   mimeType: string;
 };
 
+export type GeneratedImage = {
+  base64: string;
+  mediaType: string;
+  prompt: string;
+};
+
 export type Message = {
   id: string;
   text: string;
   isUser: boolean;
   attachments?: FileAttachment[];
+  generatedImage?: GeneratedImage;
 }; 
