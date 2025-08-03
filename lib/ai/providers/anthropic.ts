@@ -1,4 +1,4 @@
-import { LinkContext, MessageHistory } from '../types';
+import { LinkContext, MessageHistory, FileAttachment } from '../types';
 import { AI_CONFIG } from '../config';
 
 export const anthropicProvider = {
@@ -8,30 +8,53 @@ export const anthropicProvider = {
     model: string,
     onPartialResponse: (text: string) => void,
     contextLinks?: LinkContext[],
-    messageHistory?: MessageHistory[]
+    messageHistory?: MessageHistory[],
+    attachments?: FileAttachment[]
   ): Promise<string> => {
     try {
       // Format context as part of user message
-      const userMessage = contextLinks?.length
+      const contextText = contextLinks?.length
         ? `Context:\n${contextLinks
             .map(
               link => `Title: ${link.title}
 Description: ${link.description}
 Content: ${link.link_content}`,
             )
-            .join("\n\n")}\n\nQuestion: ${message}`
-        : message;
+            .join("\n\n")}\n\n`
+        : "";
+      
+      const textContent = `${contextText}Question: ${message}`;
+
+      // Create user message content (multimodal if attachments exist)
+      const userContent = attachments?.length
+        ? [
+            ...attachments
+              .filter(att => att.type === 'image' && att.base64)
+              .map(att => ({
+                type: "image",
+                source: {
+                  type: "base64",
+                  media_type: att.mimeType,
+                  data: att.base64,
+                },
+              })),
+            {
+              type: "text",
+              text: textContent,
+            },
+          ]
+        : textContent;
 
       // Construct messages array with history
       const messages = [
         ...(messageHistory || []),
         {
           role: "user",
-          content: userMessage,
+          content: userContent,
         },
       ];
 
-      console.log("Anthropic - Final formatted message:", userMessage);
+      console.log("Anthropic - Final formatted message:", textContent);
 
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",

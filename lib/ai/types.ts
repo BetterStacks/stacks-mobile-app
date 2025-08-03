@@ -16,8 +16,18 @@ export type MessageHistory = {
   content: string;
 };
 
+export type FileAttachment = {
+  id: string;
+  name: string;
+  type: 'image' | 'pdf' | 'document';
+  uri: string;
+  base64?: string;
+  mimeType: string;
+};
+
 export type Message = {
   id: string;
   text: string;
   isUser: boolean;
+  attachments?: FileAttachment[];
 }; 

@@ -1,4 +1,4 @@
-import { AIToken, LinkContext, MessageHistory } from './types';
+import { AIToken, LinkContext, MessageHistory, FileAttachment } from './types';
 import { openAIProvider } from './providers/openai';
 import { anthropicProvider } from './providers/anthropic';
 
@@ -8,6 +8,7 @@ export const getChatCompletion = async (
   onPartialResponse: (text: string) => void,
   contextLinks?: LinkContext[],
   messageHistory?: MessageHistory[],
+  attachments?: FileAttachment[],
 ) => {
   try {
     const provider =
@@ -19,6 +20,7 @@ export const getChatCompletion = async (
       onPartialResponse,
       contextLinks,
       messageHistory,
+      attachments,
     );
   } catch (error) {
     console.error(`Error with ${aiToken.ai_provider}:`, error);
