@@ -141,6 +141,16 @@ export default function StacksAIScreen() {
     });
 
     try {
+      // Persist user message if we have a chat UUID (for subsequent messages after first)
+      if (chatUuid && !isNewChat) {
+        try {
+          await chatService.addMessage(chatUuid, originalInputText, 'user');
+          console.log('📚 User message saved to chat:', chatUuid);
+        } catch (error) {
+          console.error('❌ Failed to save user message:', error);
+        }
+      }
+
       // Check if this is an image generation request
       if (isImageGenerationRequest(originalInputText)) {
         setCurrentStreamingMessage(prev =>
@@ -158,6 +168,16 @@ export default function StacksAIScreen() {
         };
 
         setMessages(prev => [...prev, aiMessage]);
+        
+        // Persist assistant message for image generation
+        if (chatUuid) {
+          try {
+            await chatService.addMessage(chatUuid, aiMessage.text, 'assistant');
+            console.log('📚 Image generation message saved to chat:', chatUuid);
+          } catch (error) {
+            console.error('❌ Failed to save image generation message:', error);
+          }
+        }
       } else {
         // Regular chat completion
         const messageHistory: MessageHistory[] = messages.map(msg => ({
@@ -387,6 +407,11 @@ export default function StacksAIScreen() {
             setCurrentStreamingMessage={setCurrentStreamingMessage}
             setMessages={setMessages}
             colorScheme={colorScheme}
+            chatService={chatService}
+            currentChatUuid={currentChatUuid}
+            setCurrentChatUuid={setCurrentChatUuid}
+            isNewChat={isNewChat}
+            setIsNewChat={setIsNewChat}
           />
         ) : (
           <>
