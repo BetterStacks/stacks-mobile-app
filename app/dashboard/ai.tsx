@@ -78,6 +78,26 @@ export default function StacksAIScreen() {
     }
   }, [chatService.currentChatMessages]);
 
+  // Watch for chat data changes and update selected links (AI contexts)
+  useEffect(() => {
+    if (chatService.currentChat?.ai_contexts?.length > 0) {
+      const linkContexts = chatService.currentChat.ai_contexts
+        .filter((context: any) => context.contextable_type === 'RepositoryLink')
+        .map((context: any): LinkContext => ({
+          id: context.contextable.id,
+          title: context.contextable.title,
+          description: context.contextable.link_description || '',
+          link_content: context.contextable.link_content || '',
+        }));
+      
+      setSelectedLinks(linkContexts);
+      console.log('📚 AI contexts (links) loaded:', linkContexts.length, 'links');
+    } else if (chatService.currentChat) {
+      // Clear selected links if no contexts
+      setSelectedLinks([]);
+    }
+  }, [chatService.currentChat]);
+
   useEffect(() => {
     const keyboardWillShow = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
@@ -178,6 +198,18 @@ export default function StacksAIScreen() {
             console.error('❌ Failed to save image generation message:', error);
           }
         }
+        
+        // Persist AI context (selected links) for image generation if we have a chat UUID
+        if (chatUuid && selectedLinks.length > 0) {
+          try {
+            for (const link of selectedLinks) {
+              await chatService.addContext(chatUuid, 'link', 'RepositoryLink', link.id);
+              console.log('📚 AI context saved to chat:', chatUuid, link.title);
+            }
+          } catch (error) {
+            console.error('❌ Failed to save AI context:', error);
+          }
+        }
       } else {
         // Regular chat completion
         const messageHistory: MessageHistory[] = messages.map(msg => ({
@@ -234,6 +266,18 @@ export default function StacksAIScreen() {
             console.error('❌ Failed to save assistant message:', error);
           }
         }
+        
+        // Persist AI context (selected links) if we have a chat UUID
+        if (chatUuid && selectedLinks.length > 0) {
+          try {
+            for (const link of selectedLinks) {
+              await chatService.addContext(chatUuid, 'link', 'RepositoryLink', link.id);
+              console.log('📚 AI context saved to chat:', chatUuid, link.title);
+            }
+          } catch (error) {
+            console.error('❌ Failed to save AI context:', error);
+          }
+        }
       }
 
       // Track successful AI interaction for review trigger
@@ -286,6 +330,18 @@ export default function StacksAIScreen() {
       console.error('❌ Failed to load chat:', error);
     }
   }, [chatService]);
+
+  // Handle when current chat is deleted by checking if it still exists
+  useEffect(() => {
+    if (currentChatUuid && !chatService.chatsLoading) {
+      const chatExists = chatService.chats.some(chat => chat.chat_uuid === currentChatUuid);
+      if (!chatExists && chatService.chats.length >= 0) {
+        // Current chat was deleted, start a new chat
+        handleNewChat();
+        console.log('📚 Current chat was deleted, started new chat');
+      }
+    }
+  }, [chatService.chats, currentChatUuid, chatService.chatsLoading, handleNewChat]);
 
   const handleMessageSend = useCallback((userMessageText: string, aiResponseText: string) => {
     const userMessage: Message = {

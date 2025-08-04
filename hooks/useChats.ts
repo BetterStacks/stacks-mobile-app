@@ -7,6 +7,7 @@ import {
   MUTATION_CREATE_CHAT, 
   MUTATION_ADD_CHAT_MESSAGE,
   MUTATION_ADD_AI_CONTEXT,
+  MUTATION_DELETE_CHAT,
   Chat, 
   ChatMessage,
   AIContext
@@ -28,6 +29,7 @@ export interface UseChatsReturn {
   createChat: (title: string, firstMessage: string) => Promise<string>
   addMessage: (chatUuid: string, content: string, role: 'user' | 'assistant', metadata?: any) => Promise<void>
   addContext: (chatUuid: string, contextType: string, contextableType: string, contextableId: string) => Promise<void>
+  deleteChat: (chatUuid: string) => Promise<void>
   loadChat: (chatUuid: string) => void
   refetchChats: () => void
 }
@@ -52,6 +54,7 @@ export const useChats = (): UseChatsReturn => {
   const [createChatMutation] = useMutation(MUTATION_CREATE_CHAT())
   const [addChatMessageMutation] = useMutation(MUTATION_ADD_CHAT_MESSAGE())
   const [addAiContextMutation] = useMutation(MUTATION_ADD_AI_CONTEXT())
+  const [deleteChatMutation] = useMutation(MUTATION_DELETE_CHAT())
 
   const createChat = async (title: string, firstMessage: string): Promise<string> => {
     const chatId = uuid.v4() as string
@@ -130,6 +133,27 @@ export const useChats = (): UseChatsReturn => {
     }
   }
 
+  const deleteChat = async (chatUuid: string): Promise<void> => {
+    try {
+      const result = await deleteChatMutation({
+        variables: {
+          chat_uuid: chatUuid
+        },
+        // Optimistically update the cache by refetching chats
+        refetchQueries: [{ query: QUERY_CHATS() }]
+      })
+      
+      if (result.data?.delete_chat) {
+        console.log('🗑️ Chat deleted successfully:', chatUuid)
+      } else {
+        throw new Error('Delete operation returned false')
+      }
+    } catch (error) {
+      console.error('❌ Error deleting chat:', error)
+      throw error
+    }
+  }
+
   const loadChat = (chatUuid: string) => {
     // Use lazy query to load chat
     loadChatQuery({
@@ -153,6 +177,7 @@ export const useChats = (): UseChatsReturn => {
     createChat,
     addMessage,
     addContext,
+    deleteChat,
     loadChat,
     refetchChats
   }

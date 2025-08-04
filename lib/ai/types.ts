@@ -6,6 +6,7 @@ export type AIToken = {
 };
 
 export type LinkContext = {
+  id: string;
   title: string;
   description: string;
   link_content: string;

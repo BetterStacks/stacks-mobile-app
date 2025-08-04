@@ -297,3 +297,9 @@ export const MUTATION_ADD_AI_CONTEXT = () => gql`
     }
   }
 `
+
+export const MUTATION_DELETE_CHAT = () => gql`
+  mutation Delete_chat($chat_uuid: String!) {
+    delete_chat(input: {chat_uuid: $chat_uuid})
+  }
+`

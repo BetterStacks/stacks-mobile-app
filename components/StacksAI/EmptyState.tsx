@@ -126,6 +126,18 @@ const EmptyState = ({
           console.error('❌ Failed to save assistant message:', error);
         }
       }
+      
+      // Persist AI context (selected links) if we have a chat UUID
+      if (chatUuid && selectedLinks.length > 0) {
+        try {
+          for (const link of selectedLinks) {
+            await chatService.addContext(chatUuid, 'link', 'RepositoryLink', link.id);
+            console.log('📚 AI context saved to chat:', chatUuid, link.title);
+          }
+        } catch (error) {
+          console.error('❌ Failed to save AI context:', error);
+        }
+      }
 
       // Track successful AI interaction for review trigger
       await reviewTriggerService.trackAIInteraction();
