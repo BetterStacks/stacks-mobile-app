@@ -14,6 +14,7 @@ import {
 import {SafeAreaView} from "react-native-safe-area-context";
 import Animated, {useAnimatedStyle, useSharedValue} from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import {Ionicons} from "@expo/vector-icons";
 import {useQuery} from "@apollo/client";
 import {QUERY_USER} from "@/lib/api/graphql/queries";
 import BottomDrawer from "@/components/BottomDrawer/BottomDrawer";
@@ -26,13 +27,15 @@ import {
 	styles,
 	ViewContextDrawer
 } from "@/components/StacksAI";
-
+import ChatHistoryDrawer from "@/components/StacksAI/ChatHistoryDrawer";
 
 import {getChatCompletion, LinkContext, Message, MessageHistory, FileAttachment} from "@/lib/ai";
 import {generateImage} from "@/lib/ai/imageService";
 import {pickFiles, getFilePreview} from "@/lib/ai/utils/fileProcessing";
 import {isImageGenerationRequest, extractImagePrompt} from "@/lib/ai/utils/imagePromptDetector";
 import {reviewTriggerService} from "@/lib/services/reviewTriggerService";
+import {useChats} from "@/hooks/useChats";
+import {Chat} from "@/lib/api/graphql/chats";
 
 export default function StacksAIScreen() {
   const colorScheme = useColorScheme();
@@ -48,10 +51,32 @@ export default function StacksAIScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [isResourcesDrawerVisible, setIsResourcesDrawerVisible] = useState(false);
   const [isViewContextDrawerVisible, setIsViewContextDrawerVisible] = useState(false);
+  const [isChatHistoryDrawerVisible, setIsChatHistoryDrawerVisible] = useState(false);
   const [currentStreamingMessage, setCurrentStreamingMessage] =
     useState<Message | null>(null);
   const [selectedLinks, setSelectedLinks] = useState<LinkContext[]>([]);
   const [selectedAttachments, setSelectedAttachments] = useState<FileAttachment[]>([]);
+  
+  // Chat persistence state
+  const [currentChatUuid, setCurrentChatUuid] = useState<string | null>(null);
+  const [isNewChat, setIsNewChat] = useState(true);
+  
+  // Chat persistence hook
+  const chatService = useChats();
+
+  // Watch for chat data changes and update messages
+  useEffect(() => {
+    if (chatService.currentChatMessages?.length > 0) {
+      const chatMessages = chatService.currentChatMessages.map((msg): Message => ({
+        id: msg.chat_message_uuid,
+        text: msg.content,
+        isUser: msg.role === 'user'
+      }));
+      
+      setMessages(chatMessages);
+      console.log('📚 Chat messages loaded:', chatMessages.length, 'messages');
+    }
+  }, [chatService.currentChatMessages]);
 
   useEffect(() => {
     const keyboardWillShow = Keyboard.addListener(
@@ -88,6 +113,25 @@ export default function StacksAIScreen() {
     setInputText("");
     setSelectedAttachments([]);
     setIsLoading(true);
+    
+    // Create chat if this is the first message
+    let chatUuid = currentChatUuid;
+    if (isNewChat && !chatUuid) {
+      try {
+        const title = originalInputText.length > 50 
+          ? originalInputText.substring(0, 47) + "..." 
+          : originalInputText;
+        
+        console.log('📚 Creating new chat with title:', title);
+        chatUuid = await chatService.createChat(title, originalInputText);
+        setCurrentChatUuid(chatUuid);
+        setIsNewChat(false);
+        console.log('📚 Chat created successfully:', chatUuid);
+      } catch (error) {
+        console.error('❌ Failed to create chat:', error);
+        // Continue without persistence if chat creation fails
+      }
+    }
 
     const streamingMessageId = (Date.now() + 1).toString();
     setCurrentStreamingMessage({
@@ -160,6 +204,16 @@ export default function StacksAIScreen() {
             isUser: false,
           },
         ]);
+        
+        // Persist assistant message if we have a chat UUID
+        if (chatUuid) {
+          try {
+            await chatService.addMessage(chatUuid, finalResponse, 'assistant');
+            console.log('📚 Assistant message saved to chat:', chatUuid);
+          } catch (error) {
+            console.error('❌ Failed to save assistant message:', error);
+          }
+        }
       }
 
       // Track successful AI interaction for review trigger
@@ -186,7 +240,32 @@ export default function StacksAIScreen() {
     setMessages([]);
     setSelectedLinks([]);
     setSelectedAttachments([]);
+    setCurrentChatUuid(null);
+    setIsNewChat(true);
+    console.log('📚 Started new chat');
   }, []);
+
+  const handleChatSelect = useCallback(async (chat: Chat) => {
+    try {
+      console.log('📚 Loading chat:', chat.chat_uuid, chat.title);
+      
+      // Close the drawer first
+      setIsChatHistoryDrawerVisible(false);
+      
+      // Set current chat immediately
+      setCurrentChatUuid(chat.chat_uuid);
+      setIsNewChat(false);
+      setSelectedLinks([]);
+      setSelectedAttachments([]);
+      
+      // Load the chat messages (this will trigger the query)
+      chatService.loadChat(chat.chat_uuid);
+      
+      console.log('📚 Chat loading initiated:', chat.chat_uuid);
+    } catch (error) {
+      console.error('❌ Failed to load chat:', error);
+    }
+  }, [chatService]);
 
   const handleMessageSend = useCallback((userMessageText: string, aiResponseText: string) => {
     const userMessage: Message = {
@@ -224,6 +303,10 @@ export default function StacksAIScreen() {
 
   const handleCloseViewContextDrawer = useCallback(() => {
     setIsViewContextDrawerVisible(false);
+  }, []);
+
+  const handleCloseChatHistoryDrawer = useCallback(() => {
+    setIsChatHistoryDrawerVisible(false);
   }, []);
 
   const handlePickFiles = useCallback(async () => {
@@ -270,6 +353,12 @@ export default function StacksAIScreen() {
               </View>
             </TouchableOpacity>
           )}
+          <TouchableOpacity 
+            style={isDark ? styles.headerButton__dark : styles.headerButton} 
+            onPress={() => setIsChatHistoryDrawerVisible(true)}
+          >
+            <Ionicons name="time-outline" size={18} color={isDark ? "#A0B3BC" : "#333"} />
+          </TouchableOpacity>
           <TouchableOpacity 
             style={isDark ? styles.headerButton__dark : styles.headerButton} 
             onPress={handleNewChat}
@@ -504,6 +593,19 @@ export default function StacksAIScreen() {
             <ViewContextDrawer
               links={selectedLinks}
               onClose={handleCloseViewContextDrawer}
+              colorScheme={colorScheme}
+            />
+          }
+        />
+      </View>
+      
+      <View style={{position: 'absolute'}}>
+        <BottomDrawer 
+          isVisible={isChatHistoryDrawerVisible}
+          onClose={handleCloseChatHistoryDrawer}
+          customContent={
+            <ChatHistoryDrawer
+              onChatSelect={handleChatSelect}
               colorScheme={colorScheme}
             />
           }
