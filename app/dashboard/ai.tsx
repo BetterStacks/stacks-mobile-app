@@ -121,6 +121,20 @@ export default function StacksAIScreen() {
           content: msg.text,
         }));
 
+        // Debug selected attachments
+        console.log('📱 Selected attachments before API call:', selectedAttachments?.length || 0);
+        if (selectedAttachments?.length) {
+          selectedAttachments.forEach((att, index) => {
+            console.log(`📱 Attachment ${index + 1}:`, {
+              name: att.name,
+              type: att.type,
+              mimeType: att.mimeType,
+              hasBase64: !!att.base64,
+              base64Length: att.base64?.length || 0,
+            });
+          });
+        }
+
         const finalResponse = await getChatCompletion(
           originalInputText,
           aiToken,

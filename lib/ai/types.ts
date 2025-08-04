@@ -1,6 +1,6 @@
 export type AIToken = {
   ai_preferred_model: string;
-  ai_provider: 'openai' | 'anthropic';
+  ai_provider: 'openai' | 'anthropic' | 'gemini';
   id: string;
   token: string;
 };
