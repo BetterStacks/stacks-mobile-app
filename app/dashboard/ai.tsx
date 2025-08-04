@@ -74,13 +74,13 @@ export default function StacksAIScreen() {
       }));
       
       setMessages(chatMessages);
-      console.log('📚 Chat messages loaded:', chatMessages.length, 'messages');
+      // Chat messages loaded from persistence
     }
   }, [chatService.currentChatMessages]);
 
   // Watch for chat data changes and update selected links (AI contexts)
   useEffect(() => {
-    if (chatService.currentChat?.ai_contexts?.length > 0) {
+    if (chatService.currentChat?.ai_contexts && chatService.currentChat.ai_contexts.length > 0) {
       const linkContexts = chatService.currentChat.ai_contexts
         .filter((context: any) => context.contextable_type === 'RepositoryLink')
         .map((context: any): LinkContext => ({
@@ -91,7 +91,7 @@ export default function StacksAIScreen() {
         }));
       
       setSelectedLinks(linkContexts);
-      console.log('📚 AI contexts (links) loaded:', linkContexts.length, 'links');
+      // AI contexts (links) loaded from persistence
     } else if (chatService.currentChat) {
       // Clear selected links if no contexts
       setSelectedLinks([]);
@@ -142,13 +142,12 @@ export default function StacksAIScreen() {
           ? originalInputText.substring(0, 47) + "..." 
           : originalInputText;
         
-        console.log('📚 Creating new chat with title:', title);
+        // Creating new chat
         chatUuid = await chatService.createChat(title, originalInputText);
         setCurrentChatUuid(chatUuid);
         setIsNewChat(false);
-        console.log('📚 Chat created successfully:', chatUuid);
+        // Chat created successfully
       } catch (error) {
-        console.error('❌ Failed to create chat:', error);
         // Continue without persistence if chat creation fails
       }
     }
@@ -165,9 +164,9 @@ export default function StacksAIScreen() {
       if (chatUuid && !isNewChat) {
         try {
           await chatService.addMessage(chatUuid, originalInputText, 'user');
-          console.log('📚 User message saved to chat:', chatUuid);
+          // User message saved to chat
         } catch (error) {
-          console.error('❌ Failed to save user message:', error);
+          // Failed to save user message
         }
       }
 
@@ -193,9 +192,9 @@ export default function StacksAIScreen() {
         if (chatUuid) {
           try {
             await chatService.addMessage(chatUuid, aiMessage.text, 'assistant');
-            console.log('📚 Image generation message saved to chat:', chatUuid);
+            // Image generation message saved to chat
           } catch (error) {
-            console.error('❌ Failed to save image generation message:', error);
+            // Failed to save image generation message
           }
         }
         
@@ -204,10 +203,10 @@ export default function StacksAIScreen() {
           try {
             for (const link of selectedLinks) {
               await chatService.addContext(chatUuid, 'link', 'RepositoryLink', link.id);
-              console.log('📚 AI context saved to chat:', chatUuid, link.title);
+              // AI context saved to chat
             }
           } catch (error) {
-            console.error('❌ Failed to save AI context:', error);
+            // Failed to save AI context
           }
         }
       } else {
@@ -217,19 +216,7 @@ export default function StacksAIScreen() {
           content: msg.text,
         }));
 
-        // Debug selected attachments
-        console.log('📱 Selected attachments before API call:', selectedAttachments?.length || 0);
-        if (selectedAttachments?.length) {
-          selectedAttachments.forEach((att, index) => {
-            console.log(`📱 Attachment ${index + 1}:`, {
-              name: att.name,
-              type: att.type,
-              mimeType: att.mimeType,
-              hasBase64: !!att.base64,
-              base64Length: att.base64?.length || 0,
-            });
-          });
-        }
+        // Processing selected attachments for API call
 
         const finalResponse = await getChatCompletion(
           originalInputText,
@@ -261,9 +248,9 @@ export default function StacksAIScreen() {
         if (chatUuid) {
           try {
             await chatService.addMessage(chatUuid, finalResponse, 'assistant');
-            console.log('📚 Assistant message saved to chat:', chatUuid);
+            // Assistant message saved to chat
           } catch (error) {
-            console.error('❌ Failed to save assistant message:', error);
+            // Failed to save assistant message
           }
         }
         
@@ -272,10 +259,10 @@ export default function StacksAIScreen() {
           try {
             for (const link of selectedLinks) {
               await chatService.addContext(chatUuid, 'link', 'RepositoryLink', link.id);
-              console.log('📚 AI context saved to chat:', chatUuid, link.title);
+              // AI context saved to chat
             }
           } catch (error) {
-            console.error('❌ Failed to save AI context:', error);
+            // Failed to save AI context
           }
         }
       }
@@ -306,12 +293,12 @@ export default function StacksAIScreen() {
     setSelectedAttachments([]);
     setCurrentChatUuid(null);
     setIsNewChat(true);
-    console.log('📚 Started new chat');
+    // Started new chat
   }, []);
 
   const handleChatSelect = useCallback(async (chat: Chat) => {
     try {
-      console.log('📚 Loading chat:', chat.chat_uuid, chat.title);
+      // Loading chat
       
       // Close the drawer first
       setIsChatHistoryDrawerVisible(false);
@@ -325,9 +312,9 @@ export default function StacksAIScreen() {
       // Load the chat messages (this will trigger the query)
       chatService.loadChat(chat.chat_uuid);
       
-      console.log('📚 Chat loading initiated:', chat.chat_uuid);
+      // Chat loading initiated
     } catch (error) {
-      console.error('❌ Failed to load chat:', error);
+      // Failed to load chat
     }
   }, [chatService]);
 
@@ -338,7 +325,7 @@ export default function StacksAIScreen() {
       if (!chatExists && chatService.chats.length >= 0) {
         // Current chat was deleted, start a new chat
         handleNewChat();
-        console.log('📚 Current chat was deleted, started new chat');
+        // Current chat was deleted, started new chat
       }
     }
   }, [chatService.chats, currentChatUuid, chatService.chatsLoading, handleNewChat]);

@@ -21,7 +21,7 @@ const CustomToast: React.FC<CustomToastProps> = ({
   visible,
   message,
   type = 'success',
-  duration = 4500,
+  duration = 3500, // Default 4.5 seconds
   onHide,
   colorScheme,
 }) => {
@@ -31,8 +31,6 @@ const CustomToast: React.FC<CustomToastProps> = ({
 
   useEffect(() => {
     if (visible) {
-      console.log('🍞 Toast showing, duration:', duration);
-      
       // Reset animation values
       slideAnim.setValue(100);
       opacityAnim.setValue(0);
@@ -53,12 +51,10 @@ const CustomToast: React.FC<CustomToastProps> = ({
 
       // Auto hide after duration
       const timer = setTimeout(() => {
-        console.log('🍞 Toast hiding after', duration, 'ms');
         hideToast();
       }, duration);
 
       return () => {
-        console.log('🍞 Toast timer cleared');
         clearTimeout(timer);
       };
     } else {
@@ -69,7 +65,6 @@ const CustomToast: React.FC<CustomToastProps> = ({
   }, [visible, duration]);
 
   const hideToast = () => {
-    console.log('🍞 Starting hide animation');
     Animated.parallel([
       Animated.timing(slideAnim, {
         toValue: 100,
@@ -82,7 +77,6 @@ const CustomToast: React.FC<CustomToastProps> = ({
         useNativeDriver: true,
       }),
     ]).start(() => {
-      console.log('🍞 Hide animation complete, calling onHide');
       onHide();
     });
   };

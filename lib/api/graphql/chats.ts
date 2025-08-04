@@ -6,6 +6,8 @@ export type Chat = {
   id: string
   title: string
   updated_at: string
+  chat_messages?: ChatMessage[]
+  ai_contexts?: AIContext[]
 }
 
 export type ChatMessage = {

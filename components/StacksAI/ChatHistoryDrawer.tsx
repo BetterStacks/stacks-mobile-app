@@ -59,9 +59,7 @@ const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
         setDeletingChatId(chat.chat_uuid)
         await deleteChat(chat.chat_uuid)
         showToast('Chat deleted successfully')
-        console.log('🗑️ Chat deleted successfully:', chat.title)
       } catch (error) {
-        console.error('❌ Failed to delete chat:', error)
         showToast('Failed to delete chat', 'error')
         // Show error alert
         setAlertConfig({

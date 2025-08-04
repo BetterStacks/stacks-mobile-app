@@ -62,13 +62,10 @@ const EmptyState = ({
           ? suggestionText.substring(0, 47) + "..." 
           : suggestionText;
         
-        console.log('📚 Creating new chat with title:', title);
         chatUuid = await chatService.createChat(title, suggestionText);
         setCurrentChatUuid(chatUuid);
         setIsNewChat(false);
-        console.log('📚 Chat created successfully:', chatUuid);
       } catch (error) {
-        console.error('❌ Failed to create chat:', error);
         // Continue without persistence if chat creation fails
       }
     }
@@ -86,9 +83,8 @@ const EmptyState = ({
       if (chatUuid && !isNewChat) {
         try {
           await chatService.addMessage(chatUuid, suggestionText, 'user');
-          console.log('📚 User message saved to chat:', chatUuid);
         } catch (error) {
-          console.error('❌ Failed to save user message:', error);
+          // Failed to save user message
         }
       }
 
@@ -121,9 +117,8 @@ const EmptyState = ({
       if (chatUuid) {
         try {
           await chatService.addMessage(chatUuid, finalResponse, 'assistant');
-          console.log('📚 Assistant message saved to chat:', chatUuid);
         } catch (error) {
-          console.error('❌ Failed to save assistant message:', error);
+          // Failed to save assistant message
         }
       }
       
@@ -132,17 +127,15 @@ const EmptyState = ({
         try {
           for (const link of selectedLinks) {
             await chatService.addContext(chatUuid, 'link', 'RepositoryLink', link.id);
-            console.log('📚 AI context saved to chat:', chatUuid, link.title);
           }
         } catch (error) {
-          console.error('❌ Failed to save AI context:', error);
+          // Failed to save AI context
         }
       }
 
       // Track successful AI interaction for review trigger
       await reviewTriggerService.trackAIInteraction();
     } catch (error) {
-      console.error("Error getting AI response:", error);
       
       // Clear streaming message first
       setCurrentStreamingMessage(null);
