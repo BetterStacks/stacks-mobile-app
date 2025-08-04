@@ -148,6 +148,10 @@ export default function StacksAIScreen() {
           selectedAttachments,
         );
 
+        // Clear streaming message first to prevent flicker
+        setCurrentStreamingMessage(null);
+        
+        // Then add the final message
         setMessages(prev => [
           ...prev,
           {
@@ -162,6 +166,11 @@ export default function StacksAIScreen() {
       await reviewTriggerService.trackAIInteraction();
     } catch (error) {
       console.error("Error getting AI response:", error);
+      
+      // Clear streaming message first
+      setCurrentStreamingMessage(null);
+      
+      // Then add error message
       const errorMessage: Message = {
         id: streamingMessageId,
         text: "Sorry, I encountered an error. Please try again.",
@@ -170,7 +179,6 @@ export default function StacksAIScreen() {
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
-      setCurrentStreamingMessage(null);
     }
   };
 
