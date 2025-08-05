@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
-import { useState, useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import uuid from 'react-native-uuid'
 import { 
   QUERY_CHATS, 
@@ -8,9 +8,10 @@ import {
   MUTATION_ADD_CHAT_MESSAGE,
   MUTATION_ADD_AI_CONTEXT,
   MUTATION_DELETE_CHAT,
+  MUTATION_ADD_FILE,
+  MUTATION_UPDATE_CHAT_MESSAGE,
   Chat, 
-  ChatMessage,
-  AIContext
+  ChatMessage
 } from '../lib/api/graphql/chats'
 
 export interface UseChatsReturn {
@@ -32,6 +33,8 @@ export interface UseChatsReturn {
   deleteChat: (chatUuid: string) => Promise<void>
   loadChat: (chatUuid: string) => void
   refetchChats: () => void
+  addFile: (file: any) => Promise<{ title: string; target_url: string }>
+  updateChatMessage: (chatMessageUuid: string, metadata: any) => Promise<void>
 }
 
 export const useChats = (): UseChatsReturn => {
@@ -55,8 +58,10 @@ export const useChats = (): UseChatsReturn => {
   const [addChatMessageMutation] = useMutation(MUTATION_ADD_CHAT_MESSAGE())
   const [addAiContextMutation] = useMutation(MUTATION_ADD_AI_CONTEXT())
   const [deleteChatMutation] = useMutation(MUTATION_DELETE_CHAT())
+  const [addFileMutation] = useMutation(MUTATION_ADD_FILE)
+  const [updateChatMessageMutation] = useMutation(MUTATION_UPDATE_CHAT_MESSAGE)
 
-  const createChat = async (title: string, firstMessage: string): Promise<string> => {
+  const createChat = useCallback(async (title: string, firstMessage: string): Promise<string> => {
     const chatId = uuid.v4() as string
     
     try {
@@ -72,15 +77,14 @@ export const useChats = (): UseChatsReturn => {
         awaitRefetchQueries: true
       })
       
-      console.log('📚 Chat created:', result.data?.create_chat?.chat_uuid)
       return result.data?.create_chat?.chat_uuid || chatId
     } catch (error) {
       console.error('❌ Error creating chat:', error)
       throw error
     }
-  }
+  }, [createChatMutation])
 
-  const addMessage = async (
+  const addMessage = useCallback(async (
     chatUuid: string, 
     content: string, 
     role: 'user' | 'assistant', 
@@ -101,14 +105,12 @@ export const useChats = (): UseChatsReturn => {
         }] : []
       })
       
-      // console.log('💬 Message added to chat:', chatUuid, role)
     } catch (error) {
-      // console.error('❌ Error adding message:', error)
       throw error
     }
-  }
+  }, [addChatMessageMutation, currentChatData])
 
-  const addContext = async (
+  const addContext = useCallback(async (
     chatUuid: string,
     contextType: string,
     contextableType: string,
@@ -129,14 +131,12 @@ export const useChats = (): UseChatsReturn => {
         }] : []
       })
       
-      // console.log('🔗 Context added to chat:', chatUuid, contextType)
     } catch (error) {
-      // console.error('❌ Error adding context:', error)
       throw error
     }
-  }
+  }, [addAiContextMutation, currentChatData])
 
-  const deleteChat = async (chatUuid: string): Promise<void> => {
+  const deleteChat = useCallback(async (chatUuid: string): Promise<void> => {
     try {
       const result = await deleteChatMutation({
         variables: {
@@ -147,22 +147,53 @@ export const useChats = (): UseChatsReturn => {
       })
       
       if (result.data?.delete_chat) {
-        // console.log('🗑️ Chat deleted successfully:', chatUuid)
       } else {
         throw new Error('Delete operation returned false')
       }
     } catch (error) {
-      // console.error('❌ Error deleting chat:', error)
       throw error
     }
-  }
+  }, [deleteChatMutation])
 
-  const loadChat = (chatUuid: string) => {
+  const loadChat = useCallback((chatUuid: string) => {
     // Use lazy query to load chat
     loadChatQuery({
       variables: { chatUuid }
     })
-  }
+  }, [loadChatQuery])
+
+  const addFile = useCallback(async (file: any): Promise<{ title: string; target_url: string }> => {
+    try {
+      const result = await addFileMutation({
+        variables: { file },
+        context: {
+          hasUpload: true // Enable custom upload handling for single file
+        }
+      })
+      
+      return {
+        title: result.data?.add_file?.title || '',
+        target_url: result.data?.add_file?.target_url || ''
+      }
+    } catch (error) {
+      console.error('❌ addFile mutation error:', error);
+      throw error
+    }
+  }, [addFileMutation])
+
+  const updateChatMessage = useCallback(async (chatMessageUuid: string, metadata: any): Promise<void> => {
+    try {
+      await updateChatMessageMutation({
+        variables: {
+          chat_message_uuid: chatMessageUuid,
+          metadata
+        }
+      })
+    } catch (error) {
+      console.error('❌ updateChatMessage mutation error:', error);
+      throw error
+    }
+  }, [updateChatMessageMutation])
 
   return useMemo(() => ({
     // Queries
@@ -182,7 +213,9 @@ export const useChats = (): UseChatsReturn => {
     addContext,
     deleteChat,
     loadChat,
-    refetchChats
+    refetchChats,
+    addFile,
+    updateChatMessage
   }), [
     chatsData?.chats,
     chatsLoading,
@@ -195,6 +228,8 @@ export const useChats = (): UseChatsReturn => {
     addContext,
     deleteChat,
     loadChat,
-    refetchChats
+    refetchChats,
+    addFile,
+    updateChatMessage
   ])
 }

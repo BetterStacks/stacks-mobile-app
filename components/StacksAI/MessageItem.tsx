@@ -140,7 +140,8 @@ const MessageItem = ({ message, colorScheme }: MessageItemProps) => {
             >
               <Image
                 source={{
-                  uri: `data:${message.generatedImage.mediaType};base64,${message.generatedImage.base64}`,
+                  uri: message.generatedImage.url || 
+                       `data:${message.generatedImage.mediaType};base64,${message.generatedImage.base64}`,
                 }}
                 style={{
                   width: 300,

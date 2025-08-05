@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
-	Keyboard,
 	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
@@ -45,7 +44,6 @@ export default function StacksAIScreen() {
   const aiToken = userData?.user?.ai_tokens?.[0];
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const inputAnimation = useSharedValue(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +58,7 @@ export default function StacksAIScreen() {
   // Chat persistence state
   const [currentChatUuid, setCurrentChatUuid] = useState<string | null>(null);
   const [isNewChat, setIsNewChat] = useState(true);
+  const [skipInitialLoad, setSkipInitialLoad] = useState(false);
   
   // Chat persistence hook
   const chatService = useChats();
@@ -67,23 +66,56 @@ export default function StacksAIScreen() {
   // Watch for chat data changes and update messages
   useEffect(() => {
     if (chatService.currentChatMessages?.length > 0) {
-      const chatMessages = chatService.currentChatMessages.map((msg): Message => ({
-        id: msg.chat_message_uuid,
-        text: msg.content,
-        isUser: msg.role === 'user'
-      }));
+      const chatMessages = chatService.currentChatMessages.map((msg): Message => {
+        const message: Message = {
+          id: msg.chat_message_uuid,
+          text: msg.content,
+          isUser: msg.role === 'user'
+        };
+
+        // Parse metadata to reconstruct attachments and generated images
+        if (msg.metadata) {
+          try {
+            const metadata = typeof msg.metadata === 'string' ? JSON.parse(msg.metadata) : msg.metadata;
+            
+            if (metadata.type === 'attachment' && metadata.attachments) {
+              message.attachments = metadata.attachments;
+            } else if (metadata.type === 'image_generated' && metadata.generatedImage) {
+              // Handle both URL strings and full GeneratedImage objects
+              if (typeof metadata.generatedImage === 'string') {
+                // If it's a URL string, create a GeneratedImage object
+                message.generatedImage = {
+                  url: metadata.generatedImage,
+                  mediaType: 'image/png',
+                  prompt: metadata.prompt || '',
+                  savedUrl: metadata.generatedImage,
+                  savedTitle: metadata.savedTitle || undefined
+                };
+              } else {
+                // If it's already a GeneratedImage object, use it directly
+                message.generatedImage = metadata.generatedImage;
+              }
+            }
+          } catch {
+            // Ignore malformed metadata
+          }
+        }
+
+        return message;
+      });
       
       setMessages(chatMessages);
       // Chat messages loaded from persistence
     }
   }, [chatService.currentChatMessages]);
 
+
   // Load chat when currentChatUuid changes (and it's not a new chat)
   useEffect(() => {
-    if (currentChatUuid && !isNewChat) {
+    if (currentChatUuid && !isNewChat && !skipInitialLoad) {
       chatService.loadChat(currentChatUuid);
     }
-  }, [currentChatUuid, isNewChat]); // Removed chatService from dependencies
+  }, [currentChatUuid, isNewChat, skipInitialLoad]); // Removed chatService from dependencies
 
   // Watch for chat data changes and update selected links (AI contexts)
   useEffect(() => {
@@ -105,38 +137,95 @@ export default function StacksAIScreen() {
     }
   }, [chatService.currentChat]);
 
-  useEffect(() => {
-    const keyboardWillShow = Keyboard.addListener(
-      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
-      e => {
-        setKeyboardHeight(e.endCoordinates.height);
-      },
-    );
-    const keyboardWillHide = Keyboard.addListener(
-      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
-      () => {
-        setKeyboardHeight(0);
-      },
-    );
 
-    return () => {
-      keyboardWillShow.remove();
-      keyboardWillHide.remove();
-    };
-  }, []);
+  // Helper function to save attachments to server asynchronously
+  const saveAttachmentsAsync = async (attachments: FileAttachment[]) => {
+    const savedAttachments = [];
+    
+    
+    for (let i = 0; i < attachments.length; i++) {
+      const attachment = attachments[i];
+      
+      try {
+        if (attachment.uri || attachment.base64) {
+          // Create file object for custom upload link (not ReactNativeFile)
+          let fileObj;
+          
+          if (attachment.base64) {
+            // For base64 files, create plain object
+            fileObj = {
+              uri: `data:${attachment.mimeType};base64,${attachment.base64}`,
+              type: attachment.mimeType,
+              name: attachment.name
+            };
+          } else if (attachment.uri) {
+            // For URI files, create plain object
+            fileObj = {
+              uri: attachment.uri,
+              type: attachment.mimeType,
+              name: attachment.name
+            };
+          }
+          
+          
+          const result = await chatService.addFile(fileObj!);
+          
+          savedAttachments.push({
+            ...attachment,
+            savedUrl: result.target_url,
+            savedTitle: result.title
+          });
+        }
+      } catch (error) {
+        console.error('❌ File upload failed:', error);
+        // If saving fails, keep original attachment info
+        savedAttachments.push(attachment);
+      }
+    }
+    
+    return savedAttachments;
+  };
+
+  // Helper function to save generated image asynchronously  
+  const saveGeneratedImageAsync = async (imageBase64: string) => {
+    try {
+      // Convert base64 to plain file object for custom upload link
+      const imageFile = {
+        uri: `data:image/png;base64,${imageBase64}`,
+        type: 'image/png',
+        name: `generated_image_${Date.now()}.png`
+      };
+      
+      const result = await chatService.addFile(imageFile);
+      return {
+        originalBase64: imageBase64,
+        savedUrl: result.target_url,
+        savedTitle: result.title
+      };
+    } catch (error) {
+      // If saving fails, return original
+      return {
+        originalBase64: imageBase64
+      };
+    }
+  };
 
   const handleSend = async () => {
     if (!inputText.trim() || isLoading || !aiToken) return;
 
+    const originalInputText = inputText;
+    const originalAttachments = [...selectedAttachments];
+    
+    // Create user message immediately with original attachments for display
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputText,
+      text: originalInputText,
       isUser: true,
-      attachments: selectedAttachments.length > 0 ? selectedAttachments : undefined,
+      attachments: originalAttachments.length > 0 ? originalAttachments : undefined,
     };
 
+    // Send message immediately to UI
     setMessages(prev => [...prev, userMessage]);
-    const originalInputText = inputText;
     setInputText("");
     setSelectedAttachments([]);
     setIsLoading(true);
@@ -151,7 +240,8 @@ export default function StacksAIScreen() {
     
     // Create chat if this is the first message
     let chatUuid = currentChatUuid;
-    if (isNewChat && !chatUuid) {
+    let isFirstMessage = isNewChat && !chatUuid;
+    if (isFirstMessage) {
       try {
         const title = originalInputText.length > 50 
           ? originalInputText.substring(0, 47) + "..." 
@@ -161,21 +251,51 @@ export default function StacksAIScreen() {
         chatUuid = await chatService.createChat(title, originalInputText);
         setCurrentChatUuid(chatUuid);
         setIsNewChat(false);
-        // Chat created successfully
+        setSkipInitialLoad(true);
       } catch (error) {
         // Continue without persistence if chat creation fails
       }
     }
 
     try {
-      // Persist user message if we have a chat UUID 
-      // Note: For new chats, the first message is already included in createChat
-      if (chatUuid && !isNewChat) {
-        try {
-          await chatService.addMessage(chatUuid, originalInputText, 'user');
-          // User message saved to chat
-        } catch (error) {
-          // Failed to save user message
+      // Save attachments in background and persist user message if needed
+      let attachmentMetadata: any = null;
+      if (originalAttachments.length > 0) {
+        // Save attachments in background (don't block UI)
+        saveAttachmentsAsync(originalAttachments)
+          .then(savedAttachments => {
+            attachmentMetadata = {
+              type: 'attachment',
+              attachments: savedAttachments.map(att => ({
+                ...att,
+                uri: att.savedUrl || att.uri,
+                title: att.savedTitle || att.name
+              }))
+            };
+            
+            // Update the persisted message with saved attachment metadata (for subsequent messages only)
+            if (chatUuid && !isFirstMessage) {
+              chatService.addMessage(chatUuid, originalInputText, 'user', attachmentMetadata)
+                .catch(error => console.error('❌ Failed to save user message with attachments:', error));
+            }
+          })
+          .catch(error => {
+            console.error('❌ Background attachment save failed:', error);
+            // Still try to save message without metadata if attachment save fails
+            if (chatUuid && !isFirstMessage) {
+              chatService.addMessage(chatUuid, originalInputText, 'user')
+                .catch(error => console.error('❌ Failed to save user message:', error));
+            }
+          });
+      } else {
+        // No attachments, save message normally
+        if (chatUuid && !isFirstMessage) {
+          try {
+            await chatService.addMessage(chatUuid, originalInputText, 'user');
+            // User message saved to chat
+          } catch (error) {
+            // Failed to save user message
+          }
         }
       }
 
@@ -188,19 +308,52 @@ export default function StacksAIScreen() {
         const imagePrompt = extractImagePrompt(originalInputText);
         const imageResult = await generateImage(imagePrompt, aiToken);
 
+        // Save generated image to get saved URL
+        let savedImageInfo: any = null;
+        if (imageResult.image.base64) {
+          try {
+            savedImageInfo = await saveGeneratedImageAsync(imageResult.image.base64);
+          } catch (error) {
+            // If saving fails, use original base64
+            savedImageInfo = { originalBase64: imageResult.image.base64 };
+          }
+        } else {
+          // No base64 data available
+          savedImageInfo = { originalBase64: '' };
+        }
+
+        const imageMetadata = {
+          type: 'image_generated',
+          generatedImage: savedImageInfo.savedUrl || `data:image/png;base64,${savedImageInfo.originalBase64}`,
+          prompt: imagePrompt,
+          savedUrl: savedImageInfo.savedUrl || undefined,
+          savedTitle: savedImageInfo.savedTitle || undefined
+        };
+
         const aiMessage: Message = {
           id: streamingMessageId,
           text: `I've generated an image based on your prompt: "${imagePrompt}"`,
           isUser: false,
-          generatedImage: imageResult.image,
+          generatedImage: {
+            base64: imageResult.image.base64 || undefined,
+            url: savedImageInfo.savedUrl || undefined,
+            mediaType: imageResult.image.mediaType || 'image/png',
+            prompt: imagePrompt,
+            savedUrl: savedImageInfo.savedUrl || undefined,
+            savedTitle: savedImageInfo.savedTitle || undefined
+          },
         };
 
+        // Clear streaming message first to prevent flicker
+        setCurrentStreamingMessage(null);
+        
+        // Then add the final message
         setMessages(prev => [...prev, aiMessage]);
         
-        // Persist assistant message for image generation
+        // Persist assistant message for image generation with metadata
         if (chatUuid) {
           try {
-            await chatService.addMessage(chatUuid, aiMessage.text, 'assistant');
+            await chatService.addMessage(chatUuid, aiMessage.text, 'assistant', imageMetadata);
             // Image generation message saved to chat
           } catch (error) {
             // Failed to save image generation message
@@ -302,6 +455,7 @@ export default function StacksAIScreen() {
     setSelectedAttachments([]);
     setCurrentChatUuid(null);
     setIsNewChat(true);
+    setSkipInitialLoad(false);
     // Started new chat
   }, []);
 
@@ -315,6 +469,7 @@ export default function StacksAIScreen() {
       // Set current chat immediately
       setCurrentChatUuid(chat.chat_uuid);
       setIsNewChat(false);
+      setSkipInitialLoad(false); // Allow loading for selected chats
       setSelectedLinks([]);
       setSelectedAttachments([]);
       
@@ -599,7 +754,10 @@ export default function StacksAIScreen() {
                   style={[isDark ? styles.input__dark : styles.input, styles.inputWithButton]}
                   value={inputText}
                   onChangeText={setInputText}
-                  placeholder={isLoading ? "Please wait..." : "Ask anything..."}
+                  placeholder={
+                    isLoading ? "Please wait..." : 
+                    "Ask anything..."
+                  }
                   placeholderTextColor={isDark ? "#777" : "#888"}
                   multiline
                   returnKeyType="send"

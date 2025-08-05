@@ -1,10 +1,4 @@
-import { AIToken } from './types';
-
-export interface GeneratedImage {
-  base64: string;
-  mediaType: string;
-  prompt: string;
-}
+import { AIToken, GeneratedImage } from './types';
 
 export interface ImageGenerationMetadata {
   model: string;

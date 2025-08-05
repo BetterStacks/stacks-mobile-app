@@ -38,7 +38,8 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [addFile] = useMutation(MUTATION_ADD_FILE);
 
-  const imageUri = `data:${generatedImage.mediaType};base64,${generatedImage.base64}`;
+  const imageUri = generatedImage.url || 
+    `data:${generatedImage.mediaType};base64,${generatedImage.base64}`;
 
   const handleDownload = async () => {
     try {
@@ -58,10 +59,24 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
       const filename = `generated-image-${Date.now()}.png`;
       const fileUri = `${FileSystem.documentDirectory}${filename}`;
 
-      // Write base64 data to file
-      await FileSystem.writeAsStringAsync(fileUri, generatedImage.base64, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      // Handle both URL and base64 formats
+      if (generatedImage.url) {
+        // Download from URL
+        const downloadResult = await FileSystem.downloadAsync(
+          generatedImage.url,
+          fileUri
+        );
+        if (downloadResult.status !== 200) {
+          throw new Error('Failed to download image from URL');
+        }
+      } else if (generatedImage.base64) {
+        // Write base64 data to file
+        await FileSystem.writeAsStringAsync(fileUri, generatedImage.base64, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+      } else {
+        throw new Error('No image data available');
+      }
 
       // Save to media library
       const asset = await MediaLibrary.createAssetAsync(fileUri);
@@ -81,10 +96,24 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
       const filename = `generated-image-${Date.now()}.png`;
       const fileUri = `${FileSystem.documentDirectory}${filename}`;
 
-      // Write base64 data to file
-      await FileSystem.writeAsStringAsync(fileUri, generatedImage.base64, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      // Handle both URL and base64 formats
+      if (generatedImage.url) {
+        // Download from URL
+        const downloadResult = await FileSystem.downloadAsync(
+          generatedImage.url,
+          fileUri
+        );
+        if (downloadResult.status !== 200) {
+          throw new Error('Failed to download image from URL');
+        }
+      } else if (generatedImage.base64) {
+        // Write base64 data to file
+        await FileSystem.writeAsStringAsync(fileUri, generatedImage.base64, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+      } else {
+        throw new Error('No image data available');
+      }
 
       await Share.share({
         url: fileUri,

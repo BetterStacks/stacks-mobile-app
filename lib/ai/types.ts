@@ -24,12 +24,17 @@ export type FileAttachment = {
   uri: string;
   base64?: string;
   mimeType: string;
+  savedUrl?: string;         // Optional: URL where file is permanently stored
+  savedTitle?: string;       // Optional: Title/filename when saved
 };
 
 export type GeneratedImage = {
-  base64: string;
+  base64?: string;           // For newly generated images
+  url?: string;              // For persisted images  
   mediaType: string;
   prompt: string;
+  savedUrl?: string;         // Optional: URL where image is permanently stored
+  savedTitle?: string;       // Optional: Title/filename when saved
 };
 
 export type Message = {

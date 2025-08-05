@@ -305,3 +305,24 @@ export const MUTATION_DELETE_CHAT = () => gql`
     delete_chat(input: {chat_uuid: $chat_uuid})
   }
 `
+
+export const MUTATION_ADD_FILE = gql`
+  mutation Add_file($file: Upload!) {
+    add_file(input: { file: $file }) {
+      title
+      target_url
+    }
+  }
+`
+
+export const MUTATION_UPDATE_CHAT_MESSAGE = gql`
+  mutation Update_chat_message($chat_message_uuid: String!, $metadata: JSON) {
+    update_chat_message(input: { metadata: $metadata, chat_message_uuid: $chat_message_uuid }) {
+      chat_message_uuid
+      content
+      id
+      metadata
+      role
+    }
+  }
+`
