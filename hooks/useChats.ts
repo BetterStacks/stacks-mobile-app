@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import uuid from 'react-native-uuid'
 import { 
   QUERY_CHATS, 
@@ -48,7 +48,7 @@ export const useChats = (): UseChatsReturn => {
     data: currentChatData, 
     loading: currentChatLoading, 
     error: currentChatError 
-  }] = useLazyQuery(QUERY_CHAT(''))
+  }] = useLazyQuery(QUERY_CHAT)
 
   // Mutations
   const [createChatMutation] = useMutation(MUTATION_CREATE_CHAT())
@@ -67,8 +67,9 @@ export const useChats = (): UseChatsReturn => {
           first_message_role: 'user',
           chat_id: chatId
         },
-        // Optimistically update the cache
-        refetchQueries: [{ query: QUERY_CHATS() }]
+        // Optimistically update the cache and wait for refetch
+        refetchQueries: [{ query: QUERY_CHATS() }],
+        awaitRefetchQueries: true
       })
       
       console.log('📚 Chat created:', result.data?.create_chat?.chat_uuid)
@@ -95,13 +96,14 @@ export const useChats = (): UseChatsReturn => {
         },
         // Update the current chat if it's loaded
         refetchQueries: currentChatData ? [{ 
-          query: QUERY_CHAT(chatUuid) 
+          query: QUERY_CHAT,
+          variables: { chatUuid }
         }] : []
       })
       
-      console.log('💬 Message added to chat:', chatUuid, role)
+      // console.log('💬 Message added to chat:', chatUuid, role)
     } catch (error) {
-      console.error('❌ Error adding message:', error)
+      // console.error('❌ Error adding message:', error)
       throw error
     }
   }
@@ -122,13 +124,14 @@ export const useChats = (): UseChatsReturn => {
         },
         // Update the current chat if it's loaded
         refetchQueries: currentChatData ? [{ 
-          query: QUERY_CHAT(chatUuid) 
+          query: QUERY_CHAT,
+          variables: { chatUuid }
         }] : []
       })
       
-      console.log('🔗 Context added to chat:', chatUuid, contextType)
+      // console.log('🔗 Context added to chat:', chatUuid, contextType)
     } catch (error) {
-      console.error('❌ Error adding context:', error)
+      // console.error('❌ Error adding context:', error)
       throw error
     }
   }
@@ -144,12 +147,12 @@ export const useChats = (): UseChatsReturn => {
       })
       
       if (result.data?.delete_chat) {
-        console.log('🗑️ Chat deleted successfully:', chatUuid)
+        // console.log('🗑️ Chat deleted successfully:', chatUuid)
       } else {
         throw new Error('Delete operation returned false')
       }
     } catch (error) {
-      console.error('❌ Error deleting chat:', error)
+      // console.error('❌ Error deleting chat:', error)
       throw error
     }
   }
@@ -157,11 +160,11 @@ export const useChats = (): UseChatsReturn => {
   const loadChat = (chatUuid: string) => {
     // Use lazy query to load chat
     loadChatQuery({
-      query: QUERY_CHAT(chatUuid)
+      variables: { chatUuid }
     })
   }
 
-  return {
+  return useMemo(() => ({
     // Queries
     chats: chatsData?.chats || [],
     chatsLoading,
@@ -180,5 +183,18 @@ export const useChats = (): UseChatsReturn => {
     deleteChat,
     loadChat,
     refetchChats
-  }
+  }), [
+    chatsData?.chats,
+    chatsLoading,
+    chatsError,
+    currentChatData?.chat,
+    currentChatLoading,
+    currentChatError,
+    createChat,
+    addMessage,
+    addContext,
+    deleteChat,
+    loadChat,
+    refetchChats
+  ])
 }

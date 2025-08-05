@@ -47,9 +47,9 @@ export const QUERY_CHATS = () => gql`
   }
 `
 
-export const QUERY_CHAT = (chatUuid: string) => gql`
-  query Chat {
-    chat(chatUuid: "${chatUuid}") {
+export const QUERY_CHAT = gql`
+  query Chat($chatUuid: String!) {
+    chat(chatUuid: $chatUuid) {
       chat_uuid
       created_at
       id

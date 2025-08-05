@@ -49,9 +49,9 @@ export const getChatCompletion = async (
       })) || [],
     };
 
-    console.log('🤖 Starting mobile chat request...');
-    console.log('📍 URL:', CHAT_API_ENDPOINT);
-    console.log('📦 Request payload:', JSON.stringify(requestPayload, null, 2));
+    // console.log('🤖 Starting mobile chat request...');
+    // console.log('📍 URL:', CHAT_API_ENDPOINT);
+    // console.log('📦 Request payload:', JSON.stringify(requestPayload, null, 2));
 
     const response = await fetch(CHAT_API_ENDPOINT, {
       method: 'POST',
@@ -63,8 +63,8 @@ export const getChatCompletion = async (
       body: JSON.stringify(requestPayload),
     });
 
-    console.log('📡 Response status:', response.status);
-    console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
+    // console.log('📡 Response status:', response.status);
+    // console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -72,15 +72,15 @@ export const getChatCompletion = async (
       throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
 
-    console.log('📡 Response body available:', !!response.body);
-    console.log('📡 Response bodyUsed:', response.bodyUsed);
+    // console.log('📡 Response body available:', !!response.body);
+    // console.log('📡 Response bodyUsed:', response.bodyUsed);
 
     // React Native compatible streaming approach
     try {
       // React Native doesn't support response.body.getReader()
       // So we'll use a different approach with faster simulated streaming
       const responseText = await response.text();
-      console.log('📡 Full response received, processing streaming format...');
+      // console.log('📡 Full response received, processing streaming format...');
       
       // Parse the streaming response manually
       let fullResponse = '';
@@ -97,7 +97,7 @@ export const getChatCompletion = async (
             // Update UI immediately for each chunk
             onPartialResponse(fullResponse);
             
-            console.log('📡 Processed chunk:', textChunk);
+            // console.log('📡 Processed chunk:', textChunk);
             
             // Very small delay to prevent UI blocking (much faster than before)
             await new Promise(resolve => setTimeout(resolve, 10));

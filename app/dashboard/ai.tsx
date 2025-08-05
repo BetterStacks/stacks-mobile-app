@@ -78,6 +78,13 @@ export default function StacksAIScreen() {
     }
   }, [chatService.currentChatMessages]);
 
+  // Load chat when currentChatUuid changes (and it's not a new chat)
+  useEffect(() => {
+    if (currentChatUuid && !isNewChat) {
+      chatService.loadChat(currentChatUuid);
+    }
+  }, [currentChatUuid, isNewChat]); // Removed chatService from dependencies
+
   // Watch for chat data changes and update selected links (AI contexts)
   useEffect(() => {
     if (chatService.currentChat?.ai_contexts && chatService.currentChat.ai_contexts.length > 0) {
@@ -134,6 +141,14 @@ export default function StacksAIScreen() {
     setSelectedAttachments([]);
     setIsLoading(true);
     
+    // Show typing indicator immediately
+    const streamingMessageId = (Date.now() + 1).toString();
+    setCurrentStreamingMessage({
+      id: streamingMessageId,
+      text: "",
+      isUser: false,
+    });
+    
     // Create chat if this is the first message
     let chatUuid = currentChatUuid;
     if (isNewChat && !chatUuid) {
@@ -152,15 +167,9 @@ export default function StacksAIScreen() {
       }
     }
 
-    const streamingMessageId = (Date.now() + 1).toString();
-    setCurrentStreamingMessage({
-      id: streamingMessageId,
-      text: "",
-      isUser: false,
-    });
-
     try {
-      // Persist user message if we have a chat UUID (for subsequent messages after first)
+      // Persist user message if we have a chat UUID 
+      // Note: For new chats, the first message is already included in createChat
       if (chatUuid && !isNewChat) {
         try {
           await chatService.addMessage(chatUuid, originalInputText, 'user');
@@ -316,19 +325,20 @@ export default function StacksAIScreen() {
     } catch (error) {
       // Failed to load chat
     }
-  }, [chatService]);
+  }, []); // Removed chatService dependency
 
   // Handle when current chat is deleted by checking if it still exists
+  // Only check for deletion if we're not in "new chat" mode (to avoid false positives for newly created chats)
   useEffect(() => {
-    if (currentChatUuid && !chatService.chatsLoading) {
+    if (currentChatUuid && !isNewChat && !chatService.chatsLoading && chatService.chats.length > 0) {
       const chatExists = chatService.chats.some(chat => chat.chat_uuid === currentChatUuid);
-      if (!chatExists && chatService.chats.length >= 0) {
+      if (!chatExists) {
         // Current chat was deleted, start a new chat
         handleNewChat();
         // Current chat was deleted, started new chat
       }
     }
-  }, [chatService.chats, currentChatUuid, chatService.chatsLoading, handleNewChat]);
+  }, [chatService.chats, currentChatUuid, isNewChat, chatService.chatsLoading, handleNewChat]);
 
   const handleMessageSend = useCallback((userMessageText: string, aiResponseText: string) => {
     const userMessage: Message = {
