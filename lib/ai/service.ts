@@ -1,8 +1,8 @@
 import { AIToken, LinkContext, MessageHistory, FileAttachment } from './types';
 
 // API endpoint for the Next.js chat route
-// For Android emulator, use 10.0.2.2 instead of localhost
-const CHAT_API_ENDPOINT = 'http://10.0.2.2:3000/api/extension/chat';
+// For Android emulator, use 10.0.2.2 instead of localhost -> use http://10.0.2.2:3000/api/extension/chat
+const CHAT_API_ENDPOINT = 'https://betterstacks.com/api/extension/chat';
 
 export const getChatCompletion = async (
   message: string,

@@ -27,8 +27,8 @@ export const generateImage = async (
   size: string = '1024x1024',
   seed?: number
 ): Promise<ImageGenerationResponse> => {
-  // For Android emulator, use 10.0.2.2 instead of localhost
-  const requestUrl = 'http://10.0.2.2:3000/api/ai/generate-image';
+  // For Android emulator, use 10.0.2.2 instead of localhost -> use http://10.0.2.2:3000/api/ai/generate-image
+  const requestUrl = 'https://app.betterstacks.com/api/ai/generate-image';
   const requestBody = {
     prompt,
     userContext: {
@@ -74,11 +74,11 @@ export const generateImage = async (
     return result;
   } catch (error) {
     console.error('❌ Image generation error details:');
-    console.error('   Error type:', error.constructor.name);
-    console.error('   Error message:', error.message);
+    console.error('   Error type:', error instanceof Error ? error.constructor.name : typeof error);
+    console.error('   Error message:', error instanceof Error ? error.message : String(error));
     console.error('   Full error:', error);
     
-    if (error.message.includes('Network request failed')) {
+    if (error instanceof Error && error.message.includes('Network request failed')) {
       throw new Error('Unable to connect to image generation server. Please ensure the server is running and accessible.');
     }
     
