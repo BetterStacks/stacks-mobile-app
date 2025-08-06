@@ -165,21 +165,23 @@ const MessageItem = ({ message, colorScheme }: MessageItemProps) => {
           </View>
         )}
 
-        {message.text ? (
-          <Markdown
-            style={
-              isDark
-                ? {
-                    ...markdownStyles,
-                    body: { ...markdownStyles.body, color: "#E5E5E5" },
-                  }
-                : markdownStyles
-            }
-          >
-            {message.text}
-          </Markdown>
-        ) : (
-          <ThinkingAnimation colorScheme={colorScheme} />
+        {message.generatedImage ? null : (
+          message.text ? (
+            <Markdown
+              style={
+                isDark
+                  ? {
+                      ...markdownStyles,
+                      body: { ...markdownStyles.body, color: "#E5E5E5" },
+                    }
+                  : markdownStyles
+              }
+            >
+              {message.text}
+            </Markdown>
+          ) : (
+            <ThinkingAnimation colorScheme={colorScheme} />
+          )
         )}
       </View>
     </View>

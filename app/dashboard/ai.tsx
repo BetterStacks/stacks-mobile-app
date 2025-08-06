@@ -258,44 +258,36 @@ export default function StacksAIScreen() {
     }
 
     try {
-      // Save attachments in background and persist user message if needed
+      // Save attachments first if any exist, then save user message with metadata
       let attachmentMetadata: any = null;
       if (originalAttachments.length > 0) {
-        // Save attachments in background (don't block UI)
-        saveAttachmentsAsync(originalAttachments)
-          .then(savedAttachments => {
-            attachmentMetadata = {
-              type: 'attachment',
-              attachments: savedAttachments.map(att => ({
-                ...att,
+        // Wait for attachments to be saved first
+        try {
+          const savedAttachments = await saveAttachmentsAsync(originalAttachments);
+          attachmentMetadata = {
+            type: 'attachment',
+            attachments: savedAttachments.map(att => {
+              const { base64, ...attachmentWithoutBase64 } = att;
+              return {
+                ...attachmentWithoutBase64,
                 uri: att.savedUrl || att.uri,
                 title: att.savedTitle || att.name
-              }))
-            };
-            
-            // Update the persisted message with saved attachment metadata (for subsequent messages only)
-            if (chatUuid && !isFirstMessage) {
-              chatService.addMessage(chatUuid, originalInputText, 'user', attachmentMetadata)
-                .catch(error => console.error('❌ Failed to save user message with attachments:', error));
-            }
-          })
-          .catch(error => {
-            console.error('❌ Background attachment save failed:', error);
-            // Still try to save message without metadata if attachment save fails
-            if (chatUuid && !isFirstMessage) {
-              chatService.addMessage(chatUuid, originalInputText, 'user')
-                .catch(error => console.error('❌ Failed to save user message:', error));
-            }
-          });
-      } else {
-        // No attachments, save message normally
-        if (chatUuid && !isFirstMessage) {
-          try {
-            await chatService.addMessage(chatUuid, originalInputText, 'user');
-            // User message saved to chat
-          } catch (error) {
-            // Failed to save user message
-          }
+              };
+            })
+          };
+        } catch (error) {
+          console.error('❌ Attachment save failed:', error);
+          // Continue without metadata if attachment save fails
+        }
+      }
+
+      // Save user message with attachment metadata (if any) - this ensures correct order
+      if (chatUuid && !isFirstMessage) {
+        try {
+          await chatService.addMessage(chatUuid, originalInputText, 'user', attachmentMetadata);
+          // User message saved to chat
+        } catch (error) {
+          console.error('❌ Failed to save user message:', error);
         }
       }
 
@@ -671,10 +663,8 @@ export default function StacksAIScreen() {
                           style={{
                             backgroundColor: isDark ? '#1A1A1A' : '#ffffff',
                             borderRadius: 10,
-                            padding: 10,
+                            padding: 8,
                             marginRight: 8,
-                            minWidth: 100,
-                            maxWidth: 140,
                             alignItems: 'center',
                             borderWidth: 1,
                             borderColor: isDark ? '#333333' : '#E5E5E5',
@@ -689,10 +679,9 @@ export default function StacksAIScreen() {
                             <Image 
                               source={{ uri: attachment.uri }}
                               style={{
-                                width: 48,
-                                height: 48,
+                                width: 80,
+                                height: 80,
                                 borderRadius: 8,
-                                marginBottom: 8,
                               }}
                               resizeMode="cover"
                             />
@@ -701,7 +690,6 @@ export default function StacksAIScreen() {
                               backgroundColor: preview.color + '20',
                               borderRadius: 8,
                               padding: 12,
-                              marginBottom: 8,
                             }}>
                               <AntDesign 
                                 name={preview.icon as any} 
@@ -710,19 +698,6 @@ export default function StacksAIScreen() {
                               />
                             </View>
                           )}
-                          
-                          <Text 
-                            style={{
-                              fontSize: 11,
-                              fontWeight: '500',
-                              color: isDark ? '#E5E5E5' : '#333',
-                              textAlign: 'center',
-                              marginBottom: 6,
-                            }}
-                            numberOfLines={2}
-                          >
-                            {attachment.name.length > 20 ? attachment.name.substring(0, 20) + '...' : attachment.name}
-                          </Text>
                           
                           <TouchableOpacity 
                             onPress={() => handleRemoveAttachment(attachment.id)}

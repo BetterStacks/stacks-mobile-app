@@ -54,6 +54,14 @@ const EmptyState = ({
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     
+    // Show typing indicator immediately
+    const streamingMessageId = (Date.now() + 1).toString();
+    setCurrentStreamingMessage({
+      id: streamingMessageId,
+      text: "",
+      isUser: false,
+    });
+    
     // Create chat if this is the first message
     let chatUuid = currentChatUuid;
     if (isNewChat && !chatUuid) {
@@ -69,14 +77,6 @@ const EmptyState = ({
         // Continue without persistence if chat creation fails
       }
     }
-
-    // Set up the streaming message
-    const streamingMessageId = (Date.now() + 1).toString();
-    setCurrentStreamingMessage({
-      id: streamingMessageId,
-      text: "",
-      isUser: false,
-    });
 
     try {
       // Persist user message if we have a chat UUID (for subsequent messages after first)
