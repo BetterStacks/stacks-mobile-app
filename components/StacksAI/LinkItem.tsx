@@ -9,9 +9,10 @@ type LinkItemProps = {
   isSelected: boolean;
   onToggle: () => void;
   colorScheme?: ColorSchemeName;
+  showCheckbox?: boolean;
 };
 
-const LinkItem = ({ link, isSelected, onToggle, colorScheme }: LinkItemProps) => {
+const LinkItem = ({ link, isSelected, onToggle, colorScheme, showCheckbox = true }: LinkItemProps) => {
   const isDark = colorScheme === 'dark';
   
   return (
@@ -28,11 +29,13 @@ const LinkItem = ({ link, isSelected, onToggle, colorScheme }: LinkItemProps) =>
           {link.description || "No description"}
         </Text>
       </View>
-      <View style={isDark ? styles.checkboxContainer__dark : styles.checkboxContainer}>
-        {isSelected && (
-          <AntDesign name="check" size={16} color={Colors.TextColor.LignMainColor} />
-        )}
-      </View>
+      {showCheckbox && (
+        <View style={isDark ? styles.checkboxContainer__dark : styles.checkboxContainer}>
+          {isSelected && (
+            <AntDesign name="check" size={16} color={Colors.TextColor.LignMainColor} />
+          )}
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

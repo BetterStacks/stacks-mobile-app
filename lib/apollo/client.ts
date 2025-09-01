@@ -39,26 +39,52 @@ const createCustomUploadLink = () => {
           // Create FormData instance
           const formData = new FormData();
           
-          // Extract files from variables to handle them separately
+          // Handle both single file (add_file) and multiple files (add_files)
           const files = variables.files || [];
+          const singleFile = variables.file;
           
           // Create a copy of variables without the file objects
           const variablesCopy = { ...variables };
           
-          // Replace files array with null references
-          variablesCopy.files = files.map(() => null);
+          // Create the operations object and file map
+          let fileMap: Record<string, string[]> = {};
           
-          // Create the operations object
-          const operations = {
-            query: print(operation.query),
-            variables: variablesCopy
-          };
-          
-          formData.append('operations', JSON.stringify(operations));
-          
-          // Create the map for files
-          const fileMap: Record<string, string[]> = {};
-          if (files.length > 0) {
+          if (singleFile) {
+            // Handle single file upload (add_file mutation)
+            variablesCopy.file = null;
+            
+            const operations = {
+              query: print(operation.query),
+              variables: variablesCopy
+            };
+            
+            formData.append('operations', JSON.stringify(operations));
+            
+            // Map for single file
+            fileMap['0'] = ['variables.file'];
+            formData.append('map', JSON.stringify(fileMap));
+            
+            // Append the single file
+            const fileObject = {
+              uri: singleFile.uri,
+              name: singleFile.name,
+              type: singleFile.type || 'application/octet-stream'
+            };
+            
+            formData.append('0', fileObject as unknown as Blob);
+            
+          } else if (files.length > 0) {
+            // Handle multiple files upload (add_files mutation) - existing logic
+            variablesCopy.files = files.map(() => null);
+            
+            const operations = {
+              query: print(operation.query),
+              variables: variablesCopy
+            };
+            
+            formData.append('operations', JSON.stringify(operations));
+            
+            // Create the map for files array
             files.forEach((_: any, i: number) => {
               fileMap[i.toString()] = [`variables.files.${i}`];
             });
@@ -67,15 +93,12 @@ const createCustomUploadLink = () => {
             
             // Append each file with the correct format for React Native
             files.forEach((file: FileObject, i: number) => {              
-              // Create a file object that React Native fetch API can process correctly
               const fileObject = {
                 uri: file.uri,
                 name: file.name,
                 type: file.type || 'application/octet-stream'
               };
               
-              // In React Native, we need to cast this as any since the FormData type
-              // definition doesn't match the actual runtime behavior for file uploads
               formData.append(i.toString(), fileObject as unknown as Blob);
             });
           }

@@ -6,6 +6,7 @@ import AddResourcesDrawer from './AddResourcesDrawer';
 import ViewContextDrawer from './ViewContextDrawer';
 import MessageItem from './MessageItem';
 import EmptyState from './EmptyState';
+import ImageViewer from './ImageViewer';
 import { styles } from './styles';
 import { markdownStyles } from './markdownStyles';
 
@@ -18,6 +19,7 @@ export {
   ViewContextDrawer,
   MessageItem,
   EmptyState,
+  ImageViewer,
   styles,
   markdownStyles
 }; 

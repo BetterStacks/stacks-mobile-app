@@ -4,6 +4,7 @@ import {AntDesign} from '@expo/vector-icons';
 import {styles} from './styles';
 import {AIToken, getChatCompletion, LinkContext, Message} from '@/lib/ai';
 import {reviewTriggerService} from '@/lib/services/reviewTriggerService';
+import {UseChatsReturn} from '@/hooks/useChats';
 
 type EmptyStateProps = {
   aiToken: AIToken;
@@ -12,6 +13,12 @@ type EmptyStateProps = {
   setCurrentStreamingMessage: (message: any) => void;
   setMessages: (updater: (prev: Message[]) => Message[]) => void;
   colorScheme?: ColorSchemeName;
+  // Chat persistence props
+  chatService: UseChatsReturn;
+  currentChatUuid: string | null;
+  setCurrentChatUuid: (uuid: string | null) => void;
+  isNewChat: boolean;
+  setIsNewChat: (isNew: boolean) => void;
 };
 
 const EmptyState = ({ 
@@ -20,7 +27,12 @@ const EmptyState = ({
   setIsLoading,
   setCurrentStreamingMessage,
   setMessages,
-  colorScheme
+  colorScheme,
+  chatService,
+  currentChatUuid,
+  setCurrentChatUuid,
+  isNewChat,
+  setIsNewChat
 }: EmptyStateProps) => {
   const isDark = colorScheme === 'dark';
   const suggestions = [
@@ -41,16 +53,41 @@ const EmptyState = ({
     
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
-
-    // Set up the streaming message
+    
+    // Show typing indicator immediately
     const streamingMessageId = (Date.now() + 1).toString();
     setCurrentStreamingMessage({
       id: streamingMessageId,
       text: "",
       isUser: false,
     });
+    
+    // Create chat if this is the first message
+    let chatUuid = currentChatUuid;
+    if (isNewChat && !chatUuid) {
+      try {
+        const title = suggestionText.length > 50 
+          ? suggestionText.substring(0, 47) + "..." 
+          : suggestionText;
+        
+        chatUuid = await chatService.createChat(title, suggestionText);
+        setCurrentChatUuid(chatUuid);
+        setIsNewChat(false);
+      } catch (error) {
+        // Continue without persistence if chat creation fails
+      }
+    }
 
     try {
+      // Persist user message if we have a chat UUID (for subsequent messages after first)
+      if (chatUuid && !isNewChat) {
+        try {
+          await chatService.addMessage(chatUuid, suggestionText, 'user');
+        } catch (error) {
+          // Failed to save user message
+        }
+      }
+
       const finalResponse = await getChatCompletion(
         suggestionText,
         aiToken,
@@ -63,6 +100,9 @@ const EmptyState = ({
         []
       );
       
+      // Clear streaming message first to prevent flicker
+      setCurrentStreamingMessage(null);
+      
       // Once complete, add the final message
       setMessages(prev => [
         ...prev,
@@ -72,22 +112,43 @@ const EmptyState = ({
           isUser: false,
         },
       ]);
+      
+      // Persist assistant message if we have a chat UUID
+      if (chatUuid) {
+        try {
+          await chatService.addMessage(chatUuid, finalResponse, 'assistant');
+        } catch (error) {
+          // Failed to save assistant message
+        }
+      }
+      
+      // Persist AI context (selected links) if we have a chat UUID
+      if (chatUuid && selectedLinks.length > 0) {
+        try {
+          for (const link of selectedLinks) {
+            await chatService.addContext(chatUuid, 'link', 'RepositoryLink', link.id);
+          }
+        } catch (error) {
+          // Failed to save AI context
+        }
+      }
 
       // Track successful AI interaction for review trigger
       await reviewTriggerService.trackAIInteraction();
     } catch (error) {
-      console.error("Error getting AI response:", error);
-      setMessages(prev => [
-        ...prev,
-        {
-          id: streamingMessageId,
-          text: "Sorry, I encountered an error. Please try again.",
-          isUser: false,
-        },
-      ]);
+      
+      // Clear streaming message first
+      setCurrentStreamingMessage(null);
+      
+      // Then add error message
+      const errorMessage: Message = {
+        id: streamingMessageId,
+        text: "Sorry, I encountered an error. Please try again.",
+        isUser: false,
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
-      setCurrentStreamingMessage(null);
     }
   };
 

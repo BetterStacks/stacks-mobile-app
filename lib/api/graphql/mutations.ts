@@ -230,6 +230,16 @@ export const MUTATION_UPLOAD_USER_FILES = gql`
   }
 `;
 
+export const MUTATION_ADD_FILE = gql`
+  mutation ($file: Upload!) {
+    add_file(input: { file: $file }) {
+      file_url
+      filename
+      id
+    }
+  }
+`;
+
 export const MUTATION_SUBSCRIBE_NOTIFICATION = gql`
   mutation ($token: String!, $device_type: String!) {
     subscribe_notification_token(

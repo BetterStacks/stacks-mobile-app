@@ -21,13 +21,16 @@ const ViewContextDrawer = ({ links, onClose, colorScheme }: ViewContextDrawerPro
         <FlatList
           data={links}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <LinkItem
-              link={item}
-              isSelected={false}
-              onToggle={() => {}}
-              colorScheme={colorScheme}
-            />
+          renderItem={({ item, index }) => (
+            <View style={index === 0 ? { marginTop: 18 } : undefined}>
+              <LinkItem
+                link={item}
+                isSelected={false}
+                onToggle={() => {}}
+                colorScheme={colorScheme}
+                showCheckbox={false}
+              />
+            </View>
           )}
           style={styles.linksList}
         />

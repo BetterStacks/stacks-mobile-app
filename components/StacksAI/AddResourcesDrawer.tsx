@@ -41,14 +41,15 @@ const AddResourcesDrawer = ({ onLinksSelected, selectedLinks, colorScheme }: Add
   const toggleLinkSelection = useCallback(
     (link: any) => {
       const linkContext: LinkContext = {
+        id: link.id,
         title: link.title,
         description: link.description || "",
         link_content: link.link_content || "",
       };
 
-      const isSelected = selectedLinks.some(l => l.title === link.title);
+      const isSelected = selectedLinks.some(l => l.id === link.id);
       const newSelectedLinks = isSelected
-        ? selectedLinks.filter(l => l.title !== link.title)
+        ? selectedLinks.filter(l => l.id !== link.id)
         : [...selectedLinks, linkContext];
 
       onLinksSelected(newSelectedLinks);
@@ -87,7 +88,7 @@ const AddResourcesDrawer = ({ onLinksSelected, selectedLinks, colorScheme }: Add
             renderItem={({ item }) => (
               <LinkItem
                 link={item}
-                isSelected={selectedLinks.some(l => l.title === item.title)}
+                isSelected={selectedLinks.some(l => l.id === item.id)}
                 onToggle={() => toggleLinkSelection(item)}
                 colorScheme={colorScheme}
               />
